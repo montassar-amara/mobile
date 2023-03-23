@@ -1,7 +1,7 @@
 {
 	"appId": "io.valpal.app",
 	"appName": "valpal",
-	"webDir": "dist/valpal",
+	"webDir": "www",
 	"bundledWebRuntime": false,
 	"plugins": {
 		"GoogleAuth": {

@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'io.valpal.app',
   appName: 'valpal',
-  webDir: 'dist/valpal',
+  webDir: 'www',
   bundledWebRuntime: false,
   plugins:{
     GoogleAuth:{
