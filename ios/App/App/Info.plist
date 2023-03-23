@@ -17,16 +17,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.googleusercontent.apps.118815907844-r7m1jo7246bkuvdt91n45c8lu23pvphl</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>izsample</string>
-			</array>
-		</dict>
-	</array>
+<array>
+    <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+        <string>com.googleusercontent.apps.118815907844-r7m1jo7246bkuvdt91n45c8lu23pvphl</string>
+    </array>
+    </dict>
+</array>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
