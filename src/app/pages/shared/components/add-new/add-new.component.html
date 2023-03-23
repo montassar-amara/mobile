@@ -1,0 +1,55 @@
+<div class="modal-content">
+
+    <form class="modal-content__form">
+        <!-- <div class="modal-content__form-field">
+            <h3 class="app-title"> {{category==='bug'?'Report a bug or issue':'Request a new feature'}}
+            </h3>
+            <p class="main-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        </div> -->
+        <div class="modal-content__form-field">
+            <div class="modal-content__label">
+                <label for="newRequestTitle" class="secondary-text">Title</label>
+                <span>({{request.subject.length}}/{{isFeedback?'200':'50'}})</span>
+            </div>
+            <input type="text" (ngModelChange)="updateTitle($event)" [maxlength]="isFeedback?200:50" [ngModel]="request.subject" name="title"
+                class="form-input" id="newRequestTitle" [disabled]="isDisabled" [readOnly]="isDisabled"
+                 [placeholder]="(user$|async)?'Short descriptive title':'You need to be logged In'">
+        </div>
+
+        <div class="modal-content__form-field">
+            <div class="modal-content__label">
+                <label for="newRequestDetails" class="secondary-text">Details</label>
+                <span>({{request.message.length}}/{{isFeedback?'2000':'700'}})</span>
+            </div>
+            <textarea class="form-input modal-content__form-textarea scrollbar" [maxlength]="isFeedback?2000:700" id="newRequestDetails" rows="5"
+             [placeholder]="(user$|async)?'Any additional details':'You need to be logged In'"
+                 [ngModelOptions]="{standalone: true}" [disabled]="isDisabled" [readOnly]="isDisabled"
+                (ngModelChange)="updateDesc($event)" [ngModel]="request.message"></textarea>
+        </div>
+
+        <div class="modal-content__form-field">
+            <button type="button" (click)="file.click()" [disabled]=" request.uploadedFiles.length>4"
+                class="modal-content__upload-file cursor" [disabled]="isDisabled">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#cloud-upload-icon"></use>
+                </svg>
+                <span class="secondary-text">Upload File</span>
+            </button>
+            <input #file type="file" accept="video/*,image/*" name="file" id="newRequestFile" class="hidden"
+                (change)="addFiles($event)" [disabled]="isDisabled" [readOnly]="isDisabled">
+            <div class="modal-content__delete-file" *ngIf="request.uploadedFiles.length>0">
+                <span class="secondary-text" *ngFor="let file of request.uploadedFiles;let index=index">
+                    {{file.name}}
+                    <i class="bi bi-x pointer" (click)="removeFile(index)"></i>
+                </span>
+            </div>
+        </div>
+        <span *ngIf="fileSizeBig" class="text-danger">File Size should be less than 2Mb.</span>
+        <span *ngIf="unsupportedFileType" class="text-danger">Unsupported File Type.</span>
+
+        <div class="modal-content__form-field">
+            <button class="button button--accent" (click)="create()"
+                [disabled]="request.subject.length===0 || request.message.length===0">Create post</button>
+        </div>
+    </form>
+</div>

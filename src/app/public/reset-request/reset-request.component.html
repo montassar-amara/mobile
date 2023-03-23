@@ -1,0 +1,21 @@
+<div class="login-main-page">
+  <div class="auth-box">
+    <div class="auth-box__header">
+      <div class="auth-box__title">Reset Password</div>
+      <div class="auth-box__subtitle">Enter your account email and verify that you are the account-email owner</div>
+    </div>
+    <div class="auth-box__content">
+      <form [formGroup]="resetForm" (ngSubmit)="onRequest()">
+        <div class="login__form">
+          <div class="login__form-field">
+            <input type="text" class="form-input" formControlName="email" placeholder="Enter Email">
+          </div>
+          <span class="text-danger" *ngIf="msg">{{msg}}</span>
+          <div class="login__button-wrap">
+            <button type="submit" class="button button--landing" [disabled]="!resetForm.valid">Verify Email</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

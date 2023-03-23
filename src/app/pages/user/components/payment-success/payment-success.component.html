@@ -1,0 +1,43 @@
+<div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="closeIt()">
+        <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+    </div>
+
+    <div class="modal__content">
+        <div class="modal-content__wrap">
+            <div class="modal-content__item">
+                <svg width="120" height="124">
+                    <use href="assets/icons/sprite/sprite.svg#firework"></use>
+                </svg>
+            </div>
+            <div class="modal-content__item">
+                <h3 class="app-title">Great!</h3>
+            </div>
+            <div class="modal-content__item" *ngIf="payingFor==='COMPANIES'">
+                <ul class="company-list list">
+                    <li *ngFor="let company of companies">
+                        <div class="logo">
+                            <p-image [src]="company.logo"></p-image>
+                        </div>
+                        <span class="name">{{company.name}}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-content__item">
+                <p class="main-text" *ngIf="payingFor==='COMPANIES'">
+                    {{companies.length}} new companies have been added to your companies list
+                </p>
+            </div>
+
+            <div class="modal-content__item">
+                <button class="button button--accent" (click)="closeIt()">
+                    Back to Homepage
+                </button>
+            </div>
+
+
+        </div>
+    </div>
+</div>

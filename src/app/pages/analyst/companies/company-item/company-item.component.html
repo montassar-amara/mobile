@@ -1,0 +1,119 @@
+<div class="company-item-container overflow-scroll h-100">
+ 
+  <div class="widgets-components-container">
+    <div class="widgets-events-col">
+      <h3 class="mb-3 col-title">Widgets</h3>
+      <div class="d-flex justify-content-between">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="listedCheck" [ngModel]="company?.listed" (ngModelChange)="updateListed()">
+          <label class="form-check-label" for="listedCheck">
+            listed
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="newChecked" [ngModel]="company?.is_new" (ngModelChange)="updatedIsNew()">
+          <label class="form-check-label" for="newChecked">
+            is New
+          </label>
+        </div>
+        <button class="btn btn-primary" (click)="updateProcess()">
+          {{company?.process?"Publish":"Add to process"}}
+        </button>
+      </div>
+      <div class="widgets-row">
+        <div class="widget-card-item shadow">
+
+          <div class="widget-card-body">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path  fill="#ddd" d="M19.6701 1.06012C18.9533 0.936655 18.2274 0.873102 17.5001 0.870122C15.0184 0.868087 12.5886 1.57969 10.5001 2.92012C8.40623 1.59729 5.97674 0.903152 3.50008 0.920121C2.77273 0.923102 2.04689 0.986655 1.33008 1.11012C1.09529 1.1506 0.882665 1.27358 0.730498 1.45691C0.57833 1.64025 0.496621 1.87189 0.500085 2.11012V14.1101C0.497943 14.2571 0.528211 14.4027 0.588735 14.5366C0.649258 14.6705 0.738551 14.7894 0.850258 14.8849C0.961965 14.9803 1.09334 15.05 1.23504 15.089C1.37674 15.1279 1.52528 15.1351 1.67008 15.1101C3.1031 14.862 4.57129 14.9032 5.98815 15.2312C7.40501 15.5592 8.74191 16.1675 9.92008 17.0201L10.0401 17.0901H10.1501C10.261 17.1363 10.3799 17.1601 10.5001 17.1601C10.6202 17.1601 10.7392 17.1363 10.8501 17.0901H10.9601L11.0801 17.0201C12.25 16.1484 13.5831 15.5205 15.0002 15.1735C16.4174 14.8265 17.8897 14.7675 19.3301 15.0001C19.4749 15.0251 19.6234 15.0179 19.7651 14.979C19.9068 14.94 20.0382 14.8703 20.1499 14.7749C20.2616 14.6794 20.3509 14.5605 20.4114 14.4266C20.472 14.2927 20.5022 14.1471 20.5001 14.0001V2.00012C20.4897 1.77228 20.4017 1.55483 20.2507 1.38386C20.0998 1.21289 19.8949 1.09866 19.6701 1.06012ZM9.50008 14.3501C7.64997 13.3768 5.5906 12.8688 3.50008 12.8701H2.50008V2.87012C2.83314 2.85093 3.16703 2.85093 3.50008 2.87012C5.63347 2.86776 7.7203 3.49381 9.50008 4.67012V14.3501ZM18.5001 12.9101H17.5001C15.4096 12.9088 13.3502 13.4168 11.5001 14.3901V4.67012C13.2799 3.49381 15.3667 2.86776 17.5001 2.87012C17.8331 2.85093 18.167 2.85093 18.5001 2.87012V12.9101ZM19.6701 17.0601C18.9533 16.9367 18.2274 16.8731 17.5001 16.8701C15.0184 16.8681 12.5886 17.5797 10.5001 18.9201C8.4116 17.5797 5.98172 16.8681 3.50008 16.8701C2.77273 16.8731 2.04689 16.9367 1.33008 17.0601C1.19991 17.0808 1.07511 17.127 0.962847 17.196C0.850587 17.2651 0.753086 17.3557 0.675951 17.4625C0.598817 17.5694 0.54357 17.6905 0.513388 17.8188C0.483207 17.9471 0.478686 18.0801 0.500085 18.2101C0.550903 18.4698 0.702575 18.6988 0.921875 18.8468C1.14118 18.9949 1.41022 19.05 1.67008 19.0001C3.1031 18.752 4.57129 18.7932 5.98815 19.1212C7.40501 19.4492 8.74191 20.0575 9.92008 20.9101C10.0894 21.0307 10.2922 21.0955 10.5001 21.0955C10.708 21.0955 10.9107 21.0307 11.0801 20.9101C12.2583 20.0575 13.5952 19.4492 15.012 19.1212C16.4289 18.7932 17.8971 18.752 19.3301 19.0001C19.5899 19.05 19.859 18.9949 20.0783 18.8468C20.2976 18.6988 20.4493 18.4698 20.5001 18.2101C20.5215 18.0801 20.517 17.9471 20.4868 17.8188C20.4566 17.6905 20.4014 17.5694 20.3242 17.4625C20.2471 17.3557 20.1496 17.2651 20.0373 17.196C19.9251 17.127 19.8003 17.0808 19.6701 17.0601Z"/>
+                </svg>
+              </div>
+              <h3>Research Report</h3>
+            </div>
+            <div class="details-container">
+              <ul>
+                <li *ngFor="let report of report_list; let i = index;">
+                  <div class="report">
+                    <div class="report-header">
+                      <span class="report-title">{{ report.report_data.title }}</span>
+                      <a class="button" (click)="onReportEdit(i)">Edit</a>
+                      <div class="dropdown">
+                        <button class="button button--without-border" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          <svg width="3" height="12" viewBox="0 0 3 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.33321 2.66667C1.59692 2.66667 1.85471 2.58847 2.07397 2.44196C2.29324 2.29545 2.46413 2.08721 2.56505 1.84358C2.66597 1.59994 2.69237 1.33185 2.64093 1.07321C2.58948 0.814572 2.46249 0.576995 2.27602 0.390525C2.08955 0.204055 1.85197 0.0770672 1.59333 0.0256202C1.33469 -0.0258267 1.0666 0.000577708 0.822968 0.101495C0.579333 0.202411 0.371094 0.373308 0.224586 0.592574C0.0780774 0.811839 -0.000121352 1.06963 -0.000121352 1.33333C-0.000121352 1.68696 0.140355 2.02609 0.390403 2.27614C0.640452 2.52619 0.97959 2.66667 1.33321 2.66667ZM1.33321 9.33333C1.0695 9.33333 0.811717 9.41153 0.592452 9.55804C0.373186 9.70455 0.202289 9.91279 0.101372 10.1564C0.000455638 10.4001 -0.0259488 10.6681 0.0254982 10.9268C0.0769451 11.1854 0.203933 11.423 0.390403 11.6095C0.576873 11.7959 0.81445 11.9229 1.07309 11.9744C1.33173 12.0258 1.59982 11.9994 1.84346 11.8985C2.08709 11.7976 2.29533 11.6267 2.44184 11.4074C2.58835 11.1882 2.66655 10.9304 2.66655 10.6667C2.66655 10.313 2.52607 9.97391 2.27602 9.72386C2.02597 9.47381 1.68683 9.33333 1.33321 9.33333ZM1.33321 4.66667C1.0695 4.66667 0.811717 4.74487 0.592452 4.89137C0.373186 5.03788 0.202289 5.24612 0.101372 5.48976C0.000455638 5.73339 -0.0259488 6.00148 0.0254982 6.26012C0.0769451 6.51876 0.203933 6.75634 0.390403 6.94281C0.576873 7.12928 0.81445 7.25627 1.07309 7.30771C1.33173 7.35916 1.59982 7.33276 1.84346 7.23184C2.08709 7.13092 2.29533 6.96003 2.44184 6.74076C2.58835 6.52149 2.66655 6.26371 2.66655 6C2.66655 5.64638 2.52607 5.30724 2.27602 5.05719C2.02597 4.80714 1.68683 4.66667 1.33321 4.66667Z"/>
+                          </svg>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-{{i}}">
+                          <li><a class="dropdown-item" (click)="onPublish(i)">Publish</a></li>
+                          <li><a class="dropdown-item" (click)="onDelete(i)">Delete</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="last-edit">Last Edit: {{report.updated_at|date:'YYYY-MM-dd'}}</div>
+                    <div class="publish-date">Publish Date: {{ report.published_at|date:'YYYY-MM-dd' }}</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="widget-footer">
+              <button class="button button--accent" (click)="onAddReport()">Add Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="events-news-row">
+        <div class="events-col"></div>
+        <div class="news-col"></div>
+      </div>
+    </div>
+  </div>
+  <app-add-new-company [company]="company" *ngIf="company$|async as company"></app-add-new-company>
+</div>
+
+<p-dialog [modal]="true" [showHeader]="false" [(visible)]="show_publish_dialog" styleClass="popup-modal">
+  <div class="modal__wrapper" *ngIf="show_publish_dialog">
+    <div class="modal__close cursor" (click)="show_publish_dialog=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <div class="modal-content__wrap payment-details">
+        <div class="modal-content__item">
+          <h3 class="app-title">Publish Report</h3>
+          <p class="main-text">Are you sure you want to publish this report?</p>
+        </div>
+        <div class="modal-content__item flex">
+          <button class="button button--accent" (click)="confirmPublish()">Publish</button>
+          <button class="button" (click)="show_publish_dialog=false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [modal]="true" [showHeader]="false" [(visible)]="show_delete_dialog" styleClass="popup-modal">
+  <div class="modal__wrapper" *ngIf="show_delete_dialog">
+    <div class="modal__close cursor" (click)="show_delete_dialog=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <div class="modal-content__wrap payment-details">
+        <div class="modal-content__item">
+          <h3 class="app-title">Delete Report</h3>
+          <p class="main-text">Are you sure you want to delete this report?</p>
+        </div>
+        <div class="modal-content__item flex">
+          <button class="button button--accent" (click)="confirmDelete()">Delete</button>
+          <button class="button" (click)="show_delete_dialog=false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,84 @@
+<div class="main-container"
+  [ngClass]="{
+  'dark-default': themeService.activeTheme === 'dark-default', 'dark-test': themeService.activeTheme === 'dark-test', 'dark-2': themeService.activeTheme === 'dark-2', 'light-default': themeService.activeTheme === 'light-default'}">
+  <div class="header-container">
+    <app-manager-header (onPortfolio)="portfolio=$event;blogs=false;" (onBlogs)="blogs=$event;portfolio=false;"></app-manager-header>
+  </div>
+  <div class="body-container" *ngIf="!portfolio && !blogs">
+    <div class="content overflow-auto">
+      <app-temporary-companies [preview]="false"></app-temporary-companies>
+      <div class="row mt-5" *ngIf="currentCycle$|async as cycle;else addNewCycle">
+        <div class="col-4">
+          <span>Start Date</span>
+          <p-calendar [ngModel]="startDate" [showTime]="true" [showSeconds]="true" [disabled]="true" name="startDate2" ngDefaultControl></p-calendar>
+
+        </div>
+        <div class="col-4">
+          <span>End Date</span>
+          <p-calendar [(ngModel)]="endDate" [showTime]="true" [showSeconds]="true" name="endDate2" ngDefaultControl></p-calendar>
+        </div>
+        <div class="col-auto">
+          <button (click)="updateCycle(cycle._id)">Update Cycle</button>
+        </div>
+        <div class="col-auto">
+          <button (click)="EndCycle(cycle._id)">End Cycle</button>
+        </div>
+      </div>
+      <ng-template #addNewCycle>
+        <div class="row mt-5">
+          <div class="col-4">
+            <span>Start Date</span>
+            <p-calendar [ngModel]="startDate" [showTime]="true" [showSeconds]="true" name="startDate" ngDefaultControl></p-calendar>
+
+          </div>
+          <div class="col-4">
+            <span>End Date</span>
+            <p-calendar [(ngModel)]="endDate" [showTime]="true" [showSeconds]="true" name="endDate" ngDefaultControl></p-calendar>
+          </div>
+          <div class="col-auto">
+            <button (click)="startCycle()">Start Cycle</button>
+          </div>
+        </div>
+      </ng-template>
+      <h3 class="w-100">User List</h3>
+      <p-scrollPanel [style]="{width: '100%', height: '400px'}">
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between border" *ngFor="let item of users">
+            <span>{{item.email}}</span>
+            <div>
+              <button class="btn btn-outline-danger" (click)="addMasterPlan(item)">
+                Master Plan
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteUser(item)">
+                remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </p-scrollPanel>
+    </div>
+  </div>
+  <div class="body-container" *ngIf="portfolio">
+    <app-portfolio></app-portfolio>
+  </div>
+  <div class="body-container" *ngIf="blogs">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showConfirmModal"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="showConfirmModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+    <span class="my-4">Confirm Deleting user:
+      <br>
+      {{selectedUser?.email}}</span>
+    <div class="modal-content__item flex">
+      <button class="button button--accent" type="button" (click)="confirmDelete()">Delete user</button>
+      <button class="button" type="button" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</p-dialog>

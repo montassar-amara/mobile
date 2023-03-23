@@ -1,0 +1,22 @@
+.mat-expansion-panel {
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  background: transparent !important;
+  color: inherit !important;
+  font: inherit !important;
+}
+.mat-expansion-panel-header {
+  padding: 0 !important;
+  height: auto !important;
+  font: inherit !important;
+  transition: height 400ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+.mat-expansion-panel-content {
+  font: inherit !important;
+}
+.mat-content.mat-content-hide-toggle {
+  margin-right: 0 !important;
+}

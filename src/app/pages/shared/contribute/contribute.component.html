@@ -1,0 +1,426 @@
+<!-- search & filters & sort-->
+<div class="feedback">
+    <!-- posts -->
+    <div class="feedback__posts" *ngIf="visibleUI==='ALL'">
+
+        <div class="feedback__posts-header">
+            <div class="feedback__posts-header-wrapper">
+                <span class="feedback__posts-title" *ngIf="sort$|async as sort">{{
+                    sort.criteria==='Recency'?
+                    (sort.direction==='asc'?'Oldest Posts':'Latest Posts')
+                    :(sort.direction==='asc'?'Least Upvoted':'Most Upvoted')
+                    }}
+                </span>
+                <div class="feedback__posts-controls">
+                    <div class="feedback__posts-sort secondary-text">
+                        <!-- Cycle Filter -->
+                        <div class="filter-block" *ngIf="(cycles$|async).length>0">
+                            <svg class="svg-hover">
+                                <use href="assets/icons/sprite/sprite.svg#filter2-icon"></use>
+                            </svg>
+                            <!-- <select class="dropdown-menu" [ngModel]="selectedCycle$|async"
+                                (ngModelChange)="selectedCycle$.next($event)" (change)="setSelectedCycle()">
+                                <option class="dropdown-item" *ngFor="let item of cycles$|async" [ngValue]="item">
+                                    {{item.start_date|date}}-{{item.end_date|date}}</option>
+                            </select> -->
+
+                            <button class="clear-btn secondary-text" id="dataSort" data-bs-toggle="dropdown"
+                                aria-expanded="false">Sort
+                                by Date:
+                                {{(selectedCycle$|async).start_date|date}}-{{(selectedCycle$|async).end_date|date}}</button>
+
+                            <ul class="dropdown-menu" aria-labelledby="dataSort">
+                                <li class="dropdown-item" *ngFor="let item of cycles$|async">
+                                    <label class="check">
+                                        <input class="check__input visually-hidden" type="radio" name="sortByDate"
+                                            id="sortByDate" [ngValue]="item" [ngModel]="selectedCycle$|async"
+                                            (ngModelChange)="selectedCycle$.next(item)">
+                                        <span class="check__box visually-hidden">
+                                            <svg class="circle-svg">
+                                                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+                                            </svg>
+                                            <svg class="circle-checked">
+                                                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="check__text"
+                                            style="margin-left: 0;">{{item.start_date|date}}-{{item.end_date|date}}</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Filter Start -->
+                        <!-- <i class="bi bi-funnel"></i> -->
+                        <div class="filter-block">
+                            <svg class="svg-hover">
+                                <use href="assets/icons/sprite/sprite.svg#filter2-icon"></use>
+                            </svg>
+                            <span>Filters:</span>
+                            <span class="dropdown-toggle pointer feedback__posts-sort-btn" id="filterMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                data-bs-auto-close="outside">{{countFilters$|async}} selected</span>
+
+                            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="filterMenu"
+                                *ngIf="contributionCount$|async as contributionCount">
+                                <div class="feedback__filter-field">
+                                    <h4 class="feedback__filter-type">Show:</h4>
+                                    <ul class="feedback__filter-list list">
+                                        <li class="dropdown-item">
+                                            <label class="check">
+                                                <input class="check__input visually-hidden" type="radio" name="show"
+                                                    id="showAll" value="all" [ngModel]="(filter$|async).show"
+                                                    (ngModelChange)="changeFilterShow($event)">
+                                                <span class="check__box">
+                                                    <svg class="circle-svg">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle"></use>
+                                                    </svg>
+                                                    <svg class="circle-checked">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="check__text">All</span>
+
+                                                <span class="total-number">
+                                                    {{contributionCount.all}}
+                                                </span>
+                                            </label>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <label class="check">
+                                                <input class="check__input visually-hidden" type="radio" name="show"
+                                                    id="showMine" value="mine" [ngModel]="(filter$|async).show"
+                                                    (ngModelChange)="changeFilterShow($event)" checked>
+                                                <span class="check__box">
+                                                    <svg class="circle-svg">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle"></use>
+                                                    </svg>
+                                                    <svg class="circle-checked">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="check__text">Only my posts</span>
+
+                                                <span class="total-number">
+                                                    {{contributionCount.mine}}
+                                                </span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="feedback__filter-field last">
+                                    <h4 class="feedback__filter-type feedback__filter-type--last pointer dropdown-item dropdown-item-last"
+                                        (click)="clearFilters();">Reset All</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter end -->
+                        <!-- Sorting start -->
+                        <div class="sort-block">
+                            <span>Sort by:</span>
+                            <span class="dropdown-toggle pointer feedback__posts-sort-btn" id="sortMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false">{{(sort$|async).criteria}}</span>
+
+                            <svg class="cursor svg-hover-2" width="16" height="16" (click)="changeSortDir();">
+                                <use href="assets/icons/sprite/sprite.svg#sort-icon"></use>
+                            </svg>
+
+
+
+                            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="sortMenu">
+                                <div class="feedback__filter-field">
+                                    <h4 class="feedback__filter-type">Sort By:</h4>
+                                    <ul class="feedback__filter-list list">
+                                        <li class="dropdown-item">
+                                            <label class="check">
+                                                <input class="check__input visually-hidden" type="radio" name="sortItem"
+                                                    id="recency" value="Recency" [ngModel]="(sort$|async).criteria"
+                                                    (ngModelChange)="changeSortCriteria($event)">
+                                                <span class="check__box">
+                                                    <svg class="circle-svg">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle"></use>
+                                                    </svg>
+                                                    <svg class="circle-checked">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="check__text">Recency</span>
+                                            </label>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <label class="check">
+                                                <input class="check__input visually-hidden" type="radio" name="sortItem"
+                                                    id="upvotes" value="Upvotes" [ngModel]="(sort$|async).criteria"
+                                                    (ngModelChange)="changeSortCriteria($event)">
+                                                <span class="check__box">
+                                                    <svg class="circle-svg">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle"></use>
+                                                    </svg>
+                                                    <svg class="circle-checked">
+                                                        <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="check__text">Upvotes</span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sorting End -->
+
+
+                    </div>
+                    <div class="feedback__posts-search">
+                        <svg>
+                            <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+                        </svg>
+                        <input class="form-input" type="text" placeholder="Search for posts"
+                            [ngModel]="searchTerm$|async" (ngModelChange)="searchTerm$.next($event)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="feedback__posts-body scrollbar">
+            <!-- Posts -->
+            <div class="feedback__posts-wrapper" *ngIf="contributions$|async as contributions">
+                <p-chart type="pie" *ngIf="contributions?.length>0" [data]="data" width="300" height="300"
+                    [style]="{'width': '40%'}"></p-chart>
+                <app-post [user]="principal$|async" *ngFor="let post of contributions;let index = index"
+                    [isDisabled]="isDisabled$|async" (openModal)="openModal(index)" [feedback]="post"
+                    (onLike)="likePost(post)" (onDelete)="delete(post)" [isFeedback]="false"></app-post>
+                <app-nothing-found *ngIf="(contributions && contributions!.length===0)">
+                </app-nothing-found>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    <!-- end posts -->
+    <ng-container class="ng-feedback" *ngIf="visibleUI==='ONE'">
+
+        <div class="sidebar fb-sidebar" *ngIf="(selectedContribution$|async) as selectedContribution">
+            <div class="back-btn-wrap">
+                <button class="clear-btn back-btn" type="button" (click)="visibleUI='ALL';">
+                    <svg width="16" height="16">
+                        <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                    </svg>
+                    <span>Back</span>
+                </button>
+                <div class="scroll-divider"></div>
+            </div>
+            <div class="post-comments-container scrollbar" (scroll)="scrollReplies()">
+                <div class="sidebar__post">
+                    <app-post [user]="principal$|async" class="sidebar__post" [viewMode]="true"
+                        [isDisabled]="isDisabled$|async" [feedback]="selectedContribution" [isFeedback]="false"
+                        (onLike)="likePost(selectedContribution)" (onDelete)="delete(selectedContribution)"
+                        (onMerge)="merge($event)">
+                    </app-post>
+                </div>
+
+                <div class="divider top"></div>
+                <div class="sidebar__comments">
+                    <h4 class="app-title-2 reply-title">{{repliesCount$|async}}
+                        {{(repliesCount$|async)>1?'Replies':'Reply'}}
+                    </h4>
+                    <ul>
+
+                        <li *ngIf="(pinedComment$|async) as pinedComment">
+
+                            <app-reply [reply]="pinedComment" [isFeedback]="false" [user]="(principal$|async)"
+                                [isDisabled]="isDisabled$|async" [feedbackId]="selectedContribution._id">
+                            </app-reply>
+                        </li>
+                        <ng-container
+                            *ngFor="let comment of selectedContribution.comments;let index=index;trackBy:trackbyId">
+                            <li *ngIf="!comment.pined">
+                                <app-reply [feedbackId]="selectedContribution._id" [user]="(principal$|async)"
+                                    [isDisabled]="isDisabled$|async" [reply]="comment" [isFeedback]="false"></app-reply>
+                            </li>
+                        </ng-container>
+
+                    </ul>
+                </div>
+
+                <!-- <div class="divider"></div> -->
+            </div>
+
+
+            <div class="sidebar__leave-comment">
+                <div class="divider bottom"></div>
+                <div class="sidebar__leave-comment-row">
+                    <div class="user-logo">
+                        <!-- <app-user-avatar [user]="feedback.user_id"></app-user-avatar> -->
+                        <app-user-comment-avatar></app-user-comment-avatar>
+                    </div>
+                    <div class="comment">
+                        <div class="textarea-container">
+                            <textarea class="scrollbar secondary-text-2"
+                                [placeholder]="!(principal$|async)?'You need to be logged In':'Leave comment'"
+                                id="commentarea" [autoResize]="true" [ngModelOptions]="{standalone: true}"
+                                (ngModelChange)="newComment.message=$event;fireEditComment()" [maxlength]="2000"
+                                [ngModel]="newComment.message" [disabled]="isDisabled$|async"
+                                [readOnly]="isDisabled$|async">
+                            </textarea>
+
+                            <div class="bottom-textarea-controls d-flex">
+                                <div class="textarea-uploaded-files d-flex justify-content-between">
+                                    <span (click)="IndexCommentDown();" *ngIf="commentFileIndex>0">&lt;</span>
+                                    <div class="file-item secondary-text"
+                                        *ngFor="let img of newComment.uploadedFiles|slice:commentFileIndex*3:commentFileIndex*3+3;let index=index;trackBy:trackByName">
+                                        <svg>
+                                            <use href="assets/icons/sprite/sprite.svg#file-icon"></use>
+                                        </svg>
+
+                                        <span>{{img.name}}</span>
+
+                                        <div class="remove-file cursor" (click)="removeUploadedFileFromComment(index);">
+                                            <svg class="close-icon">
+                                                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <span (click)="IndexCommentUp();"
+                                        *ngIf="commentFileIndex*3<newComment.uploadedFiles.length-3">&gt;</span>
+                                </div>
+
+
+                                <ul class="textarea-controls list">
+                                    <li>
+                                        <button class="button button--without-border" (click)="file.click();"
+                                            [disabled]="(isDisabled$|async) || (newComment.uploadedFiles.length)>=5">
+                                            <svg class="svg-hover cursor">
+                                                <use href="assets/icons/sprite/sprite.svg#file-upload-icon"></use>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="button button--without-border" (click)="publishComment();"
+                                            [disabled]="(isDisabled$|async) || newComment.message.length===0">
+                                            <svg class="svg-hover cursor">
+                                                <use href="assets/icons/sprite/sprite.svg#send-message-icon"></use>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="textarea-length secondary-text-2">
+                            <span>({{newComment.message.length}}/2000 characters)</span>
+                            <span *ngIf="fileSizeBig" class="text-danger">File Size should be less than 2Mb.</span>
+                            <span *ngIf="unsupportedFileType" class="text-danger">Unsupported File Type.</span>
+                        </div>
+                    </div>
+                </div>
+                <input #file type="file" accept="video/*,image/*" name="file" id="newRequestFile" class="hidden"
+                    (change)="addFilesToComment($event)">
+            </div>
+        </div>
+
+    </ng-container>
+    <!-- Request -->
+    <div class="feedback__request scrollbar">
+        <!-- Add New Post-->
+        <div class="feedback__request-fixed-block">
+            <div class="feedback__request-new-post">
+                <ul class="feedback__request-list list">
+                    <li>
+                        <div class="feedback__request-button-wrapper">
+                            <mat-expansion-panel hideToggle>
+                                <mat-expansion-panel-header>
+                                    <button class="feedback__request-button" (click)="openDialog();">
+                                        <div class="feedback__request-button-content">
+                                            <div class="feedback__request-button-icon feature">
+                                                <svg>
+                                                    <use href="assets/icons/sprite/sprite.svg#lightbulb-icon"></use>
+                                                </svg>
+
+                                            </div>
+                                            <span class="feedback__request-button-text">Submit your idea</span>
+                                        </div>
+                                        <div class="feedback__request-button-plus">
+                                            <svg class="svg-hover-2" *ngIf="!addNewConfig">
+                                                <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                                            </svg>
+                                            <svg class="svg-hover-2" *ngIf="addNewConfig">
+                                                <use href="assets/icons/sprite/sprite.svg#minus-icon"></use>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </mat-expansion-panel-header>
+                                <div class="add-new-wrapper">
+                                    <app-add-new [isFeedback]="false"
+                                        [isDisabled]="isDisabled$|async" (newPost)="addnew($event);">
+                                    </app-add-new>
+                                </div>
+                            </mat-expansion-panel>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- <h3 class="app-title-2 feedback__request-title">Notifications</h3> -->
+        </div>
+
+        <!--Notifications-->
+        <div class="feedback__request-notifications" *ngIf="false">
+
+            <div class="feedback__request-notifications-content">
+
+                <!-- //unread cards -->
+                <div *ngFor="let ntf of [0,1,2]" class="feedback__request-card" role="alert"
+                    (mouseover)="ntf.is_show?null:updateNotification(ntf)" [ngClass]="{'unread': !ntf.is_show}">
+                    <div class="feedback__request-card-header">
+                        <div class="feedback__request-card-time-wrap">
+                            <div class="new" *ngIf="!ntf.is_show"></div>
+                            <span class="feedback__request-card-time">23 min ago</span>
+                        </div>
+                        <button class="feedback__request-card-close" type="button"
+                            (click)="deleteNotification(ntf._id);">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <h4 class="feedback__request-card-title">
+                        Some title
+                    </h4>
+                    <p class="feedback__request-card-text main-text">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam, aliquid hic perspiciatis ab
+                        voluptatibus suscipit.
+                    </p>
+                </div>
+
+                <!-- card -->
+                <div *ngFor="let ntf of [0,1]" class="feedback__request-card" role="alert"
+                    (mouseover)="ntf.is_show?null:updateNotification(ntf)">
+                    <div class="feedback__request-card-header">
+                        <div class="feedback__request-card-time-wrap">
+                            <div class="new" *ngIf="ntf.is_show"></div>
+                            <span class="feedback__request-card-time">23 min ago</span>
+                        </div>
+                        <button class="feedback__request-card-close" type="button"
+                            (click)="deleteNotification(ntf._id);">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <h4 class="feedback__request-card-title">
+                        Some title
+                    </h4>
+                    <p class="feedback__request-card-text main-text">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam, aliquid hic perspiciatis ab
+                        voluptatibus suscipit.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!--end Request -->
+</div>

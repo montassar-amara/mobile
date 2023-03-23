@@ -1,0 +1,521 @@
+<div class="company-report-container">
+    <div class="left-box">
+      <div class="header-bar">
+        <div class="research-report">
+          <div class="report-desc">Research Report New</div>
+          <div class="report-updated-time">Updated: just now</div>
+        </div>
+        <div class="right-container">
+          <input type="checkbox" name="table-contents-show" id="table-contents-show"
+            [(ngModel)]="show_table_content_for_user">
+          <label for="table-contents-show">show Table of Contents for user</label>
+          <button class="btn btn-update" (click)="displayDescriptionModal=true;">Add Cover Image</button>
+          <div class="dropdown mx-2">
+            <button class="btn btn-secondary dropdown-toggle  w-100" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{selectedAnalyst?.name ?? 'Analyst'}}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" *ngFor="let analyst of analysts;"
+                  (click)="selectAnalyst(analyst)">{{analyst.name}}</a></li>
+            </ul>
+          </div>
+          <ng-container *ngIf="!isFreeCompany">
+            <input type="checkbox" name="free-report" id="free-report" (change)="onFreeReport()" [ngModel]="isFreeReport">
+            <label for="free-report">Is Free Report?</label>
+          </ng-container>
+          <input type="checkbox" name="table-contents" id="table-contents" (change)="onTableContent()"
+            [checked]="show_table_content">
+          <label for="table-contents">Table of Contents</label>
+          <input type="checkbox" name="video-link" id="video-link" [(ngModel)]="onVideoLink">
+            <label for="video-link">Video Link</label>
+          <button class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+          <button class="btn btn-update" (click)="onAddReport()">Add Report</button>
+        </div>
+      </div>
+  
+      <div class="report-editor-container" *ngIf="!onVideoLink">
+        <div class="report-table-contents" *ngIf="show_table_content">
+          <div class="report">{{news_data.title || 'Report Title' }}</div>
+          <ul>
+            <li *ngFor="let section of section_list; let i = index;">
+              <div class="section" [ngClass]="{'active': (selected_section_index == i && selected_element_index == -1)}"
+                (click)="onTableSectionSelect(i)">
+                <span class="title">{{section.title || 'section' }}</span>
+              </div>
+              <ul *ngIf="selected_section_index == i">
+                <li *ngFor="let element of section.element_list; let j = index;" (click)="onTableElementSelect(i,j)">
+                  <div class="{{element.type}}"
+                    [ngClass]="{'active': (selected_section_index == i && selected_element_index == j)}"
+                    *ngIf="element.type === 'headline_2' || element.type === 'headline_3'">
+                    {{element.content || 'element'}}
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="report-editor custom-scroll">
+          <div class="report-section">
+            <div class="report-section-header">
+              <div style="flex: 1;"></div>
+ 
+            </div>
+            <div class="report-section-body">
+              <div class="part-1">
+                <input class="form-input report-title" id="report-title" placeholder="Report Title"
+                  [(ngModel)]="news_data.title">
+                
+              </div>
+              
+  
+              <div cdkDropList class="example-list" (cdkDropListDropped)="dropReportElement($event)">
+                <div *ngFor="let element of news_data.element_list;let j = index;" id="section-{{-1}}-element-{{j}}"
+                  cdkDrag cdkDragPreviewContainer="parent">
+                  <div class="element-text-editor" *ngIf="element.type === 'text'">
+                    <ngx-wig [placeholder]="'Enter text here.'" [(ngModel)]="element.content"></ngx-wig>
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+                  <div class="element-headline-2" *ngIf="element.type === 'headline_2'">
+                    <input type="text" class="form-input" placeholder="Headline2" [(ngModel)]="element.content" />
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+                  <div class="element-headline-3" *ngIf="element.type === 'headline_3'">
+                    <input type="text" class="form-input" placeholder="Headline3" [(ngModel)]="element.content">
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+  
+                  <div class="element-media" *ngIf="element.type === 'media'">
+                    <div class="media-upload" *ngIf="!element.content">
+                      <img src="/assets/icons/icon_upload.svg" />
+                      <div>
+                        <span class="media-span-1">Drag and drop file</span>
+                        <span class="media-browser" (click)="onImageBrowse(-1, j)">Browse</span>
+                      </div>
+                      <div class="media-hint">
+                        <span>Image available formats: .jpg, .png</span>
+                      </div>
+                      <input type="file" name="element-image-{{-1}}-{{j}}" id="element-image-{{-1}}-{{j}}"
+                        accept="image/*" class="hidden" (change)="showImageOption($event, -1, j)" />
+                    </div>
+                    <div class="media-image" *ngIf="element.content">
+                      <img src="{{filepath + 'reports/' + element.content}}" alt="media photo">
+                    </div>
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+                  <div class="element-assets" *ngIf="element.type === 'assets'">
+                    <input type="text" class="form-input element-assets-name" placeholder="Assets Name"
+                      [(ngModel)]="element.name">
+                    <div class="assets-item-list custom-scroll">
+                      <div class="assets-item assets-item-{{assets_item.type}}"
+                        *ngFor="let assets_item of element.assets_item_list; let k = index;">
+                        <input class="assets-item-name form-input" [(ngModel)]="assets_item.name" placeholder="name" />
+                        <div class="assets-item-dot-line"></div>
+                        <input class="assets-item-value form-input" [(ngModel)]="assets_item.value" placeholder="value" />
+                        <img class="assets-item-delete" src="/assets/icons/icon_remove.svg"
+                          (click)="onAssetsItemRemove(-1, j, k)" />
+                      </div>
+                    </div>
+  
+                    <div class="d-flex-center">
+                      <div ngbDropdown class="d-flex-center">
+                        <button class="btn add-new-assets-item" ngbDropdownToggle>
+                          <span> + </span>
+                          <span> Add new item</span>
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="add-new-element">
+                          <button ngbDropdownItem (click)="onAddNewAssetsItem(-1, j, 'normal')">Normal Item</button>
+                          <button ngbDropdownItem (click)="onAddNewAssetsItem(-1, j, 'bold')">Bold Item</button>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+                  <div class="element-grid" *ngIf="element.type === 'grid'">
+                    <span class="element-grid-setting">
+                      Grid Settings
+                    </span>
+                    <div class="row grid-setting-panel">
+                      <div class="col-md-6 mt-3">
+                        <div><span>Grid Title</span></div>
+                        <input class="form-input" [(ngModel)]="element.name" />
+                      </div>
+                      <div class="col-md-3 col-sm-6 mt-3">
+                        <div><span>Rows</span></div>
+                        <input class="form-input" [(ngModel)]="element.rows" />
+                      </div>
+                      <div class="col-md-3 col-sm-6 mt-3">
+                        <div><span>Columns</span></div>
+                        <input class="form-input" [(ngModel)]="element.cols" />
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <div><span>X Axis title</span></div>
+                        <input class="form-input" [(ngModel)]="element.x_axis_title" />
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <div><span>Y Axis title</span></div>
+                        <input class="form-input" [(ngModel)]="element.y_axis_title" />
+                      </div>
+                    </div>
+  
+  
+                    <mat-grid-list class="grid-list custom-scroll" cols="{{element.cols}}" rowHeight="32px"
+                      [gutterSize]="0">
+                      <div *ngFor="let row_item of numSequence(element.rows); let ig = index;">
+                        <mat-grid-tile [style.background]="getBackgroundColor(ig, jg)"
+                          [ngStyle]="{'color': 'var(--secondary-text-color)', 'font-size': '11px', 'border': 'solid 0.4px rgba(190, 212, 235, 0.1)'}"
+                          *ngFor="let col_item of numSequence(element.cols); let jg = index;">
+                          <input class="form-input" style="text-align: center; background: none; border: none"
+                            id="section-{{-1}}-element-{{j}}-grid-value-{{ig}}-{{jg}}"
+                            [(ngModel)]="element.grid_values[ig][jg]" />
+                        </mat-grid-tile>
+                      </div>
+                    </mat-grid-list>
+  
+                    <div class="element-tool">
+                      <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                      <img class="element-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveElement(-1, j)" />
+                    </div>
+                  </div>
+  
+                </div>
+              </div>
+  
+              <div class="section-separator-container">
+                <div class="section-separator"></div>
+              </div>
+              <div class="d-flex-center">
+                <div ngbDropdown class="d-flex-center">
+                  <button class="btn add-new-element" ngbDropdownToggle>
+                    <span> + </span>
+                    <span> Add new element</span>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="add-new-element">
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'text')">Text</button>
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'headline_2')">Headline 2</button>
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'headline_3')">Headline 3</button>
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'media')">Media</button>
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'assets')">Assets</button>
+                    <button ngbDropdownItem (click)="onAddNewElement(-1, 'grid')">Grid</button>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+  
+          <div cdkDropList (cdkDropListDropped)="dropSection($event)">
+            <div class="section" id="section-{{i}}" *ngFor="let section of section_list; let i = index;" cdkDrag
+              cdkDragPreviewContainer="parent">
+              <div>
+                <div class="section-header">
+                  <div style="flex: 1;">
+                    <img class="section-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                  </div>
+                  <div class="rating-section">
+                    <input type="checkbox" name="table-contents" id="rating-section-{{i}}" (change)="onRatingShow(i)"
+                      [checked]="section.show_rating">
+                    <label for="rating-section-{{i}}">Rating section</label>
+                    <div class="header-ver-separator"></div>
+                    <img class="section-remove" src="/assets/icons/icon_remove.svg" (click)="onRemoveSection(i)" />
+                  </div>
+                </div>
+                <div class="section-body">
+                  <div class="part-1">
+                    <input type="text" class="form-input section-title" id="section-title-{{i}}"
+                      placeholder="Section Title" [(ngModel)]="section.title">
+                    <div>
+                      <div style="width: 180px;" *ngIf="section.show_rating">
+  
+                        <p-dropdown [options]="this.rating_list" optionLabel="name"
+                          [(ngModel)]="section.selected_rating"></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="section-rating-container" *ngIf="section.show_rating">
+                    <div class="section-rating">
+                      <span>{{ section.selected_rating.name }}</span>
+                      <span class="form-input secondary-text">{{ section.selected_rating.value }}</span>
+                    </div>
+                    <div class="describe-rating">
+                      <ngx-wig [placeholder]="'Enter text here.'" [(ngModel)]="section.rating_description"></ngx-wig>
+                    </div>
+                  </div>
+  
+                  <div cdkDropList class="example-list" (cdkDropListDropped)="dropElement(i, section, $event)">
+                    <div *ngFor="let element of section.element_list;let j = index;" id="section-{{i}}-element-{{j}}"
+                      cdkDrag cdkDragPreviewContainer="parent">
+                      <div class="element-text-editor" *ngIf="element.type === 'text'">
+                        <ngx-wig [placeholder]="'Enter text here.'" [(ngModel)]="element.content"></ngx-wig>
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+                      <div class="element-headline-2" *ngIf="element.type === 'headline_2'">
+                        <input type="text" class="form-input" id="element-h2-{{j}}" placeholder="Headline2"
+                          [(ngModel)]="element.content" />
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+                      <div class="element-headline-3" *ngIf="element.type === 'headline_3'">
+                        <input type="text" class="form-input" id="element-h3-{{j}}" placeholder="Headline3"
+                          [(ngModel)]="element.content">
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+  
+                      <div class="element-media" *ngIf="element.type === 'media'">
+                        <div class="media-upload" *ngIf="!element.content">
+                          <img src="/assets/icons/icon_upload.svg" />
+                          <div>
+                            <span class="media-span-1">Drag and drop file</span>
+                            <span class="media-browser" (click)="onImageBrowse(i, j)">Browse</span>
+                          </div>
+                          <div class="media-hint">
+                            <span>Image available formats: .jpg, .png</span>
+                          </div>
+                          <input type="file" name="element-image-{{i}}-{{j}}" id="element-image-{{i}}-{{j}}"
+                            accept="image/*" class="hidden" (change)="showImageOption($event, i, j)" />
+                        </div>
+                        <div class="media-image" *ngIf="element.content">
+                          <img src="{{filepath + 'reports/' + element.content}}" alt="media photo">
+                        </div>
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+                      <div class="element-assets" *ngIf="element.type === 'assets'">
+                        <input type="text" class="form-input element-assets-name" id="element-assets-name-{{j}}"
+                          placeholder="Assets Name" [(ngModel)]="element.name">
+                        <div class="assets-item-list">
+                          <div class="assets-item assets-item-{{assets_item.type}}"
+                            *ngFor="let assets_item of element.assets_item_list; let k = index;">
+                            <input class="assets-item-name form-input" [(ngModel)]="assets_item.name"
+                              placeholder="name" />
+                            <div class="assets-item-dot-line"></div>
+                            <input class="assets-item-value form-input" [(ngModel)]="assets_item.value"
+                              placeholder="value" />
+                            <img class="assets-item-delete" src="/assets/icons/icon_remove.svg"
+                              (click)="onAssetsItemRemove(i, j, k)" />
+                          </div>
+                        </div>
+  
+                        <div class="d-flex-center">
+                          <div ngbDropdown class="d-flex-center">
+                            <button class="btn add-new-assets-item" ngbDropdownToggle>
+                              <span> + </span>
+                              <span> Add new item</span>
+                            </button>
+                            <div ngbDropdownMenu aria-labelledby="add-new-element">
+                              <button ngbDropdownItem (click)="onAddNewAssetsItem(i, j, 'normal')">Normal Item</button>
+                              <button ngbDropdownItem (click)="onAddNewAssetsItem(i, j, 'bold')">Bold Item</button>
+                            </div>
+                          </div>
+                        </div>
+  
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+                      <div class="element-grid" *ngIf="element.type === 'grid'">
+                        <span class="element-grid-setting" id="element-grid-setting-{{j}}">
+                          Grid Settings
+                        </span>
+                        <div class="row grid-setting-panel">
+                          <div class="col-md-6 mt-3">
+                            <div><span>Grid Title</span></div>
+                            <input class="form-input" [(ngModel)]="element.name" />
+                          </div>
+                          <div class="col-md-3 col-sm-6 mt-3">
+                            <div><span>Rows</span></div>
+                            <input class="form-input" [(ngModel)]="element.rows" />
+                          </div>
+                          <div class="col-md-3 col-sm-6 mt-3">
+                            <div><span>Columns</span></div>
+                            <input class="form-input" [(ngModel)]="element.cols" />
+                          </div>
+                          <div class="col-md-6 mt-3">
+                            <div><span>X Axis title</span></div>
+                            <input class="form-input" [(ngModel)]="element.x_axis_title" />
+                          </div>
+                          <div class="col-md-6 mt-3">
+                            <div><span>Y Axis title</span></div>
+                            <input class="form-input" [(ngModel)]="element.y_axis_title" />
+                          </div>
+                        </div>
+  
+  
+                        <mat-grid-list class="grid-list custom-scroll" cols="{{element.cols}}" rowHeight="32px"
+                          [gutterSize]="0">
+                          <div *ngFor="let row_item of numSequence(element.rows); let ig = index;">
+                            <mat-grid-tile [style.background]="getBackgroundColor(ig, jg)"
+                              [ngStyle]="{'color': 'var(--secondary-text-color)', 'font-size': '11px', 'border': 'solid 0.4px rgba(190, 212, 235, 0.1)'}"
+                              *ngFor="let col_item of numSequence(element.cols); let jg = index;">
+                              <input class="form-input" style="text-align: center; background: none; border: none"
+                                id="section-{{i}}-element-{{j}}-grid-value-{{ig}}-{{jg}}"
+                                [(ngModel)]="element.grid_values[ig][jg]" />
+                            </mat-grid-tile>
+                          </div>
+                        </mat-grid-list>
+  
+                        <div class="element-tool">
+                          <img class="element-drag" src="/assets/icons/icon_drag.svg" cdkDragHandle />
+                          <img class="element-remove" src="/assets/icons/icon_remove.svg"
+                            (click)="onRemoveElement(i, j)" />
+                        </div>
+                      </div>
+  
+                    </div>
+                  </div>
+  
+                  <div class="section-separator-container">
+                    <div class="section-separator"></div>
+                  </div>
+                  <div class="d-flex-center">
+                    <div ngbDropdown class="d-flex-center">
+                      <button class="btn add-new-element" id="add-new-element" ngbDropdownToggle>
+                        <span> + </span>
+                        <span> Add new element</span>
+                      </button>
+                      <div ngbDropdownMenu aria-labelledby="add-new-element">
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'text')">Text</button>
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'headline_2')">Headline 2</button>
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'headline_3')">Headline 3</button>
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'media')">Media</button>
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'assets')">Assets</button>
+                        <button ngbDropdownItem (click)="onAddNewElement(i, 'grid')">Grid</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="add-new-section">
+            <div (click)="onAddNewSection()">
+              <span> + </span>
+              <span> Add new section</span>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+      <div class="report-editor-container" *ngIf="onVideoLink">
+        <label for="videoLink"> Youtube video id </label>
+        <input type="text" [(ngModel)]="link">
+      </div>
+    </div>
+    <!-- <div class="right-box">2222</div> -->
+  </div>
+  
+  <p-dialog [modal]="true" [showHeader]="false" [(visible)]="show_image_option_dialog" styleClass="popup-modal">
+    <div class="modal__wrapper" *ngIf="show_image_option_dialog">
+      <div class="modal__close cursor" (click)="show_image_option_dialog=false">
+        <svg class="svg-hover">
+          <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+      </div>
+  
+      <div class="modal-content">
+        <div class="modal-content__wrap payment-details">
+          <div class="modal-content__item">
+            <h3 class="app-title">Crop Image</h3>
+            <p class="main-text">Are you sure you want to crop image?</p>
+          </div>
+          <div class="modal-content__item flex">
+            <button class="button button--accent" (click)="cropImage()">Crop Image</button>
+            <button class="button" (click)="uploadFullImage()">Upload Full</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-dialog>
+  
+  <!--Image cropper Modal -->
+  <p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="display_crop_photo_modal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+      <div class="modal__close cursor" (click)="display_crop_photo_modal=false">
+        <svg class="svg-hover">
+          <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+      </div>
+  
+      <div class="modal-content">
+        <h3 class="app-title">Crop Image</h3>
+        <div class="image-cropper-wrapper">
+          <div class="image-cropper">
+            <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+              format="png" [cropperMaxWidth]="1600" [cropperMaxHeight]="1600" [roundCropper]="true"
+              (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+              (loadImageFailed)="loadImageFailed()"></image-cropper>
+          </div>
+  
+          <div class="cropped-image">
+            <img [src]="croppedImage" />
+          </div>
+        </div>
+        <button class="button button--accent" (click)="saveCroppedImage();">Save</button>
+      </div>
+  
+    </div>
+  </p-dialog>
+
+  <p-dialog [modal]="true" [dismissableMask]="false"  [showHeader]="false" [(visible)]="displayDescriptionModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+      <div class="modal__close cursor" (click)="displayDescriptionModal=false">
+        <svg class="svg-hover">
+          <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+      </div>
+  
+      <div class="modal-content">
+        <h3 class="app-title">Add Image</h3>
+        <div class="row w-100" style="height: 400px;">
+          <div class="col-12 border">
+            <div class="d-flex justify-content-between">
+              <select [ngModel]="selectedCompany" (ngModelChange)="previewImage=undefined;selectedCompany=$event;selectedFile=undefined;">
+                <option *ngFor="let cmp of companies" [ngValue]="cmp">{{cmp.name}}</option>
+              </select>
+              <input type="file" (change)="pickImage($event)">
+            </div>
+            <div class="c-logo-card">
+              <img [src]="previewImage??(filepath+'companiesLogo/'+selectedCompany?.logo)" width="300" height="300" alt="company logo">
+          </div>
+          </div>
+        </div>
+        <button class="button button--accent" (click)="displayDescriptionModal=false;">Done!</button>
+      </div>
+  
+    </div>
+  </p-dialog>

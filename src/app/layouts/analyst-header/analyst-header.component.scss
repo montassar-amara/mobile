@@ -1,0 +1,52 @@
+.header-box{
+  line-height: 40px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  display: flex;
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin: 8px;
+  }
+
+  .analyst-menu {
+    display: flex;
+    p {
+      margin: 10px 30px;
+      font-size: 12px;
+      height: 20px;
+      background: var(--accent-30);
+      border-radius: var(--border-radius);
+      line-height: 20px;
+      padding: 0 8px;
+      color: var(--main-active-text-color);
+    }
+    ul {
+      list-style: none;
+      display: flex;
+      line-height: 40px;
+      li {
+        padding: 0 22px;
+        &:hover {
+          a {
+            color: var(--accent);
+          }
+        }
+        a {
+          transition: var(--transition-4);
+          text-decoration: none;
+          color: var(--secondary-text-color);
+          font-size: 12px;
+        }
+        .active-link {
+          color: var(--accent);
+        }
+      }
+    }
+
+  }
+}

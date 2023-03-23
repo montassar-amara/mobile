@@ -1,0 +1,123 @@
+<!-- Select Plan Modal -->
+<!-- <p-dialog [modal]="false" [dismissableMask]="false" [showHeader]="false" [(visible)]="showSelectPlanModal"
+    styleClass="popup-modal plan-modal-popup">
+    <app-select-new-plan (close)="showSelectPlanModal=false;cancelSubs()" (select)="selectPlan()"
+        [planPeriod$]="planPeriod$">
+        <ng-container *ngIf="showSelectPlanModal && !subscription?.plan_id"><ng-template
+                *ngTemplateOutlet="selectPlanPeriod"></ng-template></ng-container>
+    </app-select-new-plan>
+
+</p-dialog> -->
+
+<!-- Select Plan Modal -->
+<div class="select-plan-window-wrapper" [ngClass]="{'is-visible': plansPopup.selectPlanModal === true}">
+    <div class="select-plan-window" [ngClass]="{'is-visible': plansPopup.selectPlanModal === true}">
+
+        <app-select-new-plan (select)="selectPlan()" [planPeriod$]="planPeriod$">
+            <ng-container *ngIf="plansPopup.selectPlanModal && !subscription?.plan_id"><ng-template
+                    *ngTemplateOutlet="selectPlanPeriod"></ng-template></ng-container>
+        </app-select-new-plan>
+
+    </div>
+</div>
+
+
+<!-- <div *ngIf="showSelectPlanModal" class="plan-popup-overlay"></div> -->
+
+
+<!-- Payment details Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentDetailModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentDetailModal=false;cancelSubs()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-content__wrap payment-details">
+                <div class="modal-content__item">
+                    <button class="clear-btn back-btn"
+                        (click)="showPaymentDetailModal=false;plansPopup.selectPlanModal=true;">
+                        <svg class="svg-hover">
+                            <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                        </svg>
+                        <span>Back</span>
+                    </button>
+                </div>
+                <div class="modal-content__item">
+                    <h3 class="app-title">Payment details</h3>
+                </div>
+                <div class="modal-content__item payment-details-body" *ngIf="selectedPlan$|async as plan">
+                    <ng-container *ngIf="showPaymentDetailModal && !subscription?.plan_id"><ng-template
+                            *ngTemplateOutlet="selectPlanPeriod"></ng-template></ng-container>
+
+                    <div class="info">
+                        <span> {{plan.name}} Subscription</span>
+                        <span class="bold">{{total$|async|currency}}</span>
+                    </div>
+
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>+ VAT(25%)</span>
+                        <span class="bold">{{((total$|async) * .25)|currency}}</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>Total amount payed today</span>
+                        <span class="mega-bold">{{((total$|async) * 1.25)|currency}}</span>
+                    </div>
+                    <button class="button button--accent" (click)="selectPaymentMethod()">Select payment method
+                    </button>
+                    <p class="secure-checkout">
+                        <svg width="16" height="16">
+                            <use href="assets/icons/sprite/sprite.svg#shield-check-icon"></use>
+                        </svg>
+                        <span class="secondary-text-2">Secure checkout</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Payment method Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentMethodModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentMethodModal=false;cancelSubs()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <app-payment-method *ngIf="showPaymentMethodModal" style="width: 100%;"
+            (goBack)="showPaymentMethodModal=false;showPaymentDetailModal=true;" (success)="processPayment($event)"
+            [sum]="(total$|async)"></app-payment-method>
+    </div>
+</p-dialog>
+
+
+<!-- Payment Success Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentSuccessModal"
+    styleClass="popup-modal">
+    <app-payment-success (close)="showPaymentSuccessModal=false;" [payingFor]="'PLAN'"></app-payment-success>
+</p-dialog>
+
+
+
+
+<ng-template #selectPlanPeriod>
+    <div class="select-plan__buttons">
+        <label class="toggle">
+            <span class="toggle__label left" [class.active]="!isAnnually">Quarterly</span>
+            <input class="toggle__checkbox visually-hidden" type="checkbox" name="" id="" [ngModel]="isAnnually"
+                (ngModelChange)="planPeriod$.next($event?'Yearly':'Quarterly');isAnnually=$event;">
+            <span class="toggle__switch"></span>
+            <span class="toggle__label right" [class.active]="isAnnually">Annually</span>
+        </label>
+
+        <p class="discount-txt">15% <span>OFF</span> yearly payment</p>
+    </div>
+</ng-template>

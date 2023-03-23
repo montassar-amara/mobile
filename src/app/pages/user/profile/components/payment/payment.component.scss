@@ -1,0 +1,186 @@
+.payment {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  &__row {
+    &:not(:last-child) {
+      margin-bottom: 24px;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  &__add-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-direction: column;
+
+    width: 249px;
+    height: 138px;
+    border: 1px dashed var(--bg-600);
+    border-radius: var(--border-radius);
+    transition: var(--transition-4);
+    span {
+      color: var(--secondary-text-color);
+      font-size: 12px;
+      line-height: 15px;
+      transition: var(--transition-4);
+    }
+    svg {
+      color: var(--main-text-color);
+      width: 32px;
+      height: 32px;
+      transition: var(--transition-4);
+    }
+    &:hover {
+      border: 1px dashed var(--accent-30);
+      span,
+      svg {
+        color: var(--main-active-text-color);
+      }
+    }
+  }
+
+  &__table-wrapper {
+    max-width: 100%;
+    margin-top: 24px;
+
+    @media screen and (max-width: 1299.9px) {
+      overflow-x: scroll;
+    }
+  }
+  &__table {
+    width: 100%;
+    min-width: 500px;
+
+    font-size: 13px;
+    line-height: 15px;
+
+    color: var(--secondary-text-color);
+    thead {
+      width: 100%;
+    }
+    th {
+      padding: 0;
+      font-weight: 500;
+      color: var(--main-text-color);
+      text-align: center;
+      vertical-align: middle;
+      flex-basis: 12%;
+    }
+    th.company-name {
+      text-align: left;
+      flex-grow: 1;
+    }
+    td {
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+      flex-basis: 12%;
+      &.companies {
+        text-align: left;
+        text-transform: capitalize;
+        flex-grow: 1;
+        .companies__wrap {
+          display: flex;
+          align-items: center;
+
+          span {
+            margin-left: 8px;
+          }
+        }
+        .companies__img {
+          height: 24px;
+          width: 24px;
+          display: block;
+        }
+      }
+      div {
+        display: inline-block;
+      }
+    }
+    tr {
+      border-bottom: 1px solid var(--bg-600);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    thead tr {
+      height: 32px;
+
+      font-weight: 500;
+      color: var(--main-text-color);
+      text-align: center;
+    }
+    tbody tr {
+      height: 48px;
+    }
+  }
+}
+.download-invoice,
+.paid-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 100%;
+  flex-basis: 11% !important;
+  flex-shrink: 0;
+}
+.download-invoice {
+  justify-content: flex-end;
+  svg {
+    color: var(--main-text-color);
+  }
+  &:hover svg {
+    color: var(--secondary-text-color);
+  }
+}
+.invoice {
+  text-align: right !important;
+  justify-content: flex-end;
+  flex-basis: 11% !important;
+}
+.paid {
+  flex-basis: 11% !important;
+  flex-shrink: 0;
+}
+.dt {
+  flex-basis: 20% !important;
+  flex-shrink: 0;
+}
+.am {
+  flex-basis: 16% !important;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.paid-status {
+  flex-basis: 11% !important;
+  flex-shrink: 0;
+  .label-success,
+  .label-fail {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    padding: 4px 8px;
+    border-radius: var(--border-radius);
+  }
+  .label-success {
+    color: var(--success);
+    background-color: var(--success-10);
+  }
+  .label-fail {
+    color: var(--danger);
+    background-color: var(--danger-10);
+  }
+}

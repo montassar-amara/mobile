@@ -1,0 +1,126 @@
+<div class="modal-content">
+    <div class="modal-content__wrap payment-details">
+        <div class="modal-content__item">
+            <button class="clear-btn back-btn" (click)="goBack.emit()">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                </svg>
+                <span>Back</span>
+            </button>
+        </div>
+        <div class="modal-content__item">
+            <h3 class="app-title">Payment Details</h3>
+        </div>
+        <div class="modal-content__item">
+            <div class="info">
+                <span>Total amount payed</span>
+                <span class="mega-bold">{{sum*1.25|currency}}</span>
+            </div>
+        </div>
+        <div class="modal-content__item payment-details-body">
+            <div class="accordion" id="accordionPaymentMethod">
+
+                <div class="accordion__item">
+                    <h2 class="accordion-header" id="headingCard">
+                        <button class="clear-btn light collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseCard" aria-expanded="false" aria-controls="collapseCard">
+                            <span>Credit & Debit Card</span>
+                            <svg width="9" height="6">
+                                <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="collapseCard" class="accordion-collapse" aria-labelledby="headingCard"
+                        data-bs-parent="#accordionPaymentMethod">
+                        <div class="accordion-body" style="padding-top: 16px; gap: 16px;">
+                            <p class="main-text">We use Stripe to handle your transactions and to ensure a secure
+                                payment and checkout process</p>
+
+                            <div class="select-card-block">
+                                <!-- <select class="form-select" aria-label="Default select credit card"
+                                    [(ngModel)]="selectedCard">
+                                    <option *ngFor="let card of cards$|async" [ngValue]="card">
+                                        {{card.brand}} **** {{card.last4}} {{card.default?'(Default)':''}}
+                                    </option>
+                                </select> -->
+                                <h4 class="secondary-text">Select Card</h4>
+                                <div class="btns">
+                                    <button type="button" class="clear-btn secondary-text pointer" id="selectCard"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span>{{selectedCard?.brand}} **** {{selectedCard?.last4}}
+                                            {{selectedCard?.default?'(Default)':''}}</span>
+                                        <svg width="9" height="6">
+                                            <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                                        </svg>
+
+                                    </button>
+                                    <ul class="dropdown-menu list" aria-labelledby="selectCard">
+                                        <li class="dropdown-item" *ngFor="let card of cards$|async"
+                                            (click)="selectCard(card)">
+                                            {{card.brand}} **** {{card.last4}} {{card.default?'(Default)':''}}
+                                        </li>
+                                        <li class="dropdown-item" *ngIf="(cards$|async).length===0"
+                                            (click)="onAddNew()">
+                                            Add a new Card
+                                        </li>
+                                    </ul>
+                                    <button class="button button--accent pay-btn" #paybtn [disabled]="!selectedCard"
+                                        (click)="payWithCard(paybtn)">Pay</button>
+                                </div>
+                            </div>
+                            <button class="clear-btn add-card-btn" (click)="onAddNew()">
+                                <svg width="12" height="12">
+                                    <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                                </svg>
+                                <span>Add a new Card</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion__item hidden">
+                    <h2 class="accordion-header" id="headingPaypal">
+                        <button class="clear-btn light collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapsePaypal" aria-expanded="false" aria-controls="collapsePaypal">
+                            <span>Paypal</span>
+                            <svg width="9" height="6">
+                                <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div id="collapsePaypal" class="accordion-collapse collapse" aria-labelledby="headingPaypal"
+                        data-bs-parent="#accordionPaymentMethod">
+                        <div class="accordion-body" style="padding-top: 16px;">
+                            <p class="main-text">Risus purus auctor pulvinar enim, ut lectus suspendisse. Malesuada
+                                scelerisque id dictumst volutpat consequat, morbi
+                                integer. Dictumst nunc potenti arcu ornare. Eget magna leo vel tortor in orci.</p>
+                            <button class="button button--accent" (click)="payWithPaypal()">Continue with
+                                PayPal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="secure-checkout">
+                <svg width="16" height="16">
+                    <use href="assets/icons/sprite/sprite.svg#shield-check-icon"></use>
+                </svg>
+                <span class="secondary-text-2">Secure checkout</span>
+            </p>
+        </div>
+
+    </div>
+</div>
+<!-- Add new Card Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showAddNewCardModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showAddNewCardModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+        <div class="modal__content">
+            <app-add-new-card></app-add-new-card>
+        </div>
+
+    </div>
+</p-dialog>

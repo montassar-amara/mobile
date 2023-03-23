@@ -1,0 +1,19 @@
+<div class="overview scrollbar">
+    <div class="overview__content">
+        <button class="btn btn-primary" routerLink="/newoverview">New Overview</button>
+        <app-temporary-companies></app-temporary-companies>
+
+        <div class="unlocked-title">
+            <h2>Unlocked Companies</h2>
+        </div>
+        <ul class="sectors-list list" *ngIf="(mySectors$|async)?.length>0">
+            <li class="sectors-list-item" *ngFor="let sector of mySectors$|async">
+                <app-sector-overview [sector]="sector"></app-sector-overview>
+            </li>
+        </ul>
+        <div class="d-flex justify-content-center" *ngIf="(mycompanies$|async)?.length===0">
+            There are no companies added yet
+        </div>
+
+    </div>
+</div>

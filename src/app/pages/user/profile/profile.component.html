@@ -1,0 +1,67 @@
+<div class="profile scrollbar">
+
+  <div class="profile__body">
+    <!-- menu -->
+    <div class="profile__menu-wrapper">
+      <div class="profile__menu" [style]="{'top': bannerSevice.showBanner ? '96px' : '56px'}">
+        <h3 class="profile__menu-caption">Menu</h3>
+        <ul class="profile__menu-list list">
+          <li class="profile__menu-item" [routerLink]="'/settings'" routerLinkActive="active"
+            (click)="userProfileService.setActiveTab('settings')"
+            [ngClass]="{'active': userProfileService.activeTab === 'settings'}">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#setting-icon"></use>
+            </svg>
+            <div mat-line class="profile__menu-text">User Settings</div>
+          </li>
+          <li class="profile__menu-item" [routerLink]="'/subscriptions'" routerLinkActive="active"
+            (click)="userProfileService.setActiveTab('subscriptions')"
+            [ngClass]="{'active': userProfileService.activeTab === 'subscriptions'}">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#bag-icon"></use>
+            </svg>
+            <div mat-line class="profile__menu-text">Manage Subscriptions</div>
+          </li>
+          <li class="profile__menu-item" [routerLink]="'/payment'" routerLinkActive="active"
+            (click)="userProfileService.setActiveTab('payment')"
+            [ngClass]="{'active': userProfileService.activeTab === 'payment'}">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#credit-card-icon"></use>
+            </svg>
+            <div mat-line class="profile__menu-text">Payment Method & History</div>
+          </li>
+          <li class="profile__menu-item" [routerLink]="'/preference'" routerLinkActive="active"
+            (click)="userProfileService.setActiveTab('preference')"
+            [ngClass]="{'active': userProfileService.activeTab === 'preference'}">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#sliders-icon"></use>
+            </svg>
+            <div mat-line class="profile__menu-text">App Settings</div>
+          </li>
+          <li class="profile__menu-item" [routerLink]="'/notifications'"
+            routerLinkActive="active" (click)="userProfileService.setActiveTab('notifications')"
+            [ngClass]="{'active': userProfileService.activeTab === 'notifications'}">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#bell-icon"></use>
+            </svg>
+            <div mat-line class="profile__menu-text">Notifications</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- main content -->
+    <div class="profile__content-wrap">
+      <div class="profile__content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-line">
+    <svg>
+      <use href="assets/icons/sprite/sprite.svg#decor-radius"></use>
+    </svg>
+  </div>
+</div>

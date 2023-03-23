@@ -1,0 +1,468 @@
+<div class="body dark-test" [ngClass]="{
+  'light-default': themeService.activeTheme === 'light-default',
+  'solarized-light': themeService.activeTheme === 'solarized-light',
+  'light-test': themeService.activeTheme === 'light-test',
+  'dark-default': themeService.activeTheme === 'dark-default',
+  'dark-test': themeService.activeTheme === 'dark-test',
+  'solarized-dark': themeService.activeTheme === 'solarized-dark'
+}">
+    <router-outlet></router-outlet>
+
+    <!-- If screen resolution is smaller 1024px, show this screen: -->
+    <!-- <app-small-resolution-screen></app-small-resolution-screen> -->
+
+    <p-dialog [(visible)]="readMoreTerms" [modal]="true" [draggable]="false" [resizable]="false"
+        [dismissableMask]="false" [showHeader]="false" styleClass="landing-footer">
+
+        <div class="modal__wrapper">
+            <div class="modal__close cursor" (click)="readMoreTerms=false">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                </svg>
+            </div>
+
+            <div class="modal__header">
+                <h3 class="title">TERMS OF USE</h3>
+            </div>
+            <div class="main-content scrollbar">
+                <h4 class="p-subtitle">1. Application</h4>
+                <p class="text">These Terms of Use apply to Services provided by ValPal AB, corporate ID 559382-7255,
+                    through the website valpal.io (the
+                    “site” or “Valpal”).</p>
+                <p class="text">These terms apply to all who use the site and register an account, hereinafter
+                    “Customer” or
+                    “User”.</p>
+
+                <h4 class="p-subtitle">2. Conditions for use</h4>
+                <p class="text">All use of the ValPal Services is conditional upon you as a User accepting these Terms
+                    of
+                    Use, which you also confirm
+                    when creating a User Account.</p>
+                <p class="text">You can stop using the Service at any time and unsubscribe your account. These
+                    conditions
+                    apply for as long as there is
+                    an active User Account.</p>
+
+                <h4 class="p-subtitle">3. The Service</h4>
+                <p class="text">Valpal aims to create a platform that empowers retail investors to make their own
+                    investment decisions based on
+                    fundamental analysis. The platform’s main purpose is for the User to figure out what a company is
+                    worth so that he/she
+                    can make an informed decision if he/she should or should not invest in said business.</p>
+
+                <p class="text">
+                    As a User of the ValPal Service you will have access to the Valpal database of companies. All
+                    companies in the database
+                    have at a minumum been analyzed in a screening process (8-20 hours of analysis) the findings from
+                    the screening process
+                    are readily available for free on the platform. Some companies that are really interesting have been
+                    throroughly
+                    researched (50-300 hours) producing a <span class="p-italic p-bold">Research Report</span>, that
+                    with high confidence can inform how good
+                    the investment
+                    opportunity in said company is. To access the <span class="p-italic p-bold">Research Report</span>
+                    the user has to unlock the company on
+                    the platform.
+
+                </p>
+
+                <h4 class="p-subtitle">4. Use of the Service</h4>
+                <p class="text">To use the Service, you first must create a User Account by registering using your name
+                    and
+                    email. In order to create an
+                    Account you must be at least eighteen (18) years of age or have your legal guardian's prior consent.
+                </p>
+                <p class="text">By registering an account, the Customer is granted a non-exclusive and non-transferable
+                    right to, for their own use, use
+                    the Service and the Information in accordance with these terms.</p>
+                <p class="text">As a User, you are responsible for all use of the Service and for your login information
+                    to
+                    be protected from
+                    unauthorized access. It is not allowed to transfer or allow someone else to use your account.</p>
+                <p class="text">By accepting these Terms of Use, you warrant that you will not use the Service for any
+                    purpose that violates applicable
+                    laws, government regulations or otherwise may cause harm or inconvenience to Valpal or any third
+                    parties. You also
+                    represent and warrant that you will not:</p>
+                <ol class="letters">
+                    <li>gain access (or attempt to gain access) to any area where you do not have a right or permission
+                        to
+                        be;</li>
+                    <li>distribute viruses, malicious software, use any worms, trojan horses, cancelbots, spyware,
+                        corrupted
+                        files, time
+                        bombs, robots, scrapers, spiders or any other automatic means to access, damage, disrupt or
+                        interfere with the Services
+                        for any reason;</li>
+                    <li>modify any file or any other part of the Services that Valpal does not specifically authorize
+                        you to
+                        modify;</li>
+                    <li>frame, mirror or otherwise incorporate any part of the Services into any other Services,
+                        software or
+                        Service without
+                        our prior written authorization;</li>
+                    <li>bypass, circumvent or interfere with any technical measures used by us to provide the Services;
+                    </li>
+                    <li>sell, buy, trade or otherwise transfer your User Account, any personal access to the Services or
+                        any
+                        content
+                        associated with your User Account.</li>
+                </ol>
+
+                <h4 class="p-subtitle">5. Non-Commercial Use</h4>
+                <p class="text">This Service is intended for private persons only. The Service may not be used by
+                    organizations, companies,
+                    institutional investors, or in connection with any commercial endeavors except those that are
+                    expressly
+                    approved in
+                    writing by Valpal. If you wish to inquire about possible commercial use, please contact us at
+                    <a class="text-link" routerLink="/contact" (click)="readMoreTerms=false">support@valpal.io</a>.
+                    Valpal
+                    may investigate and take any available legal action in response to illegal and/or unauthorized uses
+                    of
+                    the Site or the
+                    Service.
+                </p>
+
+                <h4 class="p-subtitle">6. Price and Payment Terms</h4>
+                <p class="text">When registering your account, you will have access to one company for a free 3-month
+                    trial
+                    period. This will allow you
+                    to explore and test the service for free before subscribing. You may access the platform using your
+                    registered account
+                    after this 3-month period to browse our available companies.</p>
+                <p class="text">If you want to subscribe “unlock” one of our companies you can do so in the following
+                    ways:
+                </p>
+                <ol>
+                    <li>For <span class="p-italic">99$/quarter</span> (<span class="p-italic">249$/year</span>)
+                        Subscribe to our “Journeyman” plan which includes
+                        4
+                        “Company Unlocks” and 1 “Trade
+                        In”.</li>
+                    <li>For <span class="p-italic">149$/quarter</span> (<span class="p-italic">349$/year</span>)
+                        Subscribe to our “Premium” plan which includes 8
+                        “Company Unlocks” and 2 “Trade
+                        Ins”.
+                    </li>
+                    <li>For <span class="p-italic">50$/quarter</span> (<span class="p-italic">128$/year</span>) Unlock a
+                        company using our individual company
+                        subscription.</li>
+                </ol>
+                <p class="text">You can only unlock companies by the above listed means on a quarterly or an annual
+                    basis.
+                    If you wish to upgrade from
+                    “Journeyman” to the “Premium” plan you can do so at any time by paying the difference. If you wish
+                    to
+                    downgrade from
+                    “Premium” to “Journeyman” you can do so at any time, however you will not be refunded the
+                    difference.
+                </p>
+                <p class="text">Payment is made by credit card quarterly or annually in advance. Your registered credit
+                    card
+                    will be automatically
+                    billed at the end of each subscription period unless you manually turn off the auto billing
+                    function.
+                    This can easily be
+                    done on your profile page. If auto billing is turned off you must manually renew your subscription
+                    by
+                    turning it on
+                    again to maintain access to the relevant unlocked companies.</p>
+
+                <h4 class="p-subtitle">7. Term and termination</h4>
+                <p class="text">The subscription runs without a binding period and the User may terminate the
+                    subscription
+                    at any time by turning off
+                    auto billing.</p>
+                <p class="text">Termination must take place directly on the User’s profile page to be valid. A
+                    termination
+                    means that the User Account
+                    will be deleted after a 7-day notice period. Termination also means that the information uploaded by
+                    the
+                    Customer to the
+                    Service is permanently deleted. During the notice period the User may cancel the request to
+                    terminate
+                    and continue to
+                    use the Service.</p>
+
+                <h4 class="p-subtitle">8. Processing of personal data</h4>
+                <p class="text">When you register as a Valpal User, Valpal will process your personal data in order to
+                    provide the Service and to
+                    fulfill its obligations according to this Agreement. Valpal warrants that all such personal data
+                    will be
+                    processed in
+                    accordance with the applicable General Data Protection Regulation (GDPR).</p>
+                <p class="text">Valpal only collects the personal data that you have provided yourself in connection
+                    with
+                    the registration of your
+                    account.</p>
+                <p class="text">The Customer acknowledges and agrees that Valpal may engage Sub-processors in connection
+                    with the provision of the
+                    Services, including without limitation the Processing of Personal Data. For more detailed
+                    information on
+                    how we process
+                    your Personal Data please review our Privacy Policy.</p>
+
+                <h4 class="p-subtitle">9. Confidentiality</h4>
+                <p class="text">The User is responsible for protecting license keys and other sensitive information,
+                    such as
+                    passwords, which are linked
+                    to Valpal. The User undertakes to promptly notify Valpal of any possible abuse of the Service and to
+                    any
+                    kind of
+                    security breach relating to the Service.</p>
+
+                <h4 class="p-subtitle">10. Intellectual Property Rights</h4>
+                <p class="text">All rights to the Service and Information, software and its content, including copyright
+                    and
+                    other intellectual property
+                    rights, belong to Valpal or such third parties with whom Valpal has entered into an agreement. The
+                    User
+                    does not obtain
+                    any right to the Service, Information, software or its content beyond what is expressly provided for
+                    in
+                    these terms and
+                    conditions.</p>
+                <p class="text">As a User of the Service, it is not permitted to copy, modify, distribute or otherwise
+                    disseminate information and
+                    content from the Service to the public via the internet or in any other way.</p>
+                <p class="text">By accepting these terms of use you confirm that you understand and accept that any
+                    violation of Valpal’s intellectual
+                    property rights could entail liability to pay damages to Valpal.</p>
+
+                <h4 class="p-subtitle">11. Limitation of liability</h4>
+                <p class="text">Valpal intends to keep all information on the website correct and as updated as
+                    possible.
+                    The information used in the
+                    financial model and the research report is collected from several different public registers and
+                    databases and then
+                    compiled and made available to you as a User. Valpal can therefore not guarantee the correctness of
+                    such
+                    information.</p>
+                <p class="text">Valpal is not in any way responsible for any liability, loss or damage that arises due
+                    to
+                    the content of data or other
+                    information conveyed when using the Service or the actions taken by the Customer as a result of
+                    using
+                    the Service.</p>
+                <p class="text">Furthermore, Valpal does not guarantee that the use of the Service will be uninterrupted
+                    or
+                    free of errors and is
+                    therefore not responsible for any technical errors, regardless of the cause of the errors, or other
+                    disturbances in the
+                    availability of the Service caused by, for example, insufficient internet connection, disturbances
+                    at
+                    the web host or in
+                    connection with updates and maintenance.</p>
+                <p class="text">The total liability of Valpal, for all claims under these terms, including for implied
+                    warranties, shall be limited to
+                    the amount paid by the Customer for the use of the Service. The above limitation of Valpal's
+                    liability
+                    for damages does
+                    not apply in the event of intent or gross negligence on Valpal’s part.</p>
+                <p class="text">Under no circumstances shall Valpal be liable for any loss or damage that is not
+                    reasonably
+                    foreseeable.</p>
+
+                <h4 class="p-subtitle">12. Valpal's right to suspend Users</h4>
+                <p class="text">Valpal reserves the right to unilaterally decide to suspend Customers from use of the
+                    Service. Suspension may occur, for
+                    example, as a result of a violation or reasonable suspicion of breach of these terms and conditions
+                    or
+                    if the Service is
+                    used in a manner that may cause Valpal or any third party damage.</p>
+
+                <h4 class="p-subtitle">13. Updates and further development</h4>
+                <p class="text">Valpal plans to continuously develop, update and improve the Valpal Service. All further
+                    development is included as part
+                    of the subscription and the use of new functionality shall be in accordance with these terms of use,
+                    unless Valpal
+                    informs that the new functionality requires special conditions.</p>
+
+                <h4 class="p-subtitle">14. Comments and complaints</h4>
+                <p class="text">We strive to have as satisfied customers as possible and are therefore keen to find out
+                    if
+                    you as a User are
+                    dissatisfied or have opinions about the Service. Help us get better by sending us your feedback by
+                    email
+                    to:
+                    <a class="text-link" routerLink="/contact" (click)="readMoreTerms=false">support@valpal.io</a>.
+                </p>
+
+                <h4 class="p-subtitle">15. Alterations and additions</h4>
+                <p class="text">Valpal reserves the right to make changes to these terms of use from time to time.</p>
+                <p class="text">The terms currently in force are published on the website and as a User you are
+                    responsible
+                    for making sure you are up
+                    to date with any changes.</p>
+
+                <h4 class="p-subtitle">16. Applicable law and dispute resolution</h4>
+                <p class="text">Any dispute concerning the application or interpretation of these terms of use shall be
+                    finally settled by the Swedish
+                    general courts in accordance with Swedish law.</p>
+                <p class="text">A dispute may also be resolved by the Swedish National Board of Consumer Disputes <span
+                        class="p-italic">(Sw:
+                        Allmänna reklamationsnämnden)</span> or
+                    by using the European Online Dispute Resolution platform <a class="text-link"
+                        href="https://ec.europa.eu/consumers/odr"
+                        target="_blank">https://ec.europa.eu/consumers/odr</a>.</p>
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-dialog [(visible)]="readMorePrivacy" [modal]="true" [draggable]="false" [resizable]="false"
+        [dismissableMask]="false" [showHeader]="false" styleClass="landing-footer">
+
+        <div class="modal__wrapper">
+            <div class="modal__close cursor" (click)="readMorePrivacy=false">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                </svg>
+            </div>
+            <div class="modal__header">
+                <h3 class="title">Privacy Policy</h3>
+            </div>
+            <div class="main-content scrollbar">
+                <h4 class="p-subtitle">1. Privacy Policy</h4>
+                <p class="text">ValPal AB built the Valpal platform as a Commercial service. This SERVICE is provided by
+                    ValPal AB and is intended for
+                    use as is.</p>
+                <p class="text">This page is used to inform visitors regarding our policies with the collection, use,
+                    and
+                    disclosure of Personal
+                    Information if anyone decided to use our Service.</p>
+                <p class="text">If you choose to use our Service, then you agree to the collection and use of
+                    information in
+                    relation to this policy.
+                    The Personal Information that we collect is used for providing and improving the Service. We will
+                    not
+                    use or share your
+                    information with anyone except as described in this Privacy Policy.</p>
+
+                <h4 class="p-subtitle">2. Information Collection and Use</h4>
+                <p class="text">For a better experience, while using our Service, we may require you to provide us with
+                    certain personally identifiable
+                    information, including but not limited to First Name, Last Name, Email, Phone number, Creditcard
+                    Number.
+                    The information
+                    that we request will be retained by us and used as described in this privacy policy.</p>
+                <p class="text">The app does use third-party services that may collect information used to identify you.
+                    Links to the privacy policy of
+                    third-party service providers used by the app are provided below: <br>
+                </p>
+                <ul>
+                    <li><a class="text-link" href="https://firebase.google.com/policies/analytics"
+                            target="_blank">Google
+                            Analytics for
+                            Firebase</a></li>
+                </ul>
+
+
+                <h4 class="p-subtitle">3. Log Data</h4>
+                <p class="text">We want to inform you that whenever you use our Service, in a case of an error in the
+                    platform we collect data and
+                    information (through third-party products) from your device called Log Data. This Log Data may
+                    include
+                    information such
+                    as your device Internet Protocol (“IP”) address, device name, operating system version, the
+                    configuration of the app
+                    when utilizing our Service, the time and date of your use of the Service, and other statistics.</p>
+
+
+                <h4 class="p-subtitle">4. Cookies</h4>
+                <p class="text">Cookies are files with a small amount of data that are commonly used as anonymous unique
+                    identifiers. These are sent to
+                    your browser from the websites that you visit and are stored on your device's internal memory.</p>
+                <p class="text">This Service does use these “cookies” explicitly, review our cookie policy for more
+                    information. Furthermore, the app
+                    may use third-party code and libraries that use “cookies” to collect information and improve their
+                    services. You have
+                    the option to either accept or refuse these cookies and know when a cookie is being sent to your
+                    device.
+                    If you choose
+                    to refuse our cookies, you may not be able to use some portions of this Service.</p>
+
+                <h4 class="p-subtitle">5. Service Providers</h4>
+                <div>
+                    <p class="text">We may employ third-party companies and individuals due to the following reasons:
+                    </p>
+                    <ul>
+                        <li>To facilitate our Service;</li>
+                        <li>To provide the Service on our behalf;</li>
+                        <li>To perform Service-related services;</li>
+                        <li>To assist us in analyzing how our Service is used.</li>
+                    </ul>
+                </div>
+
+                <p class="text">We want to inform users of this Service that these third parties have access to their
+                    Personal Information. The reason
+                    is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose
+                    or
+                    use the
+                    information for any other purpose.</p>
+
+                <h4 class="p-subtitle">6. Security</h4>
+                <p class="text">We value your trust in providing us your Personal Information, thus we are striving to
+                    use
+                    commercially acceptable means
+                    of protecting it. But remember that no method of transmission over the internet, or method of
+                    electronic
+                    storage is 100%
+                    secure and reliable, and we cannot guarantee its absolute security.</p>
+
+                <h4 class="p-subtitle">7. Links to Other Sites</h4>
+                <p class="text">This Service may contain links to other sites. If you click on a third-party link, you
+                    will
+                    be directed to that site.
+                    Note that these external sites are not operated by us. Therefore, we strongly advise you to review
+                    the
+                    Privacy Policy of
+                    these websites. We have no control over and assume no responsibility for the content, privacy
+                    policies,
+                    or practices of
+                    any third-party sites or services.</p>
+
+                <h4 class="p-subtitle">8. Children’s Privacy</h4>
+                <p class="text">These Services do not address anyone under the age of 18. We do not knowingly collect
+                    personally identifiable
+                    information from children under 18 years of age. In the case we discover that a child under 18 has
+                    provided us with
+                    personal information, we immediately delete this from our servers. If you are a parent or guardian
+                    and
+                    you are aware
+                    that your child has provided us with personal information, please contact us so that we will be able
+                    to
+                    do the necessary
+                    actions.</p>
+
+                <h4 class="p-subtitle">9. Changes to This Privacy Policy</h4>
+                <p class="text">We may update our Privacy Policy from time to time. Thus, you are advised to review this
+                    page periodically for any
+                    changes. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+                <p class="text">This policy is effective as of 2022-12-12</p>
+
+                <h4 class="p-subtitle">10. How to Remove Information Associated with Your Person</h4>
+                <p class="text">You can delete your registered account on the profile page under ”User Settings”.
+                    Deleting
+                    your account will initiate a
+                    7-day notice period. After this period expires your account and all associated personal information
+                    will
+                    be irrevocably
+                    deleted from our databases. During this 7-day notice period you may cancel your deletion. If you
+                    want an
+                    instant
+                    termination of your account you can contact us with the below provided contact information, and we
+                    will
+                    assist you with
+                    this.</p>
+
+                <h4 class="p-subtitle">11. Contact Us</h4>
+                <p class="text">If you have any questions or suggestions about our Privacy Policy, do not hesitate to
+                    contact us at <a class="text-link" routerLink="/contact"
+                        (click)="readMorePrivacy=false">support@valpal.io</a></p>
+            </div>
+
+
+        </div>
+    </p-dialog>
+</div>

@@ -1,0 +1,249 @@
+<div class="notifications">
+    <div class="general-notifications">
+        <h3 class="app-title">General Notifications {{(subscription$|async)?.plan_id?((user$|async)?.phone_number?'':'(Add phone number)'):': Member feature only!'}}</h3>
+        <p class="secondary-text notifications__text-block">Sollicitudin magna id mi cursus. Vivamus a risus sagittis
+            metus.
+            Rhoncus metus, pellentesque pretium vel odio ut. Enim
+            viverra pulvinar mi odio et purus vitae maecenas eu.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="values">Notification type</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let ntf of notifications$|async;let index=index">
+                    <th class="values">{{ntf.name}}</th>
+                    <td>
+                        <label class="toggle switcher" *ngIf="(subscription$|async)?.plan_id && (user$|async)?.phone_number">
+                            <input class="toggle__checkbox d-none" type="checkbox" name="" id="" role="switch" [(ngModel)]="ntf.isSMS" (ngModelChange)="notificationTypeUpdate(index)">
+                            <span class="toggle__switch"></span>
+                            <span class="txt">SMS</span>
+                        </label>
+                        <label class="toggle switcher" *ngIf="!(subscription$|async)?.plan_id || !(user$|async)?.phone_number">
+                            <input class="toggle__checkbox d-none" type="checkbox" name="" id="" role="switch" disabled value="false">
+                            <span class="toggle__switch"></span>
+                            <span class="txt">SMS</span>
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <div class="companies-notifications">
+        <h3 class="app-title">Companies Notifications</h3>
+        <p class="secondary-text notifications__text-block">Sollicitudin magna id mi cursus. Vivamus a risus sagittis
+            metus.
+            Rhoncus metus, pellentesque pretium vel odio ut. Enim
+            viverra pulvinar mi odio et purus vitae maecenas eu.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="values">Company name</th>
+                    <th>Email</th>
+                    <th>SMS</th>
+                    <th>Push</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <th class="values">
+                        <div class="company-logo">
+                            <img src="https://valpal.fra1.digitaloceanspaces.com/assets/images/companies/01.svg"
+                                alt="company logo">
+                        </div>
+                        <span>Fortuna Silver Mines</span>
+                    </th>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="">
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="values">
+                        <div class="company-logo">
+                            <img src="https://valpal.fra1.digitaloceanspaces.com/assets/images/companies/02.svg"
+                                alt="company logo">
+                        </div>
+                        <span>Company Name 1</span>
+                    </th>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="">
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="values">
+                        <div class="company-logo">
+                            <img src="https://valpal.fra1.digitaloceanspaces.com/assets/images/companies/03.svg"
+                                alt="company logo">
+                        </div>
+                        <span>Company Name 2</span>
+                    </th>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="">
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="values">
+                        <div class="company-logo">
+                            <img src="https://valpal.fra1.digitaloceanspaces.com/assets/images/companies/04.svg"
+                                alt="company logo">
+                        </div>
+                        <span>Company Name 3</span>
+                    </th>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="">
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="check">
+                            <input class="check__input visually-hidden" type="checkbox" name="" id="" checked>
+                            <span class="check__box">
+                                <svg class="rect">
+                                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                </svg>
+                                <svg class="rect-checked">
+                                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                </svg>
+                            </span>
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
+</div>

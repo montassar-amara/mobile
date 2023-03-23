@@ -1,0 +1,19 @@
+:root {
+  --border-radius: 4px !important;
+  --transition-4: 0.4s;
+  --scrollbar-width: 7px;
+  --scrollbar-width-2: 10px;
+  --header-height: 64px;
+  --footer-height: 55px;
+  --footer-height-mobile: 96px;
+  --gap5: 5px;
+  --gap10: 10px;
+  --banner-height: 40px;
+
+  @media screen and (max-width: 767.9px) {
+    --scrollbar-width: 4px;
+  }
+  @media screen and (max-width: 575.9px) {
+    --banner-height: 60px;
+  }
+}

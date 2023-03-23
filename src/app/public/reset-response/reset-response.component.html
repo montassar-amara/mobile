@@ -1,0 +1,94 @@
+<div class="login-main-page" *ngIf="!success">
+
+  <div class="auth-box">
+    <div class="auth-box__header">
+      <div class="auth-box__title">Create password</div>
+      <div class="auth-box__subtitle">Enter and confirm you password</div>
+    </div>
+    <div class="auth-box__content">
+      <form class="login__form" autocomplete="off" (submit)="onSubmit()" [formGroup]="resetForm">
+
+        <div class="login__form-field">
+          <label for="yourpassword" class="login__label-text">Set your password *</label>
+          <div style="position: relative; width: 100%;">
+            <input class="form-input" [type]="passwordType" id="yourpassword" formControlName="password"
+              (input)="errorMsg=false">
+            <label for="yourpassword" style="display: block;">
+              <button id="togglePassword" (click)="showHidePassword()" class="clear-btn login__show-psw-btn"
+                type="button">
+                <svg class="svg-hover" *ngIf="!isVisiblePassword">
+                  <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                </svg>
+                <svg class="svg-hover" *ngIf="isVisiblePassword">
+                  <use href="assets/icons/sprite/sprite.svg#eye-slash-icon"></use>
+                </svg>
+              </button>
+            </label>
+          </div>
+        </div>
+
+        <div class="login__form-field">
+          <label for="yourPasswordConfirm" class="login__label-text">Confirm your password *</label>
+          <div style="position: relative; width: 100%;">
+            <input class="form-input" formControlName="password_confirmation" [type]="passwordType"
+              (input)="errorMsg=false" id="yourPasswordConfirm">
+            <label for="yourPasswordConfirm" style="display: block;">
+              <button id="togglePassword" (click)="showHidePassword()" class="clear-btn login__show-psw-btn"
+                type="button">
+                <svg class="svg-hover" *ngIf="!isVisiblePassword">
+                  <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                </svg>
+                <svg class="svg-hover" *ngIf="isVisiblePassword">
+                  <use href="assets/icons/sprite/sprite.svg#eye-slash-icon"></use>
+                </svg>
+              </button>
+            </label>
+          </div>
+        </div>
+        <span class="text-danger" *ngIf="errorMsg">Passwords don't match!</span>
+        <div class="login__button-wrap">
+          <button type="submit" class="button button--landing" [disabled]="resetForm.invalid">
+            Continue
+          </button>
+        </div>
+
+      </form>
+
+      <!-- <div class="login__redirection">
+        <span class="secondary-text">Back to</span>
+        <a class="text-link text-link--landing" routerLink="/auth/login">Login</a>
+      </div> -->
+    </div>
+  </div>
+
+</div>
+<div class="login-main-page" *ngIf="success">
+
+
+  <div class="auth-box">
+    <div class="auth-box__header">
+    </div>
+    <div class="auth-box__content">
+      <div class="modal-content__wrap">
+        <div class="modal-content__item">
+          <svg width="120" height="124">
+            <use href="assets/icons/sprite/sprite.svg#firework"></use>
+          </svg>
+        </div>
+        <div class="modal-content__item">
+          <h3 class="app-title">Great!</h3>
+        </div>
+
+
+        <div class="modal-content__item">
+          <button class="button button--landing" (click)="closeIt()">
+            Back to Login
+          </button>
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>

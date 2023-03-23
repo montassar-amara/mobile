@@ -1,0 +1,43 @@
+<div class="company-list">
+    <div class="company-list__item" [class.reduced-shadow]="!hasShadow"
+        [class.selected]="company|includedIn:(selectedCompanies$|async)"
+        *ngFor="let company of companies;" (click)="open($event, company)"
+        (mouseenter)="fadeIn(company.color)" (mouseleave)="fadeOut()">
+        <span *ngIf="company.is_new" class="new-tag">NEW</span>
+        <div class="company-list__item-content" [class.item-selected]="(selectedCompanies$|async).includes(company)">
+            <div class="c-logo-card">
+                <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+
+                <button [pTooltip]="(user$|async)?'':'Login to unlock research'"
+                    tooltipPosition="left" class="clear-btn key-btn" type="button">
+
+                    <div class="svg-icon-wrapper"
+                        *ngIf="!(company|mycompany:(subscription$|async)) && !company.is_free && hasShadow">
+                        <div class="svg-icon" (click)="selectCompany($event,company)" [class.svg-selected]="(selectedCompanies$|async).includes(company)">
+
+                            <svg class="key-icon"
+                                *ngIf="(selectedCompanies$|async).includes(company)">
+                                <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+
+                            </svg>
+                            <svg class="lock-icon"
+                                *ngIf="!(selectedCompanies$|async).includes(company)">
+                                <use href="assets/icons/sprite/sprite.svg#lock3-icon"></use>
+                            </svg>
+                        </div>
+                    </div>
+
+
+                </button>
+            </div>
+            <div class="c-info">
+                <span class="c-name">{{company?.name}}</span>
+                <a class="c-tag border" id="c-tag"
+                    [ngStyle]="{'background-color':company.color}" [href]="company.tag_link"
+                    target="_blank">{{company.tag_name ?? 'xyz'}}</a>
+            </div>
+
+
+        </div>
+    </div>
+</div>

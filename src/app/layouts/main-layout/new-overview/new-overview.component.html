@@ -1,0 +1,118 @@
+<div class="company-preview scrollbar position-relative ease" id="scrollBar" (scroll)="onScroll($event)">
+
+    <div class="company-preview__header position-relative"
+        [style]="themeService.theme_mode === 'dark'?'background: linear-gradient(0deg,'+staticColor+' 0%, rgba(1,1,1,0)':''">
+        <div class="position-absolute top-0 end-0 bottom-0 start-0 h-100 w-100"
+            [ngClass]="{'noise-dark': themeService.theme_mode === 'dark',  'noise-light': themeService.theme_mode === 'light'}">
+        </div>
+        <div style="position: relative; z-index: 2;">
+        </div>
+
+    </div>
+
+    <div class="company-preview__content"
+        [style]="themeService.theme_mode === 'dark'?'background: linear-gradient(180deg,'+staticColor+' 0%, transparent 400px);':''">
+
+
+        <div class="tabs">
+            <!-- <div class="tabs__header">
+                <ul class="tabs__list list">
+                    <li class="tabs__list-item" [ngClass]="{'active-tab': activeTab === 'all'}"
+                        (click)="setActiveTab('all')">All</li>
+                    <li class="tabs__list-item" [ngClass]="{'active-tab': activeTab === 'my-companies'}"
+                        (click)="setActiveTab('my-companies')">My Companies</li>
+                    <li class="tabs__list-item" [ngClass]="{'active-tab': activeTab === 'process'}"
+                        (click)="setActiveTab('process')">Upcoming Research</li>
+                </ul>
+            </div> -->
+            <div class="tabs__content">
+                <div class="all-component tabs-component" [ngClass]="{'visually-hidden': activeTab !== 'all'}">
+
+                    <div class="companies-wrapper">
+                        <app-temporary-companies></app-temporary-companies>
+                        <div class="companies-title">All Research</div>
+
+                        <div class="search-filter-box">
+                            <label class="search-icon" for="searchCompany2">
+                                <svg class="svg">
+                                    <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+                                </svg>
+                            </label>
+                            <input class="form-input" id="searchCompany2" type="text" placeholder="Search for companies"
+                                [ngModel]="(searchTerm$|async)" (ngModelChange)="searchTerm$.next($event)">
+                            <span class="filter-count" *ngIf="filterCount$|async as nb">({{nb}})</span>
+                            <!-- <span class="filter-count">10</span> -->
+                            <button class="clear-btn filter-btn" id="filterMenu" data-bs-toggle="dropdown"
+                                data-bs-auto-close="outside" aria-expanded="false" #dropdown>
+                                <svg class="svg svg-hover-2">
+                                    <use href="assets/icons/sprite/sprite.svg#filter2-icon"></use>
+                                </svg>
+                            </button>
+
+                            <button class="delete-all-filters-btn clear-btn" type="button" (click)="removeFilters()"
+                                *ngIf="companiesFilter>0">
+                                <svg class="svg-hover close-icon del-btn cursor">
+                                    <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                                </svg>
+                            </button>
+
+                            <ul class="dropdown-menu list filter-dropdown-menu" aria-labelledby="filterMenu">
+                                <p class="filter-type">PEER GROUPS</p>
+                                <li class="" *ngFor="let filter of (filterCompany$|async);let index=index">
+                                    <label class="check">
+                                        <input class="check__input visually-hidden" type="checkbox"
+                                            [ngModel]="filter.checked" (ngModelChange)="updateFilter($event,index)"
+                                            name="filterCompany" [value]="filter.checked">
+                                        <span class="check__box">
+                                            <svg class="rect">
+                                                <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                                            </svg>
+                                            <svg class="rect-checked-2" *ngIf="filter==='All'">
+                                                <use href="assets/icons/sprite/sprite.svg#rect-checked-2"></use>
+                                            </svg>
+                                            <svg class="rect-checked" *ngIf="filter!=='All'">
+                                                <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="check__text text-capitalize">{{filter.name}}</span>
+                                    </label>
+                                </li>
+                            </ul>
+
+
+                        </div>
+
+                        <app-companies-list [companies]="companies$|async" (onOpen)="open($event)"
+                            (onFadeIn)="fadeIn($event)" (onFadeOut)="fadeOut()"
+                            (onSelectCompany)="selectCompany($event)"></app-companies-list>
+
+                    </div>
+                </div>
+                <div class="my-companies-component tabs-component"
+                    [ngClass]="{'visually-hidden': activeTab !== 'my-companies'}">
+                    <ul class="sectors-list list" *ngIf="(mySectors$|async)?.length>0">
+                        <li class="sectors-list-item" *ngFor="let sector of mySectors$|async">
+                            <app-sector-overview [sector]="sector"></app-sector-overview>
+                        </li>
+                    </ul>
+                    <div class="no-companies-added" *ngIf="(mycompanies$|async)?.length===0">
+                        You have not unlocked any companies yet
+                    </div>
+                </div>
+                <div class="process-component tabs-component" [ngClass]="{'visually-hidden': activeTab !== 'process'}">
+                    <div class="process-content">
+                        <app-temporary-companies></app-temporary-companies>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-line">
+        <svg>
+            <use href="assets/icons/sprite/sprite.svg#decor-radius"></use>
+        </svg>
+    </div>
+
+</div>

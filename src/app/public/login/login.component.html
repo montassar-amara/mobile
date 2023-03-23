@@ -1,0 +1,81 @@
+<div class="login-box">
+  <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div style="max-width: 388px;">
+      <div class="login__social-butons">
+        <button class="button" type="button" (click)="onGoogleSignIn()" [hidden]="isSafari() || isiOS()">
+          <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#google-color-icon"></use>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+
+        <div class="d-flex-center">
+          <asl-google-signin-button type='icon' size='medium'
+            [hidden]="!isSafari() && !isiOS()"></asl-google-signin-button>
+        </div>
+      </div>
+
+      <div class="login__divider">
+        <div class="line"></div>
+        <div class="or">Or</div>
+        <div class="line"></div>
+      </div>
+
+      <div class="login__form-field">
+        <input type="text" class="form-input" formControlName="email" placeholder="Enter Email">
+      </div>
+      <div class="login__form-field">
+        <input type="password" class="form-input" id="loginPassword" formControlName="password" placeholder="Password">
+        <label for="loginPassword" style="display: block;">
+          <button id="togglePassword" (click)="ShowHidePassword()" class="clear-btn login__show-psw-btn" type="button">
+            <svg class="svg-hover" *ngIf="!showHidePassword">
+              <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+            </svg>
+            <svg class="svg-hover" *ngIf="showHidePassword">
+              <use href="assets/icons/sprite/sprite.svg#eye-slash-icon"></use>
+            </svg>
+          </button>
+        </label>
+      </div>
+
+      <div class="login__form-field" *ngIf="errorExist"><span class="text-danger">{{ errorMessage }}</span></div>
+
+      <div class="login__form-field remember">
+        <label class="check check--landing">
+          <input class="check__input visually-hidden" type="checkbox" name="" id="" [checked]="isRememberMe"
+            (click)="ToggleRememberMe()">
+          <span class="check__box">
+            <svg class="rect">
+              <use href="assets/icons/sprite/sprite.svg#rect"></use>
+            </svg>
+            <svg class="rect-checked">
+              <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+            </svg>
+          </span>
+          <span class="check__text">Remember Me</span>
+        </label>
+        <a class="text-label-2 login__forgot-psw" routerLink="/reset-password-request">Forgot Password</a>
+      </div>
+
+      <div class="d-flex login__button-wrap">
+        <button type="submit" class="button button--landing" [disabled]="!form.valid || loginON">
+          <!--<div class="spinner-border spinner-border-sm text-light me-2" role="status" *ngIf="loginON">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>-->
+          Continue
+        </button>
+
+        <div id="loadercontainer" *ngIf="loginON">
+          <div class="scaling-dots">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</div>

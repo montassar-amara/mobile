@@ -1,0 +1,141 @@
+<div class="sector">
+  <div class="sector__header">
+    <h5 class="sector__name">{{sector.name}}</h5>
+    <div class="sector__tabs">
+
+      <!-- <div class="values">
+        <span class="values__name secondary-text">Values</span>
+        <div class="values__dropdown">
+          <button class="btn0 sector__tabs-item-btn dropdown-btn cursor" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <span>{{selectedValue}}</span>
+            <svg class="svg">
+              <use href="assets/icons/sprite/sprite.svg#angle-right-icon"></use>
+            </svg>
+          </button>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item" *ngFor="let value of values" (click)="selectedValue=value">
+              <span>{{value}}</span>
+            </li>
+          </ul>
+        </div>
+      </div> -->
+
+
+      <!-- <div class="vertical-divider"></div> -->
+
+      <ul class="sector__tabs-list list">
+        <li class="sector__tabs-item" *ngFor="let tab of tabs">
+          <input type="radio" class="visually-hidden" [(ngModel)]="selectedTab" (change)="onSelectTab()" [value]="tab"
+            [name]="sector.name" [id]="tab.name+sector.name" autocomplete="off">
+          <label class="sector__tabs-item-btn cursor" [for]="tab.name+sector.name">{{tab.name}}</label>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+  <div class="sector__body">
+    <ng-container [ngSwitch]="selectedTab.name" *ngIf="selectedTab">
+      <ng-container [ngTemplateOutlet]="rating" *ngSwitchCase="'Rating'"></ng-container>
+      <ng-container [ngTemplateOutlet]="other" *ngSwitchDefault></ng-container>
+    </ng-container>
+
+    <!-- Rating Tab -->
+    <ng-template #rating>
+      <table class="sector__table">
+        <thead>
+          <tr>
+            <th scope="col" class="company-name cn">Company Name</th>
+            <th scope="col" class="v-rating">Rating</th>
+            <th scope="col" class="r-field" *ngFor="let rating of sector.ratings">
+              <img src="{{filepath+'ratinglogo/'+rating.logo}}" alt="">
+              <span>{{rating.name}}</span>
+            </th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of sector.companies" scope="row">
+            <td class="cn">
+              <div class="company">
+                <div class="logo">
+                  <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+                </div>
+                <span class="company-name">{{company.name}}</span>
+              </div>
+            </td>
+            <td class="v-rating">
+              <span class="rating-value"
+                [ngStyle]="{'background': themeService.theme_mode === 'dark' ? (company.overalRating|ratingBgDarkModeColor) : (company.overalRating|ratingBgLightModeColor), 'color': themeService.theme_mode === 'dark' ? (company.overalRating|ratingTextDarkModeColor) : (company.overalRating|ratingTextLightModeColor)}">{{company.overalRating}}
+                / 5</span>
+
+            </td>
+            <td class="r-field" *ngFor=" let rating of company?.ratings"
+              [ngStyle]="{'background': themeService.theme_mode === 'dark' ? (rating.value|ratingBgDarkModeColor) : (rating.value|ratingBgLightModeColor), 'color': themeService.theme_mode === 'dark' ? (rating.value|ratingTextDarkModeColor) : (rating.value|ratingTextLightModeColor)}">
+              <span class="rating-value">{{rating?.value}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+
+    <!-- Other Tab -->
+    <ng-template #other>
+      <table class="sector__table">
+        <thead>
+          <tr>
+            <th scope="col" class="company-name cn">Company Name</th>
+            <th scope="col" class="v-rating">Rating</th>
+            <th scope="col" class="v-upside" [ngClass]="{'right-align': i === columns.length - 1}"
+              *ngFor="let column of columns; let i = index;">{{column.name}}</th>
+            <!-- <th scope="col" class="v-model right-align">Model</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of sector.companies" scope="row">
+            <td class="cn">
+              <div class="company">
+                <div class="logo">
+                  <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+                </div>
+                <span class="company-name">{{company.name}}</span>
+              </div>
+            </td>
+            <td class="v-rating">
+              <span class="rating-value"
+                [ngStyle]="{'background': themeService.theme_mode === 'dark' ? (company.overalRating|ratingBgDarkModeColor) : (company.overalRating|ratingBgLightModeColor), 'color': themeService.theme_mode === 'dark' ? (company.overalRating|ratingTextDarkModeColor) : (company.overalRating|ratingTextLightModeColor)}">{{company.overalRating}}
+                / 5</span>
+            </td>
+
+            <td class="v-equity" [ngClass]="{'right-align': i === columns.length - 1}"
+              *ngFor="let column of columns; let i = index">
+              <span>{{getColumnValue(column._id, company._id)}}</span>
+              <!--            <span class="label">M$</span>-->
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+
+  </div>
+
+</div>
+
+
+<!-- <p-dialog [(visible)]="showRatingModal" [modal]="false" header="Valuation Rating" [draggable]="false"
+  [resizable]="false">
+
+  <p>
+    Sapien massa diam, ultrices non non. Venenatis, amet, quam orci, suspendisse mi ut velit, viverra pretium. Et
+    egestas nec ut tristique nisl arcu risus. Turpis convallis leo pellentesque gravida. Parturient non vel tortor
+    facilisis molestie.
+
+    Semper vitae nulla amet, lobortis congue. Augue cursus eu pellentesque interdum. Morbi rhoncus ut urna enim. Id
+    tempus tellus ut tellus diam eros interdum donec aliquam.
+  </p>
+  <ng-template pTemplate="footer">
+    <button (click)="showRatingModal=false">Got it</button>
+  </ng-template>
+
+</p-dialog> -->

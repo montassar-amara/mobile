@@ -1,0 +1,281 @@
+/* =================================================*/
+/*=================== DARK MODE ===================*/
+/* =================================================*/
+
+.dark-default {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #121212;
+  --bg-200: #181818;
+  --bg-300: #1b1b1b;
+  --bg-400: #1f1f1f;
+  --bg-400-2: #303030;
+  --bg-600: #282828;
+
+  --scrollbar: #575757;
+
+  --blue: #4489f7;
+
+  /* ----> accent colors <---- */
+  --accent: #bed4eb;
+  --accent-10: #bed4eb1a; /* it's #bed4eb (accent) width opacity: 10% -> rgba(190, 212, 235, 0.1); */
+  --accent-20: #bed4eb33; /* it's #bed4eb (accent) width opacity: 20% -> rgba(190, 212, 235, 0.2); */
+  --accent-30: #bed4eb4d; /* it's #bed4eb (accent) width opacity: 30% -> rgba(190, 212, 235, 0.3); */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc881a; /* #72cc88 with 10% opacity */
+  --success-30: #72cc884d; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa5431a; /* #efa543 with 10% opacity */
+  --warning-30: #efa5434d; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de52681a; /* #de5468 with 10% opacity */
+  --danger-30: #de52684d; /* #de5468 with 30% opacity */
+
+  /* ----> TEXT COLORS <---- */
+  --main-text-color: #a1a1a1;
+  --secondary-text-color: #dcdcdc;
+  --main-text-color-20: #a1a1a133; /* with 20% opacity, use in inputs borders */
+  --main-text-color-30: #a1a1a14d; /* with 30% opacity, use in inputs borders */
+  --main-text-color-50: #a1a1a180; /* with 50% opacity, use in inputs borders */
+  --main-text-color-70: #a1a1a1b3; /* with 70% opacity, use in disabled inputs text color */
+  --main-active-text-color: #ffffff;
+
+  /* logo color*/
+  --logo-color: #ffffff;
+}
+
+.dark-test {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #000000;
+  --bg-200: #181818;
+  --bg-300: #1b1b1b;
+  --bg-400: #1f1f1f;
+  --bg-400-2: #303030;
+  --bg-600: #282828;
+
+  --scrollbar: #575757;
+
+  --blue: #4489f7;
+
+  /* ----> accent colors <---- */
+  --accent: #bed4eb;
+  --accent-10: #bed4eb1a; /* it's #bed4eb (accent) width opacity: 10% -> rgba(190, 212, 235, 0.1); */
+  --accent-20: #bed4eb33; /* it's #bed4eb (accent) width opacity: 20% -> rgba(190, 212, 235, 0.2); */
+  --accent-30: #bed4eb4d; /* it's #bed4eb (accent) width opacity: 30% -> rgba(190, 212, 235, 0.3); */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc881a; /* #72cc88 with 10% opacity */
+  --success-30: #72cc884d; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa5431a; /* #efa543 with 10% opacity */
+  --warning-30: #efa5434d; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de52681a; /* #de5468 with 10% opacity */
+  --danger-30: #de52684d; /* #de5468 with 30% opacity */
+
+  /* ----> TEXT COLORS <---- */
+  --main-text-color: #a1a1a1;
+  --secondary-text-color: #dcdcdc;
+  --main-text-color-20: #a1a1a133; /* with 20% opacity, use in inputs borders */
+  --main-text-color-30: #a1a1a14d; /* with 30% opacity, use in inputs borders */
+  --main-text-color-50: #a1a1a180; /* with 50% opacity, use in inputs borders */
+  --main-text-color-70: #a1a1a1b3; /* with 70% opacity, use in disabled inputs text color */
+  --main-active-text-color: #ffffff;
+
+  /* logo color*/
+  --logo-color: #ffffff;
+}
+
+.solarized-dark {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #00212b;
+  --bg-200: #002b36;
+  --bg-300: #003340;
+  --bg-400: #00465a;
+  --bg-400-2: #00465a;
+  --bg-600: #003847;
+
+  --scrollbar: #575757;
+
+  --blue: #4489f7;
+
+  /* ----> accent colors <---- */
+  --accent: #196e6c;
+  --accent-10: #196e6c1a; /* it's #196e6c (accent) width opacity: 10% -> rgba(190, 212, 235, 0.1); */
+  --accent-20: #196e6c33; /* it's #196e6c (accent) width opacity: 20% -> rgba(190, 212, 235, 0.2); */
+  --accent-30: #196e6c4d; /* it's #196e6c (accent) width opacity: 30% -> rgba(190, 212, 235, 0.3); */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc881a; /* #72cc88 with 10% opacity */
+  --success-30: #72cc884d; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa5431a; /* #efa543 with 10% opacity */
+  --warning-30: #efa5434d; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de52681a; /* #de5468 with 10% opacity */
+  --danger-30: #de52684d; /* #de5468 with 30% opacity */
+
+  /* ----> TEXT COLORS <---- */
+  // --main-text-color: #8c8b8b;
+  // --secondary-text-color: #cbcbcb;
+  --main-text-color: #a1a1a1;
+  --secondary-text-color: #dcdcdc;
+  --main-text-color-20: #a1a1a133; /* with 20% opacity, use in inputs borders */
+  --main-text-color-30: #a1a1a14d; /* with 30% opacity, use in inputs borders */
+  --main-text-color-50: #a1a1a180; /* with 50% opacity, use in inputs borders */
+  --main-text-color-70: #a1a1a1b3; /* with 70% opacity, use in disabled inputs text color */
+  --main-active-text-color: #ffffff;
+
+  /* logo color*/
+  --logo-color: #ffffff;
+}
+
+/* =================================================*/
+/*=================== LIGHT MODE ===================*/
+/* =================================================*/
+
+.light-default {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #f2f2f3;
+  --bg-200: #ffffff;
+  --bg-300: #e4e5e7;
+  --bg-400: #dddfe2;
+  --bg-400-2: #dddfe2;
+  --bg-600: #c2c6ca;
+
+  --scrollbar: #575757;
+
+  /* ----> accent colors <---- */
+  --accent: #86b8ff;
+  --accent-10: #86b8ff66; /* width opacity: ??% */
+  --accent-20: #86b8ff80; /* width opacity: ??% */
+  --accent-30: #86b8ff99; /* width opacity: ??% */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc8866; /* #72cc88 with 10% opacity */
+  --success-30: #72cc8899; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa54366; /* #efa543 with 10% opacity */
+  --warning-30: #efa54399; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de526866; /* #de5468 with 10% opacity */
+  --danger-30: #de526899; /* #de5468 with 30% opacity */
+
+  /* logo color*/
+  --logo-color: #1d1d1b;
+
+  /* ----> TEXT COLORS <---- */
+  --main-text-color: #4e4d4d;
+  --main-text-color-20: #4e4d4d33; /* #4e4d4d with 20% opacity, use in inputs borders */
+  --main-text-color-30: #4e4d4d4d; /* #4e4d4d with 30% opacity, use in inputs borders */
+  --main-text-color-50: #4e4d4d80; /* #4e4d4d with 50% opacity, use in inputs borders */
+  --main-text-color-70: #4e4d4db3; /* #4e4d4d with 70% opacity, use in disabled inputs text color */
+  --secondary-text-color: #000000;
+  --main-active-text-color: #000000;
+}
+
+.solarized-light {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #ddd6c1;
+  --bg-200: #eee8d5;
+  --bg-300: #e6dfc7;
+  --bg-400: #fffdf6;
+  --bg-400-2: #fffdf6;
+  --bg-600: #fdf6e3;
+
+  --scrollbar: #575757;
+
+  /* ----> accent colors <---- */
+  --accent: #ac9d57;
+  --accent-10: #ac9d5766; /* width opacity: ??% */
+  --accent-20: #ac9d5780; /* width opacity: ??% */
+  --accent-30: #ac9d5799; /* width opacity: ??% */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc8866; /* #72cc88 with 10% opacity */
+  --success-30: #72cc8899; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa54366; /* #efa543 with 10% opacity */
+  --warning-30: #efa54399; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de526866; /* #de5468 with 10% opacity */
+  --danger-30: #de526899; /* #de5468 with 30% opacity */
+
+  /* logo color*/
+  --logo-color: #1d1d1b;
+
+  /* ----> TEXT COLORS <---- */
+  --main-text-color: #4e4d4d;
+  --main-text-color-20: #4e4d4d33; /* #4e4d4d with 20% opacity, use in inputs borders */
+  --main-text-color-30: #4e4d4d4d; /* #4e4d4d with 30% opacity, use in inputs borders */
+  --main-text-color-50: #4e4d4d80; /* #4e4d4d with 50% opacity, use in inputs borders */
+  --main-text-color-70: #4e4d4db3; /* #4e4d4d with 70% opacity, use in disabled inputs text color */
+  --secondary-text-color: #000000;
+  --main-active-text-color: #000000;
+}
+.light-test {
+  /* ----> BACKGROUND COLORS <---- */
+  --bg-100: #e5e5e5;
+  --bg-200: #f3f3f3;
+  --bg-300: #ecebeb;
+  --bg-400: #ffffff;
+  --bg-400-2: #ffffff;
+  --bg-600: #fafafa;
+
+  --scrollbar: #575757;
+
+  /* ----> accent colors <---- */
+
+  // #006aff - was
+  // #5fa2ff
+  --accent: #86b8ff;
+  --accent-10: #86b8ff66; /* width opacity: ??% */
+  --accent-20: #86b8ff80; /* width opacity: ??% */
+  --accent-30: #86b8ff99; /* width opacity: ??% */
+
+  --accent-landing: #778cf8;
+  --accent-landing-30: #778cf84d; /* width opacity: 30% */
+  --accent-landing-60: #778cf899; /* width opacity: 60% */
+
+  --success: #72cc88;
+  --success-10: #72cc8866; /* #72cc88 with 10% opacity */
+  --success-30: #72cc8899; /* #72cc88 with 30% opacity */
+  --warning: #efa543;
+  --warning-10: #efa54366; /* #efa543 with 10% opacity */
+  --warning-30: #efa54399; /* #efa543 with 30% opacity */
+  --danger: #de5268;
+  --danger-10: #de526866; /* #de5468 with 10% opacity */
+  --danger-30: #de526899; /* #de5468 with 30% opacity */
+
+  /* logo color*/
+  --logo-color: #1d1d1b;
+
+  /* ----> TEXT COLORS <---- */
+  --main-text-color: #616161;
+  --main-text-color-20: #61616133; /* with 20% opacity, use in inputs borders */
+  --main-text-color-30: #6161614d; /* with 30% opacity, use in inputs borders */
+  --main-text-color-50: #61616180; /* with 50% opacity, use in inputs borders */
+  --main-text-color-70: #616161b3; /* with 70% opacity, use in disabled inputs text color */
+  --secondary-text-color: #000000;
+  --main-active-text-color: #000000;
+}

@@ -1,0 +1,72 @@
+<div class="payment">
+    <div class="payment__row">
+        <h2 class="app-title">Payment Method</h2>
+        <div class="payment__cards">
+            <div class="card-box" *ngFor="let card of cards$|async;trackBy:trackBy">
+                <app-payment-card (remove)="deleteCard(card)" [card]="card" (toggle)="toggleDefault(card)">
+                </app-payment-card>
+            </div>
+            <div class="payment__add-card cursor" (click)="showAddNewCardModal=true">
+                <svg>
+                    <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                </svg>
+                <span>Add New</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment__row">
+        <h2 class="app-title">Billing History</h2>
+        <div class="payment__table-wrapper scrollbar scrollbar--visible">
+            <table class="payment__table secondary-text-2">
+                <thead>
+                    <tr class="thead-row">
+                        <th scope="col" class="company-name">Invoice</th>
+                        <th scope="col" class="dt">Date</th>
+                        <th scope="col" class="paid">Status</th>
+                        <th scope="col" class="am">Amount</th>
+                        <!-- <th scope="col" class="invoice">Invoice</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of paymentHistory$|async">
+                        <td class="companies">{{item.plan?.name ?? (item?.companiesOut?.length+" subscriptions")}}</td>
+                        <td class="dt">{{item?.created_at|date}}</td>
+                        <td class="paid-status">
+                            <div
+                                [ngClass]="{'label-success':item?.status==='success','label-fail':item?.status!=='success'}">
+                                {{item?.status==='success'?'Paid':'Failed'}}</div>
+                        </td>
+                        <td class="am">{{item?.amount|currency}}</td>
+                        <!-- <td class="download-invoice">
+                                    <button class="clear-btn cursor" type="button">
+                                        <svg class="svg-hover">
+                                            <use href="assets/icons/sprite/sprite.svg#cloud-download-icon"></use>
+                                        </svg>
+                                    </button>
+                                </td> -->
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Add new Card Modal -->
+    <p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showAddNewCardModal"
+        styleClass="popup-modal">
+        <div class="modal__wrapper">
+            <div class="modal__close cursor" (click)="showAddNewCardModal=false;">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                </svg>
+            </div>
+
+            <div class="modal__content">
+                <app-add-new-card *ngIf="showAddNewCardModal" (dismiss)="updateCards()"></app-add-new-card>
+            </div>
+
+        </div>
+    </p-dialog>
+</div>

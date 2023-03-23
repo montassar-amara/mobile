@@ -1,0 +1,20 @@
+<div class="feedback-user-avatar" [ngClass]="{'large':isLargeSize}">
+
+  <div class="avatar-box" *ngIf="user_avatar !== null && user_avatar !== undefined && user_avatar!==''">
+    <img [src]="filepath+'profilePictures/'+user_avatar" alt="user avatar">
+  </div>
+
+  <div class="avatar-box avatar-box--empty"
+    *ngIf="user_avatar === null || user_avatar === undefined || user_avatar===''">
+    <svg>
+      <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+    </svg>
+  </div>
+  <div class="text">
+    <p class="user-name">
+      <span>{{ user_name }}</span>
+      <span class="label" *ngIf="isYou">(You)</span>
+    </p>
+    <span class="created text-label-2" *ngIf="created_at">{{created_at|dateSince}}</span>
+  </div>
+</div>

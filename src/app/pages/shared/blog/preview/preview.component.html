@@ -1,0 +1,318 @@
+<div class="company-preview scrollbar position-relative" #scrollBar id="scrollBar" (scroll)="onScroll($event)" [style]="'background: linear-gradient(180deg,'+'#121212'+' '+(themeService.theme_mode === 'dark' ? '0%,
+rgba(1,1,1,0) 400px;' : '0%, transparent 600px;')">
+
+  <div class="company-preview__header" [style]="'background: '+'#121212'+';'">
+   
+    <div class="company-preview__header-content">
+    </div>
+  </div>
+
+  <div class="company-report-container">
+
+    <div class="main-box" style="z-index: 1;">
+
+      <div class="header-bar" [ngClass]="{'is-fixed':isTableHeaderFixed}"
+        [ngStyle]="{'background':isTableHeaderFixed ? (themeService.theme_mode === 'dark' ? '#121212'+' linear-gradient(180deg, rgba(1,1,1,0.3) 0%, rgba(1,1,1,0.3) 100%)' : '#121212'+' linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 100%)'):('transparent')}"
+        #headerTable id="headerTable">
+
+        <!-- show_table_content -->
+
+        <div class="header-bar__content" [ngClass]="{'without-table':!show_table_content}"
+          [style]="{'transform': show_table_content ? 'translateX(0)' : (device.isMobile ? 'translateX(0)' : 'var(--header-translate-x)')}">
+          <div class="research-report">
+
+            <span *ngIf="!isTableHeaderFixed" class="report-updated-time"
+              [ngClass]="{'for-light-mode': themeService.theme_mode === 'light'}">Effective as of :
+              {{reportPublishDate|date:'YYYY-MM-dd'}}</span>
+
+            <div class="header-company-box" *ngIf="isTableHeaderFixed">
+              <span class="report-title"
+                  [innerHTML]="(report_data.title || 'Report') | highlightSearch: (search_word$|async)">
+
+                </span>
+              <span class="report-updated-time"
+              [ngClass]="{'for-light-mode': themeService.theme_mode === 'light'}">Effective as of :
+              {{reportPublishDate|date:'YYYY-MM-dd'}}</span>
+                
+            </div>
+          </div>
+          <div class="right-container">
+
+          </div>
+        </div>
+      </div>
+      <div class="report-editor-container" #textContainer id="textContainer"
+        [style]="{'padding-left': (report_data != null && show_table_content_to_user) ? (show_table_content ? (device.isMobile ? '20px' : '40px') : (device.isMobile ? '20px' : 'var(--pl-table)')) : (device.isMobile ? '20px' : '40px')}">
+
+        <div class="report-table-contents scrollbar"
+          *ngIf="(report_data != null && show_table_content_to_user);else dummyTB"
+          [ngClass]="{'hide-table':!show_table_content, 'max-height-fixed': isTableHeaderFixed}">
+
+
+          <div class="toggle-table-box">
+            <button class="toggle-table-btn clear-btn" (click)="toggleTableContent()">
+              <svg class="img-toggle">
+                <use href="assets/icons/sprite/sprite.svg#toggle-menu-icon"></use>
+              </svg>
+            </button>
+          </div>
+
+          <ul style="transition: var(--transition-4)">
+            <li *ngFor="let section of section_list; let i = index;">
+              <div class="section" [ngClass]="{'active': (selected_section_index == i && selected_element_index == -1)}"
+                (click)="onTableSectionSelect(i); myCollapse(i);" [attr.aria-expanded]="!colapsed[i]"
+                aria-controls="collapseExample">
+
+                <span class="title"
+                  [innerHTML]="(section.title || 'section') | highlightSearch: (search_word$|async)"></span>
+                <div class="rating-value"
+                  *ngIf="section.show_rating && !(!(company_data|mycompany:(subscription$|async)) && !report?.is_free && !company_data?.is_free || ((company_data|mycompany:(subscription$|async):'in') && (subscription$|async).plan_id && !(subscription$|async).is_active ))"
+                  [ngStyle]="{'background': themeService.theme_mode === 'dark' ? ((section.selected_rating.value || 0)|ratingBgDarkModeColor) : ((section.selected_rating.value || 0)|ratingBgLightModeColor), 'color': themeService.theme_mode === 'dark' ? ((section.selected_rating.value || 0)|ratingTextDarkModeColor) : (section.selected_rating.value || 0)|ratingTextLightModeColor}"
+                  [innerHTML]="(section.selected_rating.value || 0)"></div>
+
+              </div>
+              <ul #collapse="ngbCollapse" [(ngbCollapse)]="!colapsed[i]">
+                <li *ngFor="let element of section.element_list; let j = index;" (click)="onTableElementSelect(i,j)">
+                  <div class="{{element.type}} sub-caption"
+                    [ngClass]="{'active': (selected_section_index == i && selected_element_index == j)}"
+                    *ngIf="element.type === 'headline_2' || element.type === 'headline_3'">
+                    <span class="{{element.type+'__txt'}}"
+                      [innerHTML]="(element.content || 'element') | highlightSearch: (search_word$|async)"></span>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <ng-template #dummyTB>
+          <div style="width: 40px;height: 40px;"></div>
+        </ng-template>
+
+
+        <div class="report-editor" id="report-editor" [ngClass]="{'is-mobile': device.isMobile}">
+          <div class="report-section" *ngIf="report_data != null">
+
+            <div class="report-section-body">
+              <div class="part-1 d-flex justify-content-between">
+                <span class="report-title"
+                  [innerHTML]="(report_data.title || 'Report') | highlightSearch: (search_word$|async)">
+
+                </span>
+              </div>
+              <div class="analyst-overall-rating" *ngIf="report_data.show_rating">
+                <div class="overall-rating">
+                  <span
+                    [innerHTML]="(report_data.selected_rating ? report_data.selected_rating.name : '') | highlightSearch: (search_word$|async)">
+                  </span>
+
+                  <div class="secondary-text rating-value"
+                    [ngStyle]="{'background': themeService.theme_mode === 'dark' ? (report_data.selected_rating.value|ratingBgDarkModeColor) : (report_data.selected_rating.value|ratingBgLightModeColor),
+                    'color': themeService.theme_mode === 'dark' ? (report_data.selected_rating.value|ratingTextDarkModeColor) : (report_data.selected_rating.value|ratingTextLightModeColor)}">
+
+                    {{(report_data?.selected_rating?.value ?? '')}} / 5
+                  </div>
+                </div>
+                <div class="describe-rating" *ngIf="report_data.rating_description">
+                  <div class="txt" placeholder="Describe Rating"
+                    [innerHTML]="(report_data.rating_description || '') | highlightSearch: (search_word$|async)">
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-list">
+                <div id="report-element-{{j}}" *ngFor="let element of report_data.element_list;let j = index;">
+                  <div class="element-text" *ngIf="element.type === 'text'">
+                    <span [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+
+                    </span>
+                  </div>
+                  <div class="element-headline-2" *ngIf="element.type === 'headline_2'">
+                    <h3 type="text" class=""
+                      [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+                    </h3>
+                  </div>
+                  <div class="element-headline-3" *ngIf="element.type === 'headline_3'">
+                    <h4 type="text" class=""
+                      [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+                    </h4>
+                  </div>
+
+                  <div class="element-media" *ngIf="element.type === 'media'">
+                    <div class="media-image" *ngIf="element.content"
+                      >
+                      <img src="{{filepath + 'reports/' + element.content}}" alt="media photo">
+                    </div>
+                  </div>
+                  <div class="element-assets" *ngIf="element.type === 'assets'"
+                    >
+                    <span type="text" class="element-assets-name" id="report-element-assets-name-{{j}}"
+                      [innerHTML]="(element.name ?? '') | highlightSearch: (search_word$|async)">
+                    </span>
+                    <div class="assets-item-list">
+                      <div class="assets-item assets-item-{{assets_item.type}}"
+                        *ngFor="let assets_item of element.assets_item_list; let k = index;">
+                        <span class="assets-item-name"
+                          [innerHTML]="(assets_item?.name ?? '' )| highlightSearch: (search_word$|async)"></span>
+                        <div class="assets-item-dot-line"></div>
+                        <span class="assets-item-value"
+                          [innerHTML]="(assets_item?.value ?? '') | highlightSearch: (search_word$|async)"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="element-grid" *ngIf="element.type === 'grid'"
+                    >
+                    <span type="text" class="element-grid-name" id="report-element-grid-name-{{j}}">
+                      {{(element.name ?? '') | highlightSearch: (search_word$|async):
+                      !(company_data|mycompany:(subscription$|async)) && !selectedReportIsFree &&
+                      !company_data?.is_free}}
+                    </span>
+                    <span class="text-x"
+                      [innerHTML]="(element.x_axis_title ?? '') | highlightSearch: (search_word$|async)"></span>
+                    <div class="flex-row">
+                      <div><span class="text-y"
+                          [innerHTML]="(element.y_axis_title ?? '') | highlightSearch: (search_word$|async)"></span>
+                      </div>
+                      <mat-grid-list class="grid-list" cols="{{element.cols}}" rowHeight="32px" [gutterSize]="0">
+                        <div *ngFor="let row_item of numSequence(element.rows); let ig = index;">
+                          <mat-grid-tile [style.background]="getBackgroundColor(ig, jg)"
+                            [ngStyle]="{'color': 'var(--secondary-text-color)', 'font-size': '11px', 'border': 'solid 0.4px rgba(190, 212, 235, 0.1)'}"
+                            *ngFor="let col_item of numSequence(element.cols); let jg = index;">
+                            <span style="text-align: center; background: none; border: none"
+                              [innerHTML]="(element.grid_values[ig][jg] ?? '') | highlightSearch: (search_word$|async)"></span>
+                          </mat-grid-tile>
+                        </div>
+                      </mat-grid-list>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div>
+            <div class="section" id="section-{{i}}"
+              
+              *ngFor="let section of section_list; let i = index;">
+              <div>
+                <div class="section-body">
+                  <div class="part-1">
+                    <h2 type="text" class=" section-title"
+                      [innerHTML]="(section.title || '') | highlightSearch: (search_word$|async)">
+                    </h2>
+                  </div>
+                  <div class="section-rating-container" *ngIf="section.show_rating">
+                    <div class="section-rating"
+                      >
+                      <span
+                        [innerHTML]="(section.selected_rating ? section.selected_rating.name : '') | highlightSearch: (search_word$|async)">
+                      </span>
+
+                      <div class="secondary-text rating-value"
+                        [ngStyle]="{'background': themeService.theme_mode === 'dark' ? (section.selected_rating.value|ratingBgDarkModeColor) : (section.selected_rating.value|ratingBgLightModeColor), 'color': themeService.theme_mode === 'dark' ? (section.selected_rating.value|ratingTextDarkModeColor) : (section.selected_rating.value|ratingTextLightModeColor)}"
+                        >
+
+                        {{(print(section?.selected_rating?.value) ?? '')}} / 5
+                      </div>
+                    </div>
+                    <div class="describe-rating" *ngIf="section.rating_description">
+                      <div class="txt"
+                        [innerHTML]="(section.rating_description || '') | highlightSearch: (search_word$|async)"
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="section-list">
+                    <div id="section-{{i}}-element-{{j}}" *ngFor="let element of section.element_list;let j = index;">
+                      <div class="element-text" *ngIf="element.type === 'text'"
+                        >
+                        <span [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+
+                        </span>
+                      </div>
+                      <div class="element-headline-2" *ngIf="element.type === 'headline_2'">
+                        <h3 type="text" class=""
+                          [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+                        </h3>
+                      </div>
+                      <div class="element-headline-3" *ngIf="element.type === 'headline_3'">
+                        <h4 type="text" class=""
+                          [innerHTML]="(element.content || '') | highlightSearch: (search_word$|async)">
+                        </h4>
+                      </div>
+
+                      <div class="element-media" *ngIf="element.type === 'media'">
+                        <div class="media-image" *ngIf="element.content"
+                          >
+                          <img src="{{filepath + 'reports/' + element.content}}" alt="media photo">
+                        </div>
+                      </div>
+                      <div class="element-assets" *ngIf="element.type === 'assets'"
+                        >
+                        <span type="text" class="element-assets-name" id="element-assets-name-{{j}}"
+                          [innerHTML]="(element.name ?? '') | highlightSearch: (search_word$|async)">
+                        </span>
+                        <div class="assets-item-list">
+                          <div class="assets-item assets-item-{{assets_item.type}}"
+                            *ngFor="let assets_item of element.assets_item_list; let k = index;"
+                            >
+                            <span class="assets-item-name"
+                              [innerHTML]="(assets_item?.name ?? '') | highlightSearch: (search_word$|async)"></span>
+                            <div class="assets-item-dot-line"></div>
+                            <span class="assets-item-value"
+                              [innerHTML]="(assets_item?.value ?? '') | highlightSearch: (search_word$|async)"></span>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="element-grid" *ngIf="element.type === 'grid'"
+                        >
+                        <span type="text" class="element-grid-name" id="element-grid-name-{{j}}"
+                          [innerHTML]="element.name | highlightSearch: (search_word$|async)">
+                        </span>
+                        <span class="text-x"
+                          [innerHTML]="(element.x_axis_title ?? '') | highlightSearch: (search_word$|async)"></span>
+                        <div class="flex-row">
+                          <div><span class="text-y"
+                              [innerHTML]="element.y_axis_title | highlightSearch: (search_word$|async)"></span>
+                          </div>
+                          <mat-grid-list class="grid-list" cols="{{element.cols}}" rowHeight="32px" [gutterSize]="0">
+                            <div *ngFor="let row_item of numSequence(element.rows); let ig = index;">
+                              <mat-grid-tile [style.background]="getBackgroundColor(ig, jg)"
+                                [ngStyle]="{'color': 'var(--secondary-text-color)', 'font-size': '11px', 'border': 'solid 0.4px rgba(190, 212, 235, 0.1)'}"
+                                *ngFor="let col_item of numSequence(element.cols); let jg = index;">
+                                <span style="text-align: center; background: none; border: none"
+                                  [innerHTML]="(element.grid_values[ig][jg] ?? '') | highlightSearch: (search_word$|async)"></span>
+                              </mat-grid-tile>
+                            </div>
+                          </mat-grid-list>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      
+    </div>
+
+  </div>
+
+  <div class="bottom-line">
+    <svg>
+      <use href="assets/icons/sprite/sprite.svg#decor-radius"></use>
+    </svg>
+  </div>
+
+</div>

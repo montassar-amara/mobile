@@ -1,0 +1,204 @@
+<ng-container *ngIf="(subscription$|async)?.plan_id && (subscription$|async)?.is_active">
+    <div class="portfolio scrollbar">
+
+        <div class="portfolio__top-section" [style]="topographyBgImageUrl">
+            <div class="portfolio__top-section-content">
+                <div class="tabs-box">
+                    <ul class="list">
+                        <li>
+                            <div class="tabs-box__item" [ngClass]="{'active': activeTab===0}" (click)="activeTab=0">
+                                <span class="title">
+                                    Portfolio
+                                </span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tabs-box__item" [ngClass]="{'active': activeTab===1}" (click)="activeTab=1">
+                                <span class="title">
+                                    Performance
+                                </span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tabs-box__item" [ngClass]="{'active': activeTab===2}" (click)="activeTab=2">
+                                <span class="title">
+                                    Transactions
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+    
+                <ng-container [ngSwitch]="activeTab">
+                    <ng-container *ngSwitchCase="0">
+                        <div class="portfolio__diagram">
+                            <div class="portfolio__diagram-content">
+                                <div class="portfolio__diagram-left pie">
+                                    <p-chart type="pie" [data]="data" width="300" height="300" [options]="optionsPie"
+                                        [style]="{'width': '100% !impotent', 'display': 'flex', 'justify-content': 'flex-start', 'align-items': 'center'}"></p-chart>
+                                </div>
+                                <div class="portfolio__diagram-right">
+    
+                                    <div class="portfolio__table-wrapper scrollbar scrollbar--visible" (scroll)="true">
+                                        <table class="portfolio__table small-table secondary-text-2">
+                                            <thead #tableHeader3 [class.fixed]="tableHeader3.offsetTop > 0">
+                                                <tr class="thead-row">
+                                                    <th class="company-name">Position</th>
+                                                    <th>Ticker</th>
+                                                    <th>Size</th>
+                                                    <th>Share Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar scrollbar--visible">
+                                                <tr *ngFor="let position of portfolio?.companyPortfolio">
+                                                    <td class="companies">
+                                                        {{position.name}}
+                                                    </td>
+                                                    <td>
+                                                        <a class="c-tag border"
+                                                            [ngStyle]="{'background-color':position?.color}">{{position.symbol}}</a>
+                                                    </td>
+                                                    <td>
+                                                        {{position.percent|percent}}
+                                                    </td>
+                                                    <td>
+                                                        {{position.now_price|currency}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+    
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="1">
+                        <div class="portfolio__diagram">
+                            <div class="portfolio__diagram-content">
+                                <div class="portfolio__diagram-left">
+                                    <p-chart type="line" #chart [data]="dataMAG" height="300" width="auto"
+                                        [options]="options" [style]="{'width': '100%'}" [responsive]="true"></p-chart>
+    
+                                    <div class="p-switcher">
+                                        <button class="button p-switch-btn" type="button"
+                                            [ngClass]="{'active': isYearly === 'Yearly'}"
+                                            (click)="updatePerformance('Yearly')">Yearly</button>
+                                        <button class="button p-switch-btn" type="button"
+                                            [ngClass]="{'active': isYearly === 'Monthly'}"
+                                            (click)="updatePerformance('Monthly')">{{month|date:'MMMM'}}</button>
+                                    </div>
+                                </div>
+                                <div class="portfolio__diagram-right">
+    
+                                    <div class="portfolio__table-wrapper scrollbar scrollbar--visible" (scroll)="true">
+                                        <table class="portfolio__table small-table secondary-text-2">
+                                            <thead #tableHeader2 [class.fixed]="tableHeader2.offsetTop > 0">
+                                                <tr class="thead-row">
+                                                    <th class="company-name">Position</th>
+                                                    <th>Ticker</th>
+                                                    <th>Size</th>
+                                                    <th>Share Price</th>
+                                                    <th>Performance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar scrollbar--visible">
+                                                <tr *ngFor="let position of portfolio?.companyPortfolio">
+                                                    <td class="companies">
+                                                        {{position.name}}
+                                                    </td>
+                                                    <td>
+                                                        <a class="c-tag border"
+                                                            [ngStyle]="{'background-color':position?.color}">{{position.symbol}}</a>
+                                                    </td>
+                                                    <td>
+                                                        {{position.percent|percent}}
+                                                    </td>
+                                                    <td>
+                                                        {{position.now_price|currency}}
+                                                    </td>
+                                                    <td [class.success]="position.performance>=1"
+                                                        [class.fail]="position.performance<1">
+                                                        {{position.performance-1|percent}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+    
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="2">
+                        <div class="portfolio__diagram">
+    
+                            <div class="portfolio__table-wrapper scrollbar scrollbar--visible" (scroll)="true">
+                                <table class="portfolio__table secondary-text-2">
+                                    <thead #tableHeader1 [class.fixed]="tableHeader1.offsetTop > 0">
+                                        <tr class="thead-row">
+                                            <th class="company-name">company</th>
+                                            <th>Ticker</th>
+                                            <th>operation</th>
+                                            <th class="date">Date (UTC)</th>
+                                            <th>previous size</th>
+                                            <th>new size</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar scrollbar--visible">
+                                        <tr *ngFor="let position of history">
+                                            <td class="companies">
+                                                {{position.name}}
+                                            </td>
+                                            <td>
+                                                <a class="c-tag border"
+                                                    [ngStyle]="{'background-color':position?.color}">{{position.symbol}}</a>
+                                            </td>
+                                            <td class="paid-status">
+                                                <div
+                                                    [ngClass]="{'label-success':position.type==='buy','label-fail':position.type==='sell'}">
+                                                    {{position.type}}</div>
+                                            </td>
+                                            <td class="date">{{position?.created_at|date:'short':'UTC'}}</td>
+                                            <td>
+                                                {{position.previous|percent:'1.0-1'}}
+                                            </td>
+                                            <td>
+                                                {{position.current|percent:'1.0-1'}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+    
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+            </div>
+    
+    
+        <div class="portfolio__content">
+            <app-blog-list [blogs]="blogs" (select)="previewBlog($event)"></app-blog-list>
+        </div>
+    
+        <div class="bottom-line">
+            <svg>
+                <use href="assets/icons/sprite/sprite.svg#decor-radius"></use>
+            </svg>
+        </div>
+    </div>
+    
+    <p-dialog [(visible)]="youtubeModal" [showHeader]="false" [draggable]="false" [closable]="true" [modal]="true"
+        [dismissableMask]="true" styleClass="youtube">
+        <youtube-player [videoId]="isYoutube" [playerVars]="vars" width="800" height="450" *ngIf="isYoutube">
+        </youtube-player>
+        <video id="my_video_1" class="video-js vjs-default-skin" style="max-width: 70vw; max-height: auto; display: block;"
+            *ngIf="!isYoutube" controls preload="auto">
+            <source [src]="selectedBlog?.link" type='video/mp4' />
+        </video>
+    </p-dialog>
+
+</ng-container>
+<ng-container *ngIf="!((subscription$|async)?.plan_id && (subscription$|async)?.is_active)">
+    <app-portfolio-special></app-portfolio-special>
+</ng-container>

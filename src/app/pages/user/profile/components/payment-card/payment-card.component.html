@@ -1,0 +1,48 @@
+<div class="payment-card secondary-text">
+    <div class="payment-card__row">
+        <div class="payment-card__brand">
+            <svg *ngIf="card.brand === 'Visa'">
+                <use href="assets/icons/sprite/sprite.svg#visa-icon"></use>
+            </svg>
+            <svg *ngIf="card.brand === 'MasterCard'">
+                <use href="assets/icons/sprite/sprite.svg#mastercard-icon"></use>
+            </svg>
+            <span *ngIf="card.brand !== 'MasterCard' && card.brand !== 'Visa'">{{card.brand}}</span>
+        </div>
+        <div class="payment-card__number">
+            <svg class="dots" width="25" height="4">
+                <use href="assets/icons/sprite/sprite.svg#4dots-icon"></use>
+            </svg>
+            <span>{{card.last4}}</span>
+        </div>
+    </div>
+    <div class="payment-card__row">
+        <div class="payment-card__col">
+            <span class="text-label-2" style="opacity: 0.7;">Cardholder</span>
+            <span>{{card.holder_name}}</span>
+        </div>
+        <div class="payment-card__col payment-card__col--right">
+            <span class="text-label-2" style="opacity: 0.7;">Expires</span>
+            <span>{{card.ccExpiryMonth}}/{{card.ccExpiryYear}}</span>
+        </div>
+    </div>
+    <div class="payment-card__divider"></div>
+    <div class="payment-card__row">
+        <div class="payment-card__toggle">
+            <label class="toggle">
+                <input class="toggle__checkbox visually-hidden" type="checkbox" name="" id="{{card.last4}}"
+                    role="switch" [(ngModel)]="card.default" (change)="toggleDefault()">
+                <span class="toggle__switch"></span>
+                <span class="toggle__label text-label-3">Default</span>
+            </label>
+        </div>
+
+        <button class="payment-card__delete-btn clear-btn" type="button" [disabled]="card.default"
+            (click)="removeCard()">
+            <svg>
+                <use href="assets/icons/sprite/sprite.svg#trash-icon"></use>
+            </svg>
+        </button>
+    </div>
+
+</div>

@@ -1,0 +1,23 @@
+<div class="feedback-user-avatar"
+  [ngClass]="{'in-post-preview':isPostPreview, 'fz14': fontSize14, 'name-hidden': isNameHidden}">
+  <!-- <p-avatar icon="pi pi-user" styleClass="user-avatar" size="large"
+    *ngIf="user?.avatar === null || user?.avatar === undefined" shape="circle"></p-avatar>
+  <p-avatar size="large" styleClass="user-avatar" shape="circle" [image]="filepath+'profilePictures/'+user?.avatar"
+    *ngIf="user?.avatar !== null && user?.avatar !== undefined">
+  </p-avatar> -->
+
+  <div class="user-avatar user-avatar--no-image"
+    *ngIf="user_avatar === null || user_avatar === undefined || user_avatar === ''">
+    <svg>
+      <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+    </svg>
+  </div>
+
+  <div class="user-avatar" *ngIf="user_avatar !== null && user_avatar !== undefined && user_avatar !== ''">
+    <img [src]="filepath+'profilePictures/'+user_avatar" alt="user avatar">
+  </div>
+  <p class="user-name">
+    <span>{{ user_name }}</span>
+    <span class="label" *ngIf="isYou && showOwner">(You)</span>
+  </p>
+</div>

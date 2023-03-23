@@ -1,0 +1,17 @@
+:root .code-input {
+  margin-left: -8px;
+  --text-security-type: disc;
+  --item-spacing: 8px !important;
+  --item-height: 64px !important;
+  --item-border: 1px solid var(--main-text-color-20) !important;
+  --item-border-bottom: 1px solid var(--main-text-color-20) !important;
+  --item-border-has-value: 1px solid var(--main-text-color-30) !important;
+  --item-border-bottom-has-value: 1px solid var(--main-text-color-30) !important;
+  --item-border-focused: 1px solid var(--main-text-color-30) !important;
+  --item-border-bottom-focused: 1px solid var(--main-text-color-30) !important;
+  --item-shadow-focused: 0px 0px 3px var(--accent) !important;
+  --item-border-radius: var(--border-radius) !important;
+  --item-font-weight: 400 !important;
+  --item-background: var(--bg-600) !important;
+  --color: var(--secondary-text-color) !important;
+}

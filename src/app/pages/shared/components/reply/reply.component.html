@@ -1,0 +1,134 @@
+<div>
+  <div class="d-flex justify-content-between"
+    [ngClass]="{'replypost': !!commentId, 'commentPost': !commentId, 'firstreply': first, 'lastreply': last, 'pinnedComment': reply['pined']}">
+    <div class="box-hr-border" *ngIf="!!commentId "></div>
+    <div class="box-vr-border" *ngIf="!!commentId"></div><!--   && !last -->
+    <div class="comment-with-replies" *ngIf="openedComment"></div>
+    <div class=" w-100">
+      <div class=" d-flex flex-column mb-3"
+        [ngClass]="{'reply-item': reply.type === 'reply', 'comment-item': reply.type ==='comment'}">
+        <div class="reply-true-format" *ngIf="reply.type === 'reply'"></div>
+        <div class="r-wrapper">
+          <app-user-comment-avatar [created_at]="reply.updated_at" [user_id]="reply.user_id"
+            [user_avatar]="reply?.user_avatar" [user_name]="reply?.displayname ?? reply.fullname ?? reply.user_name">
+          </app-user-comment-avatar>
+          <ng-container *ngIf="user as user">
+            <app-post-dropdown *ngIf="!isDisabled&&(user.role==='manager' || user._id===reply.user_id)" [msg]="msg"
+              (onPin)="pin()" [isPin]="reply.pined" [showPin]="!commentId" (onDelete)="delete()" (onEdit)="startEdit()">
+            </app-post-dropdown>
+          </ng-container>
+        </div>
+        <p class="reply-message main-text" [ngClass]="{'comment-item-openend': openedComment}" *ngIf="!editMode">
+          {{reply.message}}</p>
+        <app-edit-reply *ngIf="editMode" [reply]="reply" [isFeedback]="isFeedback" [commentId]="commentId"
+          [feedbackId]="feedbackId" (close)="cancelReply()"></app-edit-reply>
+        <div class="d-flex py-2" style="margin-left: 48px;" *ngIf="reply.files.length>0">
+          <div class="col-auto ms-3 position-relative" (mouseenter)="close.classList.remove('hidden')"
+            (mouseleave)="close.classList.add('hidden')"
+            *ngFor="let file of reply.files;trackBy:trackbyName;let index=index">
+            <p-image [src]="server+(isFeedback?'comments/':'suggestions/')+file" alt="Image" [preview]="true"
+              *ngIf="file|isImage else video"></p-image>
+            <ng-template #video>
+              <video width="80" height="60" controls>
+                <source [src]="server+(isFeedback?'comments/':'suggestions/')+file" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </ng-template>
+            <div [class.d-none]="!(user?._id===reply.user_id)">
+              <i class="bi bi-x-circle-fill position-absolute top-0 end-0 pointer hidden" (click)="removeFile(file)"
+                #close></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="!commentId">
+    <div class="reply-btn cursor main-text-2" (click)="registerNewReplyStart()">
+      <svg>
+        <use href="assets/icons/sprite/sprite.svg#return-right-icon"></use>
+      </svg>
+      <span (click)="replies.classList.toggle('show'); openedComment = !openedComment">Repl{{
+        reply.replies!.length>0?((reply.replies!.length===1?'y':'ies')+'('+reply.replies!.length+')'):'y' }}</span>
+    </div>
+    <ul class="collapse" #replies>
+      <li class="c-item" *ngFor="let rep of reply.replies;let last = last; let first = first;">
+        <app-reply [reply]="rep" [msg]="'Reply'" [user]="user" [isDisabled]="isDisabled" [isFeedback]="isFeedback"
+          [commentId]="reply._id" [feedbackId]="feedbackId" [last]="last" [first]="first"></app-reply>
+      </li>
+      <li class="c-item2">
+        <ng-container>
+          <div class="d-flex">
+            <div class="position-relative" style="width: 80px;">
+              <div class="box-hr-comment-border"></div>
+              <div class="avatar-box"
+                style="width: 32px; height: 32px; overflow: hidden; border-radius: 50%; top: 15px; left: 40px; position: absolute;">
+                <img src="{{ server+'profilePictures/'+user?.avatar }}" *ngIf="user?.avatar"
+                  style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                <svg *ngIf="!user?.avatar">
+                  <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                </svg>
+              </div>
+            </div>
+            <div class="textarea-container edit-comment-textarea-container" style="width: 83%;">
+              <textarea class="secondary-text-2" [placeholder]="user?'Reply ...':'You need to be logged In'"
+                [ngModelOptions]="{standalone: true}" [autoResize]="true" (ngModelChange)="newComment.message=$event"
+                rows="5" [ngModel]="newComment.message" [maxlength]="2000" [rows]="5" [disabled]="isDisabled"
+                [readOnly]="isDisabled">
+                </textarea><!-- (keyup.escape)="cancelReply();" -->
+              <input #file type="file" accept="video/*,image/*" name="file" id="newRequestFile" class="hidden"
+                (change)="addFilesToComment($event)" [disabled]="isDisabled" [readOnly]="isDisabled">
+              <div class="edit-comment-controls d-flex">
+                <div class="d-flex justify-content-between position-relative">
+                  <span (click)="IndexCommentDown()" style="position: relative;" *ngIf="commentFileIndex>0">&lt;</span>
+                  <div
+                    *ngFor="let img of newComment.uploadedFiles|slice:commentFileIndex*3:commentFileIndex*3+3;let index=index;trackBy:trackbyName">
+                    <div class="file-item" style="position: relative;">
+
+                      <p class="file-name secondary-text">{{ img.name }}</p>
+                      <svg>
+                        <use href="assets/icons/sprite/sprite.svg#file-icon"></use>
+                      </svg>
+
+                      <div class="remove-file cursor" (click)="removeFileFromComment(index)">
+                        <svg>
+                          <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <span style="position: relative;" (click)="IndexCommentUp()"
+                    *ngIf="commentFileIndex*3<newComment.uploadedFiles.length-3">&gt;</span>
+                </div>
+                <ul class="textarea-controls list">
+                  <li>
+                    <button class="button button--without-border" (click)="file.click()"
+                      [disabled]="isDisabled || newComment && (newComment.uploadedFiles.length>4)">
+                      <svg class="svg-hover cursor">
+                        <use href="assets/icons/sprite/sprite.svg#file-upload-icon"></use>
+                      </svg>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="button button--without-border" [disabled]="isDisabled || newComment.message === ''"
+                      (click)="publishReply()">
+                      <svg class="svg-hover cursor">
+                        <use href="assets/icons/sprite/sprite.svg#send-message-icon"></use>
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="textarea-length secondary-text-2">
+            <p>({{newComment.message.length}}/2000 characters)</p>
+            <p *ngIf="fileSizeBig" class="text-danger">File Size should be less than 2Mb.</p>
+            <span *ngIf="unsupportedFileType" class="text-danger">Unsupported File Type.</span>
+          </div>
+
+        </ng-container>
+      </li>
+    </ul>
+  </ng-container>
+</div>

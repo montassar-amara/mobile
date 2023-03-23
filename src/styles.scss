@@ -1,0 +1,276 @@
+/* You can add global styles to this file, and also import other style files */
+// @import url("../node_modules/bootstrap-icons/font/bootstrap-icons.css");
+// @import "~primeicons/primeicons.css";
+
+/*  Use import without url, otherwise in these files cannot write in scss format */
+@import "./globals/colors";
+@import "./globals/variables";
+@import "./globals/common_classes";
+@import "./globals/buttons";
+@import "./globals/form-controls";
+@import "./globals/text-styles";
+@import "./globals/login-register";
+@import "./globals/popup-modal";
+@import "./globals/dropdown-menu";
+@import "./globals/p-sidebar";
+@import "./globals/p-listbox";
+@import "./globals/tooltip";
+@import "./globals/code-input";
+@import "./globals/mat-expansion-panel";
+@import "./globals/feedback-sidebar";
+@import url("./globals/sweetalert.scss");
+
+@import url("./globals/loader.scss");
+
+/* GrapeCity Styles for excel view*/
+// @import url("./globals/grapecity-styles.scss");
+
+@import url("intl-tel-input/build/css/intlTelInput.css");
+
+/*@import url("./globals/custom-grapecity.scss");*/
+// @import "@grapecity/spread-sheets-designer/styles/gc.spread.sheets.designer.min.css";
+.pointer {
+  cursor: pointer;
+}
+html,
+body {
+  height: 100%;
+}
+.hidden {
+  display: none;
+}
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+.list {
+  list-style: none;
+}
+.link {
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+  font-size: 11px;
+  color: var(--main-text-color);
+  transition: var(--transition-4);
+  &:hover {
+    color: var(--main-active-text-color);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+button {
+  cursor: pointer;
+}
+iframe {
+  display: block;
+}
+
+/* Font family */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+body {
+  line-height: 1;
+  font-family: "Inter", sans-serif;
+  color: var(--main-text-color);
+}
+
+/* GRAPE CITY STYLES ADDED HERE*/
+
+div.iti.iti--allow-dropdown {
+  width: 100% !important;
+}
+
+div.iti__selected-dial-code {
+  font-size: 12px;
+  line-height: 15px;
+
+  color: var(--secondary-text-color);
+  transition: color var(--transition-4);
+}
+
+.iti__flag-container {
+  bottom: 4px;
+}
+
+.iti.iti--allow-dropdown .iti__flag-container {
+  display: none;
+}
+
+.iti.iti--allow-dropdown.iti--separate-dial-code .iti__flag-container {
+  display: block;
+}
+
+ul.iti__country-list {
+  border-radius: var(--border-radius);
+  //background-color: var(--bg-600);
+  background-color: #282828;
+  padding: 6px;
+  //color: var(--main-text-color);
+  color: #7e7e7e;
+  border: none;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.8);
+
+  li {
+    cursor: pointer;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: var(--scrollbar) !important;
+    border-radius: 12px !important;
+    max-height: 150px !important;
+    opacity: 0.5 !important;
+  }
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-width) !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    border-radius: 0px !important;
+  }
+  &--within {
+    &::-webkit-scrollbar {
+      width: 0px !important;
+    }
+  }
+
+  overflow-x: hidden;
+
+  span.iti__country-name,
+  span.iti__dial-code {
+    font-size: 12px;
+    line-height: 15px;
+
+    color: var(--secondary-text-color);
+    transition: color var(--transition-4);
+  }
+}
+
+div#credential_picker_container {
+  display: none;
+}
+
+.d-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nw-editor {
+  //background: none !important;
+  padding: 12px 8px;
+  height: inherit !important;
+  color: white;
+  font-size: 14px;
+  background: #282828 !important;
+  overflow-x: hidden;
+  word-break: break-word;
+}
+
+.p-dropdown {
+  padding: 8px 12px !important;
+  background: #282828 !important;
+  border: 1px solid rgba(126, 126, 126, 0.3) !important;
+  border-radius: 4px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 15px !important;
+  color: #bebebe !important;
+
+  span {
+    font-size: 12px !important;
+    padding: 0 !important;
+    color: white !important;
+  }
+
+  .p-dropdown-trigger {
+    width: inherit !important;
+    margin-left: 8px !important;
+  }
+
+  .p-dropdown-items-wrapper {
+    background: #282828 !important;
+
+    &:hover::-webkit-scrollbar-thumb {
+      background: var(--scrollbar) !important;
+      border-radius: 12px !important;
+      max-height: 150px !important;
+      opacity: 0.5 !important;
+    }
+    &::-webkit-scrollbar {
+      width: var(--scrollbar-width) !important;
+      background: transparent !important;
+      border-radius: 0px !important;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparent !important;
+      border-radius: 0px !important;
+    }
+    &--within {
+      &::-webkit-scrollbar {
+        width: 0px !important;
+      }
+    }
+  }
+
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight,
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+    background: #616569 !important;
+  }
+}
+
+.highlighted-text {
+  background-color: green;
+  font-weight: bold;
+}
+
+.highlighted-text:focus {
+  background-color: #8ac38a;
+}
+
+.custom-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  &:hover::-webkit-scrollbar-thumb {
+    background: var(--scrollbar) !important;
+    border-radius: 12px !important;
+    max-height: 150px !important;
+    opacity: 0.5 !important;
+  }
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-width) !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    border-radius: 0px !important;
+  }
+  &--within {
+    &::-webkit-scrollbar {
+      width: 0px !important;
+    }
+  }
+}

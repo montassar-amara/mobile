@@ -1,0 +1,28 @@
+<div class="companies-title">Updates</div>
+<div class="company-list">
+    <div class="company-list__item" [class.reduced-shadow]="!hasShadow" *ngFor="let blog of blogs;">
+        <div class="company-list__item-content" (click)="openLink(blog)">
+
+            <div class="c-logo-card bg-light">
+                <ng-container *ngIf="!blog.link">
+                    <img [src]="filepath+'news/'+blog?.cover" alt="" *ngIf="blog?.cover"
+                        style="object-fit: cover; display: block;">
+                    <img [src]="filepath+'companiesLogo/'+find(blog?.company_id)" alt="company logo"
+                        *ngIf="!blog?.cover" style="height:100%;width:100%;">
+                    <div class="hover-box">Read</div>
+                </ng-container>
+
+                <div class="hover-box" *ngIf="blog.link">
+                    <img src="assets/icons/play-circle.svg" class="svg-lg" alt="">
+                </div>
+                <svg class=" svg-lg" *ngIf="blog.link">
+                    <use href="assets/icons/sprite/sprite.svg#youtube2-icon"></use>
+                </svg>
+            </div>
+            <div class="c-info">
+                <div class="c-name">{{blog?.title || blog?.news_data?.title}}</div>
+                <div class="c-date">{{(blog?.publish_at|date:'YYYY-MM-dd') || 'date'}}</div>
+            </div>
+        </div>
+    </div>
+</div>

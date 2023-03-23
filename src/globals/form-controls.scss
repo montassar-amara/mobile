@@ -1,0 +1,303 @@
+// ======================================== CONTROLS ================================
+
+// ============= INPUTS =========================
+
+.form-input,
+.text-area-input {
+  width: 100%;
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  background-color: var(--bg-300);
+  color: var(--main-text-color);
+  border: 1px solid var(--main-text-color-20);
+  padding: 8px 12px;
+  transition: var(--transition-4);
+  outline: none;
+  box-shadow: none;
+}
+
+.text-area-input {
+  line-height: 1.5;
+}
+
+// empty input
+.form-input {
+  height: 32px;
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--main-text-color-50);
+    background-color: var(--bg-600);
+    color: var(--secondary-text-color);
+  }
+
+  &::placeholder {
+    color: var(--main-text-color);
+  }
+
+  // filled input
+  &.filled {
+    background-color: var(--bg-600);
+    color: var(--secondary-text-color);
+    border: 1px solid var(--main-text-color-30);
+  }
+  // disabled
+  &:disabled {
+    color: var(--main-text-color-70);
+    pointer-events: none;
+  }
+  // error
+  &.danger-input {
+    border-color: var(--danger) !important;
+    background-color: var(--danger-10) !important;
+  }
+}
+
+.input-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--main-text-color);
+}
+
+// ============= CHECKBOX =========================
+
+// ================== rect and circle checkboxes styles =========================
+
+// how use in html:
+/*
+
+    1) rect 1
+
+    <label class="check">
+    <input class="check__input visually-hidden" type="checkbox" name="" id="">
+    <span class="check__box">
+      <svg class="rect">
+        <use href="assets/icons/sprite/sprite.svg#rect"></use>
+      </svg>
+      <svg class="rect-checked">
+        <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+      </svg>
+    </span>
+    <span class="check__text">Check 2</span>
+  </label>
+
+
+    2) rect 2
+
+    <label class="check">
+    <input class="check__input visually-hidden" type="checkbox" name="" id="">
+    <span class="check__box">
+      <svg class="rect">
+        <use href="assets/icons/sprite/sprite.svg#rect"></use>
+      </svg>
+      <svg class="rect-checked-2">
+        <use href="assets/icons/sprite/sprite.svg#rect-checked-2"></use>
+      </svg>
+    </span>
+    <span class="check__text">Check 3</span>
+  </label>
+
+
+    3) circle
+<label class="check">
+    <input class="check__input visually-hidden" type="checkbox" name="" id="">
+    <span class="check__box">
+      <svg class="circle-svg">
+        <use href="assets/icons/sprite/sprite.svg#circle"></use>
+      </svg>
+      <svg class="circle-checked">
+        <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+      </svg>
+    </span>
+    <span class="check__text">Check 4</span>
+  </label>
+*/
+
+.check {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  width: max-content;
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  // hover and focus
+  // &:hover + .check__box,
+  // &:focus + .check__box {
+  //   color: var(--accent);
+  // }
+  &:hover,
+  &:focus {
+    .check__box {
+      color: var(--accent);
+    }
+
+    .check__input:checked + .check__box {
+      opacity: 0.8;
+    }
+  }
+
+  // checked
+  &__input:checked + .check__box {
+    svg.rect,
+    svg.circle-svg {
+      opacity: 0;
+    }
+    svg.circle-checked,
+    svg.rect-checked,
+    svg.rect-checked-2 {
+      opacity: 1;
+    }
+    svg.circle-checked,
+    svg.rect-checked {
+      color: var(--accent);
+    }
+  }
+  &__box {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 14px;
+    height: 14px;
+    color: var(--main-text-color);
+
+    overflow: hidden;
+    transition: var(--transition-4);
+    position: relative;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: var(--transition-4);
+    }
+    svg.circle-checked,
+    svg.circle-svg {
+      width: 90%;
+      height: 90%;
+    }
+    svg.rect,
+    svg.rect-checked,
+    svg.rect-checked-2 {
+      width: 100%;
+      height: 100%;
+    }
+
+    svg.circle-checked,
+    svg.rect-checked,
+    svg.rect-checked-2 {
+      opacity: 0;
+    }
+  }
+  &__text {
+    margin-left: 8px;
+
+    font-size: 12px;
+    line-height: 15px;
+
+    color: var(--secondary-text-color);
+  }
+  &--landing {
+    &:hover,
+    &:focus {
+      .check__box {
+        color: var(--accent-landing);
+      }
+    }
+
+    // checked
+    &__input:checked + .check__box {
+      svg.circle-checked,
+      svg.rect-checked {
+        color: var(--accent-landing);
+      }
+    }
+  }
+
+  // checked
+  &--landing &__input:checked + .check__box {
+    svg.circle-checked,
+    svg.rect-checked {
+      color: var(--accent-landing);
+    }
+  }
+}
+
+// ================================= Toggle Checkbox =================================
+// how use in html:
+/*
+<label class="toggle">
+    <input class="toggle__checkbox visually-hidden" type="checkbox" name="" id="">
+    <span class="toggle__switch"></span>
+    <span class="toggle__label">Switch Me</span>
+</label>
+*/
+
+.toggle {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover,
+  &:focus {
+    .toggle__switch {
+      border: 1px solid var(--accent);
+    }
+    .toggle__switch::after {
+      border: 1px solid var(--accent);
+    }
+
+    .toggle__checkbox:checked + .toggle__switch {
+      opacity: 0.8;
+    }
+  }
+}
+
+.toggle__switch {
+  flex-shrink: 0;
+  width: 26px;
+  height: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--main-text-color);
+  background-color: transparent;
+  position: relative;
+  transition: 0.4s;
+}
+
+.toggle__switch::after {
+  display: block;
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--main-text-color);
+  background-color: transparent;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 1px;
+
+  transition: border 0.4s, background-color 0.4s, left 250ms;
+}
+.toggle__checkbox:checked + .toggle__switch {
+  background-color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.toggle__checkbox:checked + .toggle__switch::after {
+  background-color: var(
+    --bg-200
+  ); /* bg color of form(table, card, section), may be different*/
+  border: 1px solid var(--bg-200); /* bg color of form(table, card, section), may be different*/
+  left: 14px;
+}
+
+.toggle__label {
+  font-size: 12px;
+  color: var(--main-text-color);
+  margin-left: 15px;
+}

@@ -1,0 +1,21 @@
+<div class="portfolio scrollbar">
+
+    <div class="portfolio__content">
+        <div class="floating-action__content" (click)="unlockCompany()">
+            <h3>Only Accessible to Members</h3>
+            <svg>
+              <use href="assets/icons/sprite/sprite.svg#lock3-icon"></use>
+            </svg>
+            <span *ngIf="(user$|async) && !(subs$|async)?.plan?.is_master">Become a member</span>
+            <span *ngIf="!(user$|async)">Login or Register</span>
+          </div>
+    </div>
+
+
+    <div class="bottom-line">
+        <svg>
+            <use href="assets/icons/sprite/sprite.svg#decor-radius"></use>
+        </svg>
+    </div>
+
+</div>

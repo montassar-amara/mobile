@@ -1,0 +1,246 @@
+<!-- Select Plan Modal -->
+<p-dialog [modal]="false" [dismissableMask]="false" [showHeader]="false" [(visible)]="showSelectPlanModal"
+    styleClass="popup-modal plan-modal-popup">
+    <app-select-plan (close)="showSelectPlanModal=false" (select)="selectPlan($event)" [planPeriod$]="planPeriod$">
+        <ng-container *ngIf="showSelectPlanModal && !subscription?.plan_id"><ng-template
+                *ngTemplateOutlet="selectPlanPeriod"></ng-template></ng-container>
+    </app-select-plan>
+</p-dialog>
+
+<div *ngIf="showSelectPlanModal" class="plan-popup-overlay"></div>
+
+
+<!-- Payment details Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentDetailModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentDetailModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-content__wrap payment-details">
+                <div class="modal-content__item">
+                    <button class="clear-btn back-btn" (click)="showPaymentDetailModal=false;showSelectPlanModal=true;">
+                        <svg class="svg-hover">
+                            <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                        </svg>
+                        <span>Back</span>
+                    </button>
+                </div>
+                <div class="modal-content__item">
+                    <h3 class="app-title">Payment details</h3>
+                </div>
+
+
+                <div class="modal-content__item payment-details-body" *ngIf="selectedPlan$|async as plan">
+                    <ng-container *ngIf="showPaymentDetailModal && !subscription?.plan_id"><ng-template
+                            *ngTemplateOutlet="selectPlanPeriod"></ng-template></ng-container>
+
+                    <div class="info">
+                        <span> {{plan.name}} Subscription</span>
+                        <span class="bold">{{total$|async|currency}}</span>
+                    </div>
+
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>+ VAT(25%)</span>
+                        <span class="bold">{{((total$|async) * .25)|currency}}</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>Total amount payed today</span>
+                        <span class="mega-bold">{{((total$|async) * 1.25)|currency}}</span>
+                    </div>
+                    <button class="button button--accent" (click)="selectPaymentMethod()">Select payment method
+                    </button>
+                    <p class="secure-checkout">
+                        <svg width="16" height="16">
+                            <use href="assets/icons/sprite/sprite.svg#shield-check-icon"></use>
+                        </svg>
+                        <span class="secondary-text-2">Secure checkout</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Payment method Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentMethodModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentMethodModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <app-payment-method *ngIf="showPaymentMethodModal" style="width: 100%;"
+            (goBack)="showPaymentMethodModal=false;((planType==='Upgrade')?ShowPaymentDetailUpgradeModal=true:showPaymentDetailModal=true);" (success)="processPayment($event)"
+            [sum]="(total$|async)"></app-payment-method>
+    </div>
+</p-dialog>
+
+
+<!-- Payment Success Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentSuccessModal"
+    styleClass="popup-modal">
+    <app-payment-success (close)="showPaymentSuccessModal=false;" [payingFor]="'PLAN'"></app-payment-success>
+</p-dialog>
+
+<!-- Payment Detail Upgrade Plan -->
+<p-dialog [modal]="true" [showHeader]="false" [(visible)]="ShowPaymentDetailUpgradeModal" styleClass="popup-modal">
+    <div class="modal__wrapper" *ngIf="ShowPaymentDetailUpgradeModal">
+        <div class="modal__close cursor" (click)="ShowPaymentDetailUpgradeModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+        <app-payment-detail-upgrade [plan]="selectedPlan$|async" [planPeriod]="planPeriod$|async" [diff]="diff"
+            (confirm)="onUpgradeConfirm()"
+            (back)="ShowPaymentDetailUpgradeModal=false;showSelectPlanModal=true">
+        </app-payment-detail-upgrade>
+
+    </div>
+</p-dialog>
+
+<!-- Payment details downgrade Modal -->
+
+<p-dialog [modal]="true" [dismissableMask]="false" [closeOnEscape]="false" [showHeader]="false"
+    [(visible)]="ShowPaymentDetailDowngradeModal" styleClass="popup-modal">
+    <div class="modal__wrapper" *ngIf="ShowPaymentDetailDowngradeModal">
+        <div class="modal__close cursor" (click)="ShowPaymentDetailDowngradeModal=false;toKeep=[];toRemove=[]">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+        <div class="modal-content" *ngIf="subscription">
+            <div class="modal-content__wrap">
+                <div class="modal-content__item">
+                    <h3 class="app-title">Select Companies that you want to leave</h3>
+                    <p class="main-text">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est, earum provident
+                        ut animi</p>
+                </div>
+
+                <div class="alert-block modal-content__item" role="alert">
+                    <h4 class="caption">
+                        <svg class="svg-hover">
+                            <use href="assets/icons/sprite/sprite.svg#warning-icon"></use>
+                        </svg>
+                        <span>Only {{(selectedPlan$|async).number_companies}} companies included in selected plan</span>
+                    </h4>
+                    <p class="text">Drag and drop companies that will leave in your subscription</p>
+                </div>
+                <div class="modal-content__item" [pDroppable]="['toKeep','toRemove']" (onDrop)="onDragEnd(0,'toKeep')">
+                    <div class="unlock-block">
+                        <div class="unlock-block__header">
+                            <span>Included in the subscription plan</span>
+                            <span class="count">{{toKeep.length}}</span>
+                        </div>
+                        <div class="unlock-block__company-list custom-scroll" style="height: 160px;">
+
+                            <div class="unlock-block__company-list-item" pDraggable="toKeep"
+                                (onDragStart)="onDragStart(index,'toKeep')" dragHandle=".custom-drag-handle"
+                                [pDroppable]="['toKeep','toRemove']" (onDrop)="onDragEnd(index,'toKeep')"
+                                *ngFor="let item of toKeep;let index = index">
+                                <app-company-list-item class="w-100" [company]="item" display="in" [isDowngrade]="true">
+                                    <svg class="svg-hover custom-drag-handle" style="cursor:move;">
+                                        <use href="assets/icons/sprite/sprite.svg#draggabledots-icon"></use>
+                                    </svg>
+                                </app-company-list-item>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-content__item" [pDroppable]="['toKeep','toRemove']"
+                    (onDrop)="onDragEnd(0,'toRemove')">
+                    <div class="unlock-block">
+                        <div class="unlock-block__header">
+                            <span>Over the limit</span>
+                            <span class="count">{{toRemove.length}}</span>
+                        </div>
+                        <div class="unlock-block__company-list custom-scroll" style="height: 160px;">
+                            <div class="unlock-block__company-list-item" pDraggable="toRemove"
+                                (onDragStart)="onDragStart(index,'toRemove')" dragHandle=".custom-drag-handle"
+                                [pDroppable]="['toKeep','toRemove']" (onDrop)="onDragEnd(index,'toRemove')"
+                                *ngFor="let item of toRemove;let index = index">
+                                <app-company-list-item class="w-100" [company]="item" [isDowngrade]="true" display="in">
+                                    <svg class="svg-hover custom-drag-handle" style="cursor:move;">
+                                        <use href="assets/icons/sprite/sprite.svg#draggabledots-icon"></use>
+                                    </svg>
+                                </app-company-list-item>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-content__item unlock-footer">
+                    <button class="button button--accent" (click)="confirmDowngradeSelection()" [disabled]="left()<0">
+                        {{(subscription?.is_active)?'':'Reactivate &'}} Downgrade
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+
+<ng-template #selectPlanPeriod>
+    <div class="select-plan__buttons">
+        <label class="toggle">
+            <span class="toggle__label left" [class.active]="!isAnnually">Quarterly</span>
+            <input class="toggle__checkbox visually-hidden" type="checkbox" name="" id="" [ngModel]="isAnnually"
+                (ngModelChange)="planPeriod$.next($event?'Yearly':'Quarterly');isAnnually=$event;">
+            <span class="toggle__switch"></span>
+            <span class="toggle__label right" [class.active]="isAnnually">Annually</span>
+        </label>
+
+        <p class="discount-txt">Up to 40% <span>OFF</span> yearly plans</p>
+    </div>
+</ng-template>
+
+<!-- Payment Success Modal -->
+<p-dialog [modal]="true" [showHeader]="false" [(visible)]="ShowPlanChangeSuccessModal" styleClass="popup-modal">
+    <div class="modal__wrapper" *ngIf="ShowPlanChangeSuccessModal">
+        <div class="modal__close cursor" (click)="ShowPlanChangeSuccessModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+        <div class="w-100 text-center">
+            <h3>You have {{action}} your plan</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto et ipsum, ex officia debitis quod
+                provident quis facilis enim accusantium praesentium neque.</p>
+            <span>
+                <button class="button button--accent">Close</button>
+            </span>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Payment Success Modal -->
+<p-dialog [modal]="true" [showHeader]="false" [(visible)]="ShowPlanDowngradeConfirmModal" styleClass="popup-modal">
+    <div class="modal__wrapper" *ngIf="ShowPlanDowngradeConfirmModal">
+        <div class="modal__close cursor" (click)="ShowPlanDowngradeConfirmModal=false">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-content__wrap payment-details">
+                <div class="modal-content__item">
+                    <h3 class="app-title">Downgrade plan</h3>
+                    <p class="main-text">Are you sure you want to change your plan?</p>
+                </div>
+                <div class="modal-content__item flex">
+                    <button class="button button--accent" (click)="confirmDowngrade()">Downgrade plan</button>
+                    <button class="button" (click)="ShowPlanDowngradeConfirmModal=false">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>

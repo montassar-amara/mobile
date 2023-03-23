@@ -1,0 +1,29 @@
+<div class="auth">
+  <div class="auth__header" *ngIf="isFirstStep$|async">
+    <div class="auth__header-content">
+      <div class="logo-box cursor" routerLinkActive="active">
+        <svg width="32" height="32" routerLink="/overview">
+          <use href="assets/icons/sprite/sprite.svg#app-logo-small"></use>
+        </svg>
+        <span class="logo-text" routerLink="/overview">valpal</span>
+      </div>
+
+      <h3 class="auth__header-title">Welcome to valpal.io</h3>
+
+
+      <ul class="tab-list list">
+        <li class="tab-list__item">
+          <a class="tab-list__link link" routerLinkActive="active" routerLink="/auth/login">Log In</a>
+        </li>
+        <li class="tab-list__item">
+          <a class="tab-list__link link" routerLinkActive="active" routerLink="/auth/register">Register</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="auth__main scrollbar" [ngStyle]="{'padding-top':(isFirstStep$|async)?'0':'25vh'}">
+    <router-outlet></router-outlet>
+  </div>
+</div>

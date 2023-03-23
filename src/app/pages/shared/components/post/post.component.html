@@ -1,0 +1,182 @@
+<div class="post" [ngClass]="{'view-mode': viewMode}">
+    <div class="post__header">
+
+        <div class="dropdown" *ngIf="user && user?.role =='manager' && isFeedback">
+            <button class="clear-btn status-badge" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                aria-expanded="false" [ngClass]="{
+                        'status-badge--under-review': feedback.status == 'Under Review',
+                        'status-badge--in-progress': feedback.status == 'In progress',
+                        'status-badge--completed': feedback.status == 'Completed',
+                        'status-badge--planned': feedback.status == 'Planned'
+                        }">
+                {{feedback.status}}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <li *ngFor="let st of status;">
+                    <a class="dropdown-item" [class.active]="feedback.status===st"
+                        (click)="changeStatus($event,st, feedback._id);">{{st}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="status-badge" *ngIf="user?.role !=='manager' && isFeedback" [ngClass]="{
+                        'status-badge--under-review': feedback.status == 'Under Review',
+                        'status-badge--in-progress': feedback.status == 'In progress',
+                        'status-badge--completed': feedback.status == 'Completed',
+                        'status-badge--planned': feedback.status == 'Planned'
+                        }">
+            {{feedback.status}}
+        </div>
+
+        <div class="post__category" *ngIf="isFeedback">
+            <svg *ngIf="feedback.category==='Feature Request'">
+                <use href="assets/icons/sprite/sprite.svg#atom-icon"></use>
+            </svg>
+            <svg *ngIf="feedback.category==='Bug / Issue'">
+                <use href="assets/icons/sprite/sprite.svg#bug-icon"></use>
+            </svg>
+            <span>{{feedback.category}}</span>
+        </div>
+
+        <div class="post__time text-label-2">{{feedback.created_at|dateSince}}</div>
+
+    </div>
+    <div class="post__body">
+        <div class="post__title">
+            <span *ngIf="!editModeSubject" class="app-title-2"
+                [ngClass]="{'app-title':viewMode, 'app-title-2':!viewMode}">{{feedback.subject}}
+                <button class="clear-btn edit-btn" type="button" *ngIf="user?._id===feedback.user_id && viewMode && !isDisabled"
+                    (click)="editModeSubject=true;">
+                    <svg class="svg-hover">
+                        <use href="assets/icons/sprite/sprite.svg#pen-icon"></use>
+                    </svg>
+                </button>
+            </span>
+            <div class="edit-title-block" *ngIf="editModeSubject">
+                <input class="form-input edit_focus" type="text" placeholder="Subject"
+                    [ngModel]="feedback.newSubject ?? feedback.subject" [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="feedback.newSubject=$event" autofocus [disabled]="isDisabled"
+                    [readonly]="isDisabled" (keydown.enter)="editModeSubject=false;saveSubject()"
+                    (keydown.escape)="editModeSubject=false;cancelSubject()">
+                <div class="edit-title-btns">
+                    <button class="button"
+                        (click)="editModeSubject=false;cancelSubject();">Cancel</button>
+                    <button class="button button--accent"
+                        (click)="editModeSubject=false;saveSubject();">Save</button>
+                </div>
+            </div>
+            <span class="post__edited-label text-label-2" *ngIf="feedback.is_edit&&!editModeSubject">Edited</span>
+        </div>
+
+        <div class="post__message">
+            <div *ngIf="!editModeMessage" class="">
+                <p class=" main-text-2" [ngClass]="{'message-text-block':!viewMode }">
+                    {{feedback.message}}
+                </p>
+
+                <button class="clear-btn edit-btn" type="button" *ngIf="user?._id===feedback.user_id && viewMode && !isDisabled"
+                    (click)="editMessage();">
+                    <svg class="svg-hover">
+                        <use href="assets/icons/sprite/sprite.svg#pen-icon"></use>
+                    </svg>
+                </button>
+            </div>
+            <div *ngIf="editModeMessage" class="textarea-container">
+                <textarea class="edit_focus" [ngModel]="feedback.newMessage ?? feedback.message"  [maxlength]="isFeedback?2000:700"
+                    [ngModelOptions]="{standalone: true}" (ngModelChange)="feedback.newMessage=$event" id="textarea"
+                    pInputTextarea [autoResize]="true" [disabled]="isDisabled"
+                    [readonly]="isDisabled"></textarea>
+
+                <div class="edit-feedback-controls">
+                    <div class="col-item d-flex">
+                        <div class="mx-2">
+                            <!--<span class="text-danger">File Size should be less than 2Mb.</span>-->
+                            <span>({{ feedback.newMessage?.length }}/{{isFeedback?'2000':'700'}} characters)</span>
+                        </div>
+                        <div class="mx-2">
+                            <button class="button button--without-border"
+                                [disabled]="(feedback.uploadedFiles?.length + feedback.files?.length)>5">
+
+                                <svg class="svg-hover cursor" (click)="fileUpload.click();">
+                                    <use href="assets/icons/sprite/sprite.svg#file-upload-icon"></use>
+                                </svg>
+                            </button>
+
+                            <input type="file" accept="video/*,image/*" #fileUpload class="hidden"
+                                (change)="addFiles($event)" [disabled]="isDisabled" [readonly]="isDisabled">
+                        </div>
+
+                        <div class="mx-2">
+                            <button class="button button--without-border"
+                                (click)="editModeMessage=false;save();"
+                                [disabled]="feedback.message.length===0">
+                                <svg class="svg-hover cursor" style="margin-top: 3px;">
+                                    <use href="assets/icons/sprite/sprite.svg#send-message-icon"></use>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span *ngIf="fileSizeBig" class="text-danger">File Size should be less than 2Mb.</span>
+            <span *ngIf="unsupportedFileType" class="text-danger">Unsupported File Type.</span>
+            <div class="d-flex py-2 mx-3" *ngIf="viewMode">
+                <div class="col-auto position-relative"
+                    *ngFor="let file of feedback.uploadedFiles;trackBy:trackbyName;let index=index">
+                    <p-image [src]="file|previewUpload" alt="Image" [preview]="true" styleClass="border"
+                        [imageStyle]="{width:'60px',borderRadius:'4px'}"></p-image>
+                    <i class="bi bi-trash position-absolute top-0 end-0 pointer text-danger"
+                        (click)="removeFileFromUpload(index);"></i>
+                </div>
+            </div>
+            <div class="message-images" *ngIf="viewMode">
+                <div class="col-auto position-relative" (mouseenter)="close.classList.remove('visually-hidden')"
+                    (mouseleave)="close.classList.add('visually-hidden')"
+                    *ngFor="let file of feedback.files;let index=index;trackBy:trackbyName">
+                    <p-image [src]="server+(isFeedback?'feedbacks/':'suggestions/')+file" alt="Image" [preview]="true"></p-image>
+                    <div class="del-img visually-hidden" [class.d-none]="!(user?._id===feedback.user_id)"
+                        (click)="removeFile(file);" #close>
+                        <svg>
+                            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="post__footer">
+
+        <button class="post__like-btn clear-btn" (click)="like($event)"
+            [disabled]="isDisabled" [class.liked-post-btn]="liked$|async">
+            <svg>
+                <use href="assets/icons/sprite/sprite.svg#thumbs-up"></use>
+            </svg>
+            <span>{{feedback.likes?.length}}</span>
+        </button>
+
+        <div class="post__author">
+            <app-user-avatar [user_id]="feedback.user_id" [user_name]="feedback?.displayname ?? feedback.fullname ?? feedback.user_name"
+                [user_email]="feedback.user_email" [user_avatar]="feedback.user_avatar" [loggedInUser]="user"
+                [isPostPreview]="viewMode"></app-user-avatar>
+        </div>
+
+
+        <button #openCanvas class="post__open-canvas-btn button" *ngIf="!viewMode"
+            (click)="response();">
+            Read More</button>
+
+        <button class="button merge-delete-btns" type="button"
+            *ngIf="!isDisabled && viewMode && user && (user?.role==='manager'||(user._id===feedback.user_id))">
+            <div class="delete-btn" (click)="delete();"
+                *ngIf="user?.role==='manager'||(user?._id===feedback.user_id)">
+                <span>Delete topic</span>
+                <svg>
+                    <use href="assets/icons/sprite/sprite.svg#trash-icon"></use>
+                </svg>
+            </div>
+        </button>
+    </div>
+</div>

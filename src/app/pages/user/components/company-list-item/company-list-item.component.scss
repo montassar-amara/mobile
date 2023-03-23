@@ -1,0 +1,54 @@
+.company-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+    .control-list {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: capitalize;
+      li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .divider {
+        width: 1px;
+        height: 10px;
+        background: var(--main-text-color);
+        opacity: 0.3;
+        margin: 0;
+        flex-shrink: 0;
+      }
+    }
+  }
+  &__logo {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &__name {
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--secondary-text-color);
+  }
+}

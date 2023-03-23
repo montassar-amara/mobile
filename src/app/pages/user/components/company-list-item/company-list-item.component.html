@@ -1,0 +1,40 @@
+<div class="company-item">
+    <div class="left">
+        <ng-content></ng-content>
+        <div class="company-item__logo">
+            <img src="{{filepath+'companiesLogo/'+(isDowngrade?company.logo:company.company.logo)}}" alt="company logo">
+        </div>
+        <span class="company-item__name">{{isDowngrade?company.name:company.company.name}}</span>
+    </div>
+
+    <div class="right">
+        <ul class="control-list list" *ngIf="display==='out'">
+            <li>
+                <span class="secondary-text-2">Billed </span>
+                <!-- <select (change)="changeSelection($event)">
+                    <option [value]="i" *ngFor="let p of company.company.prices;let i=index">{{p.name_period}}</option>
+                </select> -->
+                <span class="dropdown-toggle secondary-text pointer" id="subsPeriod" data-bs-toggle="dropdown"
+                    aria-expanded="false">{{selectedPeriod$.value.name_period}}</span>
+                <ul class="dropdown-menu list" aria-labelledby="subsPeriod">
+                    <li class="dropdown-item d-flex justify-content-between"
+                        *ngFor="let p of company.company.prices;let i=index" (click)="changeSelection(i)">
+                        <span>
+                            {{p.name_period}}
+                        </span>
+                        <span class="text-success" *ngIf="p.name_period==='Yearly'">
+                            -{{((company.company.prices|selectPrice:'Quarterly')/(company.company.prices|selectPrice:'Yearly'))|percent}}
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li class="divider"></li>
+            <li><span class="secondary-text-2">Amount: </span>
+                <span class="secondary-text">{{(selectedPeriod$|async).price|currency}}</span>
+            </li>
+        </ul>
+        <svg class="svg-hover close-icon cursor" (click)="removeItem()">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+    </div>
+</div>

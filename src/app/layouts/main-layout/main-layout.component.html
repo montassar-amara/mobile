@@ -1,0 +1,1110 @@
+<div class="main-wrapper">
+  <div class="body" [ngClass]="{
+    'light-default': themeService.activeTheme === 'light-default',
+    'solarized-light': themeService.activeTheme === 'solarized-light',
+    'light-test': themeService.activeTheme === 'light-test',
+    'dark-default': themeService.activeTheme === 'dark-default',
+    'dark-test': themeService.activeTheme === 'dark-test',
+    'solarized-dark': themeService.activeTheme === 'solarized-dark',
+    'is-hide': plansPopup.selectPlanModal === true
+  }" (click)="closeDropdown($event)">
+
+    <div class="body__header" style="z-index: 100;">
+
+      <div class="left"></div>
+      <div class="right">
+        <button class="mobile-menu-btn nav-btn clear-btn" type="button" (click)="openMobileMenu()">
+          <svg class="svg svg-white">
+            <use href="assets/icons/sprite/sprite.svg#burger-menu-icon"></use>
+          </svg>
+        </button>
+
+        <!-- searchbar & company filter -->
+        <div class="shop__header" #companiesHeader id="companiesHeader">
+          <ng-container *ngIf="!(companyPreview$|async)">
+            <div class="search-filter-box">
+              <label class="search-icon" for="searchCompany2">
+                <svg class="svg">
+                  <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+                </svg>
+              </label>
+              <input class="form-input" id="searchCompany2" type="text" placeholder="Search for companies"
+                [ngModel]="(searchTerm$|async)" (ngModelChange)="searchTerm$.next($event)">
+              <span class="filter-count" *ngIf="filterCount$|async as nb">({{nb}})</span>
+              <button class="clear-btn filter-btn" id="filterMenu" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" aria-expanded="false" #dropdown>
+                <svg class="svg svg-hover-2">
+                  <use href="assets/icons/sprite/sprite.svg#filter2-icon"></use>
+                </svg>
+              </button>
+
+              <button class="delete-all-filters-btn clear-btn" type="button" (click)="removeFilters()"
+                *ngIf="companiesFilter>0">
+                <svg class="svg-hover close-icon del-btn cursor">
+                  <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                </svg>
+              </button>
+
+              <ul class="dropdown-menu list filter-dropdown-menu" aria-labelledby="filterMenu">
+                <p class="filter-type">PEER GROUPS</p>
+                <li class="" *ngFor="let filter of (filterCompany$|async);let index=index">
+                  <label class="check">
+                    <input class="check__input visually-hidden" type="checkbox" [ngModel]="filter.checked"
+                      (ngModelChange)="updateFilter($event,index)" name="filterCompany" [value]="filter.checked">
+                    <span class="check__box">
+                      <svg class="rect">
+                        <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                      </svg>
+                      <svg class="rect-checked-2" *ngIf="filter==='All'">
+                        <use href="assets/icons/sprite/sprite.svg#rect-checked-2"></use>
+                      </svg>
+                      <svg class="rect-checked" *ngIf="filter!=='All'">
+                        <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                      </svg>
+                    </span>
+                    <span class="check__text text-capitalize">{{filter.name}}</span>
+                  </label>
+                </li>
+              </ul>
+
+
+            </div>
+          </ng-container>
+
+          <div class="search-box" tabindex="0" *ngIf="companyPreview$|async">
+
+            <svg class="svg search-svg" (click)="onSearch()">
+              <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+            </svg>
+
+            <input class="form-input" placeholder="Search report with keywords" [ngModel]="search_word$|async"
+              (ngModelChange)="onSearch();search_word$.next($event)">
+
+            <div class="d-flex-center" *ngIf="(search_elements$|async) && (search_elements$|async).length > 0">
+              <span
+                style="color: var(--secondary-text-color)">{{search_index$|async}}/{{(search_elements$|async).length}}</span>
+              <div class="ver-divider"></div>
+              <div class="arrow-container">
+                <svg class="svg cursor" style="transform: rotate(180deg);" (click)="moveToBack()">
+                  <use href="assets/icons/sprite/sprite.svg#angle-right-icon"></use>
+                </svg>
+
+                <svg class="svg cursor" (click)="moveToNext()">
+                  <use href="assets/icons/sprite/sprite.svg#angle-right-icon"></use>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- <button class="mobile-searchbar-close-btn clear-btn" type="button"
+            (click)="isSearchbarVisible = false; isSearchbarTurnedOn = false;">
+            <svg class="svg svg-white">
+              <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+          </button> -->
+
+        </div>
+
+        <div class="mobile-top-menu">
+
+          <button class="mobile-top-menu__item clear-btn" type="button" [routerLink]="'/overview'"
+            [class.active]="overviewActive">
+            <svg class="svg svg-white" *ngIf="!overviewActive">
+              <use href="assets/icons/sprite/sprite.svg#overview"></use>
+            </svg>
+
+            <svg class="svg svg-white" *ngIf="overviewActive">
+              <use href="assets/icons/sprite/sprite.svg#overview-filled"></use>
+            </svg>
+          </button>
+
+
+          <button class="mobile-top-menu__item clear-btn" type="button" [routerLink]="'/portfolio'"
+            routerLinkActive="active">
+            <div class="svg-box-wrapper">
+              <svg>
+                <use href="assets/icons/sprite/sprite.svg#portfolio-icon"></use>
+              </svg>
+            </div>
+          </button>
+
+          <!-- <button class="mobile-top-menu__item mobile-searchbar-show-btn clear-btn" type="button"
+            (click)="isSearchbarVisible = true; isSearchbarTurnedOn = true;">
+            <svg class="svg svg-white">
+              <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+            </svg>
+          </button> -->
+
+        </div>
+
+        <div class="mobile-signin-btn" *ngIf="!(user$|async)">
+          <button class="nav-btn clear-btn" type="button" id="mobileSignIn" data-bs-toggle="dropdown"
+            data-bs-auto-close="outside" aria-expanded="false">
+            <svg class="svg svg-white">
+              <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+            </svg>
+          </button>
+
+          <ul class="dropdown-menu list filter-dropdown-menu" aria-labelledby="mobileSignIn">
+            <li class="dropdown-item" routerLink="/auth/login">Sign In</li>
+          </ul>
+        </div>
+
+        <button class="mobile-logged-btn nav-btn clear-btn" type="button" *ngIf="(user$|async) as user"
+          (click)="openMobileLoggedMenu()">
+
+          <svg class="svg svg-white" *ngIf="user?.avatar === null || user?.avatar === '' || user?.avatar === undefined">
+            <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+          </svg>
+
+          <div class="user-profile-icon"
+            *ngIf="user?.avatar !== null && user?.avatar !== '' && user?.avatar !== undefined">
+            <img [src]="filepath+'profilePictures/'+user?.avatar" alt="user logo">
+          </div>
+        </button>
+
+        <div class="mobile-logged-menu" *ngIf="mobileLoggedMenuVisible">
+
+          <button class="mobile-logged-menu-close-btn clear-btn" type="button" (click)="openMobileLoggedMenu()">
+            <svg class="svg svg-white">
+              <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+          </button>
+
+          <div class="menu-block">
+            <ul class="profile__menu-list list">
+              <li class="profile__menu-item" routerLink="/settings" routerLinkActive="active"
+                (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#setting-icon"></use>
+                </svg>
+                <div class="profile__menu-text">User Settings</div>
+              </li>
+              <li class="profile__menu-item" routerLink="/subscriptions" routerLinkActive="active"
+                (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#bag-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Manage Subscriptions</div>
+              </li>
+              <li class="profile__menu-item" routerLink="/payment" routerLinkActive="active"
+                (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#credit-card-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Payment Method & History</div>
+              </li>
+              <li class="profile__menu-item" routerLink="/preference" routerLinkActive="active"
+                (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#sliders-icon"></use>
+                </svg>
+                <div class="profile__menu-text">App Settings</div>
+              </li>
+              <li class="profile__menu-item" routerLink="/notifications" routerLinkActive="active"
+                (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#bell-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Notifications</div>
+              </li>
+
+              <li>
+                <div class="divider footer"></div>
+              </li>
+              <li class="profile__menu-item" routerLink="/analyst" routerLinkActive="active"
+                *ngIf="user && (user.role==='admin'|| user.role==='analyst')" (click)="mobileLoggedMenuVisible = false">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Switch to analyst layout</div>
+              </li>
+              <li class="profile__menu-item"
+                (click)="themeService.chooseThemeMode('light');$event.stopPropagation();mobileLoggedMenuVisible = false;"
+                *ngIf="themeService.theme_mode === 'dark'">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#sun-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Light Mode</div>
+              </li>
+              <li class="profile__menu-item"
+                (click)="themeService.chooseThemeMode('dark');$event.stopPropagation();mobileLoggedMenuVisible = false;"
+                *ngIf="themeService.theme_mode === 'light'">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#moon-icon"></use>
+                </svg>
+                <div class="profile__menu-text">Dark Mode</div>
+              </li>
+              <li class="profile__menu-item" (click)="logout();mobileLoggedMenuVisible = false;">
+                <svg class="profile__menu-icon">
+                  <use href="assets/icons/sprite/sprite.svg#signout-icon"></use>
+                </svg>
+                <div class="profile__menu-text" id="test">Log Out</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+
+        <div class="theme-switcher">
+          <button class="nav-btn clear-btn" (click)="themeService.chooseThemeMode('light');$event.stopPropagation();"
+            *ngIf="themeService.theme_mode === 'dark'" pTooltip="Light" tooltipPosition="bottom">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#sun-icon"></use>
+            </svg>
+          </button>
+
+          <button class="nav-btn clear-btn" (click)="themeService.chooseThemeMode('dark');$event.stopPropagation();"
+            *ngIf="themeService.theme_mode === 'light'" pTooltip="Dark" tooltipPosition="bottom">
+            <svg class="profile__menu-icon">
+              <use href="assets/icons/sprite/sprite.svg#moon-icon"></use>
+            </svg>
+          </button>
+        </div>
+
+        <div class="navigation-buttons">
+          <button class="nav-btn clear-btn" (click)="previous()" [disabled]="routerHistory.currentIndex<=0"
+            pTooltip="Go Back" tooltipPosition="bottom">
+            <svg>
+              <use href="assets/icons/sprite/sprite.svg#arrow-back-icon"></use>
+            </svg>
+          </button>
+          <button class="nav-btn clear-btn" (click)="next()"
+            [disabled]="routerHistory.currentIndex>=routerHistory.history.length-1" pTooltip="Go Forward"
+            tooltipPosition="bottom">
+            <svg>
+              <use href="assets/icons/sprite/sprite.svg#arrow-forward-icon"></use>
+            </svg>
+          </button>
+        </div>
+
+
+
+        <div class="logo-box">
+          <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#app-logo-small"></use>
+          </svg>
+
+          <!-- <span>Beta</span> -->
+          <p class="logo-text">valpal</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content" id="main-content" #mainContent>
+
+      <div class="left-side" id="left-side" [style]="{'padding-top':'0'}" [ngClass]="{'show': mobileMenuVisible}">
+        <div class="left-side__header" id="left-side__header" #leftSideHeader>
+          <div>
+            <div class="left-side__row column w100 user-settings-menu">
+              <button class="button button2 w100 signin-btn" type="button" *ngIf="!(user$|async)"
+                routerLink="/auth/login">
+                <svg class="svg svg-white">
+                  <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                </svg>
+                <span>Sign In</span>
+              </button>
+
+              <div class="logged-collapse w100" *ngIf="(user$|async) as user">
+                <button class="button button2 w100 login-btn unlock-btn collapsed" id="btntoggle" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                  aria-controls="collapseBtn" (click)="changeCollapse1($event)">
+                  <svg class="svg svg-white"
+                    *ngIf="user?.avatar === null || user?.avatar === '' || user?.avatar === undefined">
+                    <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                  </svg>
+
+                  <div class="user-profile-icon"
+                    *ngIf="user?.avatar !== null && user?.avatar !== '' && user?.avatar !== undefined">
+                    <img [src]="filepath+'profilePictures/'+user?.avatar" alt="user logo">
+                  </div>
+
+                  <span class="user-name">{{ user?.displayname ?? user?.fullname ?? user?.name }}</span>
+
+                  <div class="toggle-icon">
+                    <svg>
+                      <use href="assets/icons/sprite/sprite.svg#angle-right-icon"></use>
+                    </svg>
+                  </div>
+                </button>
+
+                <div class="accordeon__body collapse w100" [ngClass]="{'show': isOpen}" id="collapseBtn"
+                  aria-labelledby="headingBtn">
+                  <div class="menu-block">
+
+                    <!-- <ng-container
+                      *ngIf="(!(subscription$|async) || !(subscription$|async).is_active ||( !(subscription$|async).plan_id && (subscription$|async).type==='real')|| (subscription$|async).type==='testing')">
+  
+                      <button class="button  button2 w100 unlock-btn subscribe-btn r-count" type="button"
+                        (click)="startSelectPlan$.next(true)">
+  
+                        <svg class="svg-white">
+                          <use href="assets/icons/sprite/sprite.svg#chart-icon"></use>
+                        </svg>
+                        <span class="text">
+                          {{(subscription$|async)?.plan_id && !(subscription$|async)?.is_active?'Reactivate':'Subscribe'}}
+  
+                        </span>
+  
+                      </button>
+  
+                    </ng-container>
+  
+                    <ng-container *ngIf="(subscription$|async) as subs">
+                      <ng-container *ngIf="subs?.is_active">
+                        <button class="button  button2 w100 unlock-btn subscribe-btn r-count" type="button"
+                          *ngIf="subs.type==='real' && subs?.plan_id"
+                          (click)="startSelectPlan$.next(true);$event.stopPropagation();">
+  
+                          <svg class="svg-white" *ngIf="subs?.plan?.name === 'journeyman'">
+                            <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                          </svg>
+  
+                          <svg class="svg-white" *ngIf="subs?.plan?.name === 'Premium'">
+                            <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                          </svg>
+  
+                          <span class="text">{{subs?.plan?.name}}</span>
+  
+  
+                          <div class="preferences">
+                            <div class="preferences-item"
+                              [pTooltip]="((subscription$|async)?.last_Date_trade_in|dateSince:(subscription$|async)?.plan?.number_day_to_update)+' to update'">
+                              <span>{{(subs.plan.number_companies_trade-subs.trade_in)||0}}/{{subs.plan.number_companies_trade}}</span>
+                              <svg class="refresh-icon">
+                                <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                              </svg>
+                            </div>
+                            <div class="preferences-item">
+                              <span>{{subs.plan.number_companies-subs.subscriptionIn.length}}/{{subs.plan.number_companies}}</span>
+                              <svg class="key-icon">
+                                <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                              </svg>
+                            </div>
+                          </div>
+                        </button>
+                      </ng-container>
+  
+  
+                    </ng-container>
+  
+  
+                    <ng-container *ngIf="(subscription$|async) && (subscription$|async).type==='launch'">
+                      <button class="button  button2 w100 unlock-btn subscribe-btn r-count" type="button"
+                        (click)="startSelectPlan$.next(true)">
+                        <svg class="svg-white">
+                          <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                        </svg>
+                        <span class="text">Special Offer</span>
+                      </button>
+                    </ng-container> -->
+
+
+
+                    <div class="divider"></div>
+
+                    <ul class="profile__menu-list list">
+                      <li class="profile__menu-item" routerLink="/settings" routerLinkActive="active"
+                        data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                        aria-controls="collapseBtn">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#setting-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">User Settings</div>
+                      </li>
+                      <li class="profile__menu-item" routerLink="/subscriptions" routerLinkActive="active"
+                        data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                        aria-controls="collapseBtn">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#bag-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Manage Subscriptions</div>
+                      </li>
+                      <li class="profile__menu-item" routerLink="/payment" routerLinkActive="active"
+                        data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                        aria-controls="collapseBtn">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#credit-card-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Payment Method & History</div>
+                      </li>
+                      <li class="profile__menu-item" routerLink="/preference" routerLinkActive="active"
+                        data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                        aria-controls="collapseBtn">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#sliders-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">App Settings</div>
+                      </li>
+                      <li class="profile__menu-item" routerLink="/notifications" routerLinkActive="active"
+                        data-bs-toggle="collapse" data-bs-target="#collapseBtn" [attr.aria-expanded]="collapse1"
+                        aria-controls="collapseBtn">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#bell-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Notifications</div>
+                      </li>
+                      <li>
+                        <div class="divider footer"></div>
+                      </li>
+                      <li class="profile__menu-item" routerLink="/analyst" routerLinkActive="active"
+                        *ngIf="user && (user.role==='admin'|| user.role==='analyst')">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Switch to analyst layout</div>
+                      </li>
+                      <li class="profile__menu-item"
+                        (click)="themeService.chooseThemeMode('light');$event.stopPropagation();"
+                        *ngIf="themeService.theme_mode === 'dark'">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#sun-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Light Mode</div>
+                      </li>
+                      <li class="profile__menu-item"
+                        (click)="themeService.chooseThemeMode('dark');$event.stopPropagation();"
+                        *ngIf="themeService.theme_mode === 'light'">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#moon-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text">Dark Mode</div>
+                      </li>
+                      <li class="profile__menu-item" (click)="logout()">
+                        <svg class="profile__menu-icon">
+                          <use href="assets/icons/sprite/sprite.svg#signout-icon"></use>
+                        </svg>
+                        <div mat-line class="profile__menu-text" id="test">Log Out</div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="left-side__row mt8 research-item" *ngIf="!collapse1">
+              <button style="padding-left: 10px;" class="button button2 button3 w100 overview-btn" type="button"
+                [routerLink]="'/overview'" [class.active]="overviewActive">
+                <svg style="width: 24px; height: 24px;" *ngIf="!overviewActive">
+                  <use href="assets/icons/sprite/sprite.svg#overview"></use>
+                </svg>
+                <svg style="width: 24px; height: 24px;" *ngIf="overviewActive">
+                  <use href="assets/icons/sprite/sprite.svg#overview-filled"></use>
+                </svg>
+                <span>Research</span>
+              </button>
+            </div>
+
+            <div class="left-side__row mt4 portfolio-item" style="margin-bottom: 20px;" *ngIf="!collapse1">
+              <button style="padding-left: 10px;" class="button button2 button3 w100 overview-btn portfolio-btn"
+                type="button" [routerLink]="'/portfolio'" routerLinkActive="active">
+                <div class="svg-box-wrapper">
+                  <svg>
+                    <use href="assets/icons/sprite/sprite.svg#portfolio-icon"></use>
+                  </svg>
+                </div>
+
+                <span>Portfolio</span>
+              </button>
+            </div>
+            <div class="left-side__row" *ngIf="!collapse1">
+              <button class="button button2 button3 w100 overview-btn" type="button" [routerLink]="'/aboutus'"
+                routerLinkActive="active">
+
+                <svg style="width: 24px; height: auto;" *ngIf="!aboutActive">
+                  <use href="assets/icons/sprite/sprite.svg#how-icon"></use>
+                </svg>
+                <svg style="width: 24px; height: auto;" *ngIf="aboutActive">
+                  <use href="assets/icons/sprite/sprite.svg#how-filled-icon"></use>
+                </svg>
+                <span>What, How & Why</span>
+              </button>
+            </div>
+
+            <!-- Subscribe button: to be removed -->
+            <div class="left-side__row mt4" *ngIf="!collapse1 && false">
+
+              <ng-container
+                *ngIf="(!(subscription$|async) || !(subscription$|async).is_active ||( !(subscription$|async).plan_id && (subscription$|async).type==='real')|| (subscription$|async).type==='testing')">
+
+                <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                  (click)="startSelectPlan$.next(true)">
+
+                  <div class="svg-box">
+                    <svg class="">
+                      <use href="assets/icons/sprite/sprite.svg#chart-icon"></use>
+                    </svg>
+                  </div>
+
+                  <span class="text">
+                    {{(subscription$|async)?.plan_id && !(subscription$|async)?.is_active?'Reactivate':'Subscribe'}}
+
+                  </span>
+
+                </button>
+
+              </ng-container>
+
+              <ng-container *ngIf="(subscription$|async) as subs">
+                <ng-container *ngIf="subs?.is_active">
+                  <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                    *ngIf="subs.type==='real' && subs?.plan_id"
+                    (click)="startSelectPlan$.next(true);$event.stopPropagation();">
+
+                    <div class="svg-box" *ngIf="subs?.plan?.name === 'journeyman'">
+                      <svg class="">
+                        <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                      </svg>
+                    </div>
+                    <div class="svg-box" *ngIf="subs?.plan?.name === 'Premium'">
+                      <svg class="">
+                        <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                      </svg>
+                    </div>
+
+                    <span class="text">{{subs?.plan?.name}}</span>
+
+
+                    <div class="preferences">
+                      <div class="preferences-item"
+                        [pTooltip]="((subscription$|async)?.last_Date_trade_in|dateSince:(subscription$|async)?.plan?.number_day_to_update)+' to update'">
+                        <span>{{(subs.plan.number_companies_trade-subs.trade_in)||0}}/{{subs.plan.number_companies_trade}}</span>
+                        <svg class="refresh-icon">
+                          <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                        </svg>
+                      </div>
+                      <div class="preferences-item">
+                        <span>{{subs.plan.number_companies-subs.subscriptionIn.length}}/{{subs.plan.number_companies}}</span>
+                        <svg class="key-icon">
+                          <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                </ng-container>
+
+
+              </ng-container>
+
+
+              <ng-container *ngIf="(subscription$|async) && (subscription$|async).type==='launch'">
+                <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                  (click)="startSelectPlan$.next(true)">
+                  <svg class="">
+                    <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                  </svg>
+                  <span class="text">Special Offer</span>
+                </button>
+              </ng-container>
+            </div>
+            <!--New  Subscribe button -->
+            <div class="left-side__row mt4"
+              *ngIf="!collapse1 && (!(subscription$|async)?.plan?.is_master || !(subscription$|async)?.is_active)">
+
+              <ng-container
+                *ngIf="(!(subscription$|async) || !(subscription$|async).is_active ||( !(subscription$|async).plan_id && (subscription$|async).type==='real')|| (subscription$|async).type==='testing')">
+
+                <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                  (click)="startSelectNewPlan$.next(true); plansPopup.selectPlanModal = true">
+
+                  <div class="svg-box">
+                    <svg class="">
+                      <use href="assets/icons/sprite/sprite.svg#chart-icon"></use>
+                    </svg>
+                  </div>
+
+                  <span class="text">
+                    {{(subscription$|async)?.plan_id && !(subscription$|async)?.is_active?'Reactivate':'Become a
+                    Member'}}
+
+                  </span>
+
+                </button>
+
+              </ng-container>
+
+              <ng-container *ngIf="(subscription$|async) as subs">
+                <ng-container *ngIf="subs?.is_active">
+                  <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                    *ngIf="subs.type==='real' && subs?.plan_id"
+                    (click)="startSelectNewPlan$.next(true);$event.stopPropagation();">
+
+                    <div class="svg-box" *ngIf="subs?.plan?.name === 'journeyman'">
+                      <svg class="">
+                        <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                      </svg>
+                    </div>
+                    <div class="svg-box" *ngIf="subs?.plan?.name === 'Premium'">
+                      <svg class="">
+                        <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                      </svg>
+                    </div>
+
+                    <span class="text">{{subs?.plan?.name}}</span>
+                  </button>
+                </ng-container>
+
+
+              </ng-container>
+
+
+              <ng-container *ngIf="(subscription$|async) && (subscription$|async).type==='launch'">
+                <button class="button button2 button3 w100 overview-btn subscribe-btn r-count" type="button"
+                  (click)="startSelectNewPlan$.next(true)">
+                  <svg class="">
+                    <use href="assets/icons/sprite/sprite.svg#user-icon"></use>
+                  </svg>
+                  <span class="text">Special Offer</span>
+                </button>
+              </ng-container>
+            </div>
+
+            <div class="left-side__row mt12 column unlock-companies-block"
+              [class.d-none]="((subscription$|async)?.plan?.is_master)"
+              [ngClass]="{'selected-list-2': (selectedCompanies$|async).length > 0}" *ngIf="!collapse1">
+
+              <button class="button button2 w100 unlock-companies-btn r-count" type="button" (click)="unlock()"
+                [ngClass]="{'selected': (selectedCompanies$|async).length > 0}">
+
+                <svg class="svg svg20">
+                  <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                </svg>
+
+                <!-- <p class="text">Unlock <span *ngIf="(selectedCompanies$|async).length <= 1">company</span><span
+                    *ngIf="(selectedCompanies$|async).length > 1">companies</span></p> -->
+
+                <p class="text">Unlock companies</p>
+
+                <div class="preferences" *ngIf="subs?.type==='real' && subs?.plan_id">
+                  <div class="preferences-item">
+                    <span>{{(subs.plan.number_companies_trade-subs.trade_in)||0}}/{{subs.plan.number_companies_trade}}</span>
+                    <svg class="svg svg-hover-2">
+                      <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                    </svg>
+                  </div>
+                  <div class="preferences-item">
+                    <span>{{subs.plan.number_companies-subs.subscriptionIn.length}}/{{subs.plan.number_companies}}</span>
+                    <svg class="svg svg-hover-2">
+                      <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                    </svg>
+                  </div>
+                </div>
+              </button>
+
+              <div class="selected-companies-count" *ngIf="(selectedCompanies$|async).length > 0">
+                <span class="text">selected companies</span>
+                <span class="total">({{(selectedCompanies$|async).length}})</span>
+              </div>
+
+              <ul class="selected-list list scrollbar" *ngIf="(selectedCompanies$|async).length > 0">
+                <li class="selected-list-item" *ngFor="let scmp of selectedCompanies$|async;let i=index">
+                  <div class="icon">
+                    <img src="{{filepath+'companiesLogo/'+scmp.logo}}" alt="company logo">
+                  </div>
+                  <span class="secondary-text">{{scmp.name}}</span>
+                  <div class="remove" (click)="removeCompany(i)">
+                    <svg class="svg-hover close-icon cursor">
+                      <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                    </svg>
+                  </div>
+                </li>
+              </ul>
+
+            </div>
+          </div>
+          <div class="divider" *ngIf="!collapse1"></div>
+        </div>
+
+        <div class="left-side__main" id="left-side__main">
+
+
+          <div class="search-filter-box">
+            <label class="search-icon" for="searchCompany"
+              *ngIf="companiesFilter===0 && dropdown.getAttribute('aria-expanded')==='false'">
+              <svg class="svg">
+                <use href="assets/icons/sprite/sprite.svg#search-icon"></use>
+              </svg>
+            </label>
+            <input class="form-input" id="searchCompany" type="text" placeholder="Search for companies"
+              [ngModel]="(searchTerm$|async)" (ngModelChange)="searchTerm$.next($event)"
+              *ngIf="companiesFilter===0 && dropdown.getAttribute('aria-expanded')==='false'">
+
+            <div class="filters-wrapper" *ngIf="companiesFilter>0 || dropdown.getAttribute('aria-expanded')==='true'">
+              <ng-container *ngFor="let filter of filterCompany$|async;let index=index">
+                <p class="filter-item" *ngIf="filter.checked">
+                  <span class="filter-name">{{filter.name}}</span>
+
+                  <svg class="svg-hover close-icon del-btn cursor" style="width: 12px; height: 12px;"
+                    (click)="removeFilter(index)">
+                    <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                  </svg>
+              </ng-container>
+
+            </div>
+
+            <button class="delete-all-filters-btn clear-btn" type="button" (click)="removeFilters()"
+              *ngIf="companiesFilter>0">
+              <svg class="svg-hover close-icon del-btn cursor">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+              </svg>
+            </button>
+
+            <button class="clear-btn filter-btn" id="filterMenu" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+              aria-expanded="false" #dropdown>
+              <svg class="svg svg-hover-2">
+                <use href="assets/icons/sprite/sprite.svg#filter2-icon"></use>
+              </svg>
+            </button>
+
+            <ul class="dropdown-menu list filter-dropdown-menu" aria-labelledby="filterMenu">
+              <p class="filter-type">PEER GROUPS</p>
+              <li class="" *ngFor="let filter of filterCompany$|async;let index=index">
+                <label class="check">
+                  <input class="check__input visually-hidden" type="checkbox" [ngModel]="filter.checked"
+                    (ngModelChange)="updateFilter($event,index)" name="filterCompany" [value]="filter.checked">
+                  <span class="check__box">
+                    <svg class="rect">
+                      <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                    </svg>
+                    <svg class="rect-checked-2" *ngIf="filter==='All'">
+                      <use href="assets/icons/sprite/sprite.svg#rect-checked-2"></use>
+                    </svg>
+                    <svg class="rect-checked" *ngIf="filter!=='All'">
+                      <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                    </svg>
+                  </span>
+                  <span class="check__text text-capitalize">{{filter.name}}</span>
+                </label>
+              </li>
+            </ul>
+          </div>
+
+          <div class="companies-accordion-box">
+            <div class="accordeon__header-wrapper">
+              <div class="accordeon__header" data-bs-toggle="collapse" data-bs-target="#collapseCompaniesList"
+                aria-expanded="true" aria-controls="collapseCompaniesList">
+
+                <div class="toggle-icon">
+                  <svg class="svg plus">
+                    <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                  </svg>
+                  <svg class="svg minus">
+                    <use href="assets/icons/sprite/sprite.svg#minus-icon"></use>
+                  </svg>
+                </div>
+
+                <h3>{{(companiesFilter===0 && (searchTerm$|async).length===0)?'ALL':'COMPANIES'}} <span
+                    class="count">({{(companies$|async)?.length}})</span>
+                </h3>
+              </div>
+
+              <button class="sort-icon clear-btn" (click)="sortCompanies()">
+                <!-- <img [src]="filepath+'assets/icons/from-a-to-z_1.svg'" width="16" height="16"> -->
+                <svg class="svg svg-hover-2">
+                  <use href="assets/icons/sprite/sprite.svg#sort-icon"></use>
+                </svg>
+              </button>
+            </div>
+
+            <div class="accordeon__body collapse show scrollbar scrollbar--2" id="collapseCompaniesList"
+              aria-labelledby="headingOne"
+              [style]="{'max-height': isLargeScreen ? (mainContent.offsetHeight - leftSideHeader.offsetHeight - 290 + 'px') : (mainContent.offsetHeight - leftSideHeader.offsetHeight - 140 + 'px')}">
+              <div *ngIf="(companies$|async) as companies">
+                <ul class="list" *ngIf="(companies$|async) as companies">
+                  <ng-container *ngFor="let company of companies">
+                    <li [routerLinkActive]="['active','my-company']" *ngIf="company|mycompany:(subscription$|async)">
+                      <div class="company-item" [routerLink]="['',company.name|underscore]">
+                        <div class="c-logo" (click)="open(company)">
+                          <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+                        </div>
+                        <span class="company-name" style="color: var(--secondary-text-color);"
+                          (click)="open(company)">{{company.name}}</span>
+                      </div>
+                      <div *ngIf="false"
+                        [pTooltip]="((subscription$|async)?.plan?.number_companies_trade-(subscription$|async)?.trade_in<=0)?(((subscription$|async)?.last_Date_trade_in|dateSince:(subscription$|async)?.plan?.number_day_to_update)+' to update'):''">
+                        <button class="clear-btn key-btn key-btn--refresh" type="button"
+                          (click)="selectCompany(company)"
+                          *ngIf="(subscription$|async)?.type!=='free' && (company|mycompany:(subscription$|async):'in')"
+                          [disabled]="((subscription$|async)?.plan?.number_companies_trade-(subscription$|async)?.trade_in)===0">
+                          <svg class="svg svg-hover-2" (click)="selectCompanyTradeIn(company)">
+                            <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                          </svg>
+                        </button>
+                      </div>
+
+
+                      <button class="clear-btn key-btn" type="button"
+                        *ngIf="(company|mycompany:(subscription$|async):'out')">
+                        <svg class="svg svg-hover-2">
+                        </svg>
+                      </button>
+                    </li>
+                  </ng-container>
+                  <ng-container *ngFor="let company of companies">
+                    <li [routerLinkActive]="'active'" *ngIf="!(company|mycompany:(subscription$|async))">
+                      <div class="company-item" [routerLink]="['',company.name|underscore]">
+                        <div class="c-logo" (click)="open(company)">
+                          <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+                        </div>
+                        <span class="company-name" (click)="open(company)">{{company.name}}</span>
+                      </div>
+
+                      <button class="clear-btn key-btn" type="button" (click)="selectCompany(company)"
+                        [disabled]="(company|mycompany:(subscription$|async)) || company.is_free"
+                        [pTooltip]="(user$|async)?'':'Login to unlock research'"
+                        *ngIf="!(company|mycompany:(subscription$|async))">
+                        <svg class="svg svg-hover-2" [class.blink]="blink" *ngIf="!company.is_free"
+                          [class.white]="(selectedCompanies$|async).includes(company)">
+                          <use href="assets/icons/sprite/sprite.svg#key-icon"
+                            *ngIf="(selectedCompanies$|async).includes(company)"></use>
+                          <use href="assets/icons/sprite/sprite.svg#lock3-icon"
+                            *ngIf="!(selectedCompanies$|async).includes(company)"></use>
+                        </svg>
+                      </button>
+
+                    </li>
+                  </ng-container>
+
+                </ul>
+
+                <app-nothing-found style="width: 100%" *ngIf="(!(companies) || (companies)!.length===0)">
+                </app-nothing-found>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="left-side__footer">
+
+          <div class="divider footer-divider"></div>
+          <div class="bottom-decor-box"></div>
+          <div class="bottom-menu">
+
+            <ul class="left-side__nav list" id="collapseBtn2" aria-labelledby="headingBtn2"
+              [ngClass]="{'collapse': !isLargeScreen}">
+              <!-- <li class="left-side__nav-item">
+                <a class="left-side__nav-link link" [routerLink]="'/aboutus'">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#about2-icon"></use>
+                  </svg>
+                  <span>About</span>
+                </a>
+              </li> -->
+              <li class="left-side__nav-item">
+                <a class="left-side__nav-link link" href="https://www.youtube.com/@vaIpaI" target="_blank">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#youtube2-icon"></use>
+                  </svg>
+                  <span>Youtube</span>
+                </a>
+              </li>
+              <!-- <li class="left-side__nav-item">
+                <a class="left-side__nav-link link" [routerLink]="'/howitworks'">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#how-it-work-icon"></use>
+                  </svg>
+                  <span>How It Work</span>
+                </a>
+              </li> -->
+              <li class="left-side__nav-item">
+                <a class="left-side__nav-link link"
+                  (click)="feedbackAreaService.toggleFeedbackArea();$event.stopPropagation();isLargeScreen?null:menu.click();">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#feedback2-icon"></use>
+                  </svg>
+                  <span>Feedback</span>
+                </a>
+              </li>
+              <li class="left-side__nav-item">
+                <!-- [routerLink]="'/contact'" -->
+                <a class="left-side__nav-link link" (click)="contactUs.showContactFAQ = !contactUs.showContactFAQ">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#contact2-icon"></use>
+                  </svg>
+                  <span>Contact</span>
+                </a>
+              </li>
+              <li class="left-side__nav-item">
+                <a class="left-side__nav-link link" (click)="showLegalPopup = !showLegalPopup">
+                  <svg class="svg svg20">
+                    <use href="assets/icons/sprite/sprite.svg#file-icon"></use>
+                  </svg>
+                  <span>Legal</span>
+                </a>
+              </li>
+              <li class="divider-line">
+                <div class="divider"></div>
+              </li>
+            </ul>
+
+            <div class="bottom-menu__header cursor collapsed" id="btntogglemenu" #menu
+              (click)="$event.stopPropagation()" data-bs-toggle="collapse" data-bs-target="#collapseBtn2"
+              attr.aria-expanded="false" aria-controls="collapseBtn2" (resize)="onresize()">
+              <svg class="svg burger-icon svg20">
+                <use href="assets/icons/sprite/sprite.svg#burger-menu-icon"></use>
+              </svg>
+              <span>Menu</span>
+
+              <div class="toggle-icon">
+                <svg class="svg">
+                  <use href="assets/icons/sprite/sprite.svg#angle-right-icon"></use>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="right-side">
+        <!-- <div class="right-side__top-border" *ngIf="!showBanner$|async"></div> -->
+        <div class="banner" *ngIf="showBanner$|async">
+
+          <p class="banner__text"><button class="banner__register-btn clear-btn" type="button"
+              routerLink="/auth/register">Register</button> an account to get access to one of our deep-dive research
+            reports for a company
+            for one quarter</p>
+          <svg class="svg-white close-icon cursor" (click)="closeBanner()">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+          </svg>
+        </div>
+
+
+        <div class="right-side__content"
+          [style]="{'border-top-left-radius': device.isMobile ? '0' : ((showBanner$|async) ? '0' : '8px'), 'height': (showBanner$|async) ? 'calc(100% - var(--banner-height))' : '100%'}">
+
+          <router-outlet></router-outlet>
+        </div>
+
+      </div>
+
+
+
+
+
+    </div>
+
+
+    <p-sidebar [(visible)]="feedbackAreaService.showFeedbackArea" [closeOnEscape]="false" [dismissible]="true"
+      [showCloseIcon]="true" [baseZIndex]="10000" styleClass="feedback-sidebar" position="right">
+      <app-feedback></app-feedback>
+    </p-sidebar>
+
+    <p-sidebar [(visible)]="feedbackAreaService.showContribute" [closeOnEscape]="false" [dismissible]="true"
+      [showCloseIcon]="true" [baseZIndex]="10000" position="right" styleClass="contribute-sidebar">
+      <app-contribute></app-contribute>
+    </p-sidebar>
+  </div>
+</div>
+
+
+
+<app-select-plan-scenario [plans]="plans$|async" [subscription]="subscription$|async" [start]="startSelectPlan$"
+  *ngIf="startSelectPlan$|async"></app-select-plan-scenario>
+
+<app-select-new-plan-scenario [plans]="plans$|async"
+  [subscription]="subscription$|async"></app-select-new-plan-scenario>
+
+
+<app-select-company-scenario [start]="startSelectCampany$" [subscription]="subscription$|async"
+  [selectedCompanies]="selectedCompanies$"></app-select-company-scenario>
+
+<!-- Trade In Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showTradeInModal"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="showTradeInModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal__content" *ngIf="toBeTradeIn">
+      <div class="modal-content__wrap">
+        <div class="modal-content__item">
+          <h3 class="app-title">Trade In Company</h3>
+          <p class="main-text">By using a trade-in you will receive one unlock key, which you can use to unlock a new
+            company. Trade in's are restored
+            every quarter.</p>
+        </div>
+
+        <div class="modal-content__item">
+          <app-company-card [company]="toBeTradeIn" [noControl]="true"></app-company-card>
+        </div>
+
+        <div class="modal-content__item flex">
+          <button class="button button--accent" type="button" (click)="confirmTradeIn(confirm)" #confirm>Trade
+            In</button>
+          <button class="button" type="button" (click)="cancelTradeIn()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+
+<!-- Contact & FAQ -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="contactUs.showContactFAQ"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="contactUs.showContactFAQ=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <app-contact></app-contact>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Legal Popup -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showLegalPopup"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="showLegalPopup=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <form class="modal-content__form">
+        <div class="modal-content__form-field">
+          <h3 class="app-title">Legally required information:</h3>
+        </div>
+
+        <div class="modal-content__form-field" style="display: flex; flex-direction: column; gap:8px;">
+          <p class="secondary-text">ValPal AB (valpal)</p>
+          <p class="secondary-text">Organization number: 559382-7255</p>
+          <p class="secondary-text">Hagaesplanaden 61 113 68 Stockholm</p>
+        </div>
+
+        <div class="modal-content__form-field" style="display: flex; flex-direction: column; gap:8px;">
+
+          <a class="secondary-text" href="mailto:support@valpal.io">support@valpal.io</a>
+
+          <a class="secondary-text" href="tel:+460723369695">+46 072 336 9695</a>
+
+        </div>
+
+        <div class="modal-content__form-field">
+          <button type="button" class="button button--accent" (click)="openPrivacy()">Privacy Policy</button>
+        </div>
+
+        <div class="modal-content__form-field">
+          <button type="button" class="button button--accent" (click)="openTerms()">User Agreement</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</p-dialog>
+
+
+<div class="w-0" [style]="urlImg"></div>
+<div class="w-0" [style]="topographyBgImageUrl"></div>
+<div class="w-0" [style]="gormImg"></div>
+<div class="w-0" [style]="jasperImg"></div>

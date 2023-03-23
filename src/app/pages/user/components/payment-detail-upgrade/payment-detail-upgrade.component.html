@@ -1,0 +1,58 @@
+<div class="modal-content">
+    <div class="modal-content__wrap payment-details">
+        <div class="modal-content__item">
+            <button class="clear-btn back-btn" (click)="goBack()">
+                <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                </svg>
+                <span>Back</span>
+            </button>
+        </div>
+        <div class="modal-content__item">
+            <h3 class="app-title">Payment Details</h3>
+        </div>
+        <!-- <div class="modal-content__item flex">
+            <input class="visually-hidden" [(ngModel)]="planPeriod" (change)="fetch()" [value]="'Quarterly'"
+                type="radio" name="planPeriod" id="planMonthly" autocomplete="off" checked>
+            <label class="button" for="planMonthly">Quarterly</label>
+
+            <input class="visually-hidden" [(ngModel)]="planPeriod" (change)="fetch()" [value]="'Yearly'" type="radio"
+                name="planPeriod" id="planYearly" autocomplete="off">
+            <label class="button" for="planYearly">Annually (-20%)</label>
+        </div> -->
+        <div class="modal-content__item payment-details-body">
+            <div class="info">
+                <div class="">
+                    <p style="margin-bottom: 4px;">Upgrade to {{diff?.new_plan?.name}}</p>
+                    <p class="text-label-2">{{planPeriod==='Yearly'?12:3}} Months</p>
+                </div>
+                <span class="bold">{{diff?.new_plan?.show_price|currency}}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="info">
+                <div class="">
+                    <p style="margin-bottom: 4px;">Current plan</p>
+                    <p class="text-label-2">{{diff?.rest_days/30|number:'2.0-0'}} Months left</p>
+                </div>
+                <span class="bold">-{{(diff.price_day*diff.rest_days)|currency}}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="info">
+                <span>+ VAT(25%)</span>
+                <span class="bold">{{(diff?.amount_pay)/1.25*0.25|currency}}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="info">
+                <span>Total amount payed today</span>
+                <span class="mega-bold">{{(diff?.amount_pay)|currency}}</span>
+            </div>
+            <button class="button button--accent" (click)="onConfirm()">Select payment method</button>
+            <p class="secure-checkout">
+                <svg width="16" height="16">
+                    <use href="assets/icons/sprite/sprite.svg#shield-check-icon"></use>
+                </svg>
+                <span class="secondary-text-2">Secure checkout</span>
+            </p>
+        </div>
+    </div>
+</div>

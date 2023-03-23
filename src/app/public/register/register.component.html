@@ -1,0 +1,721 @@
+<!-- the steps are loaded in the ng-container, for the prvious step, user inputs should be disabled. -->
+
+<div class="register-page" *ngIf="viewStack$|async as viewStack">
+
+  <!-- previous step -->
+  <div class="step-box-wrapper previous-step-box" (click)="$event.preventDefault();$event.stopPropagation()">
+    <ng-container [ngTemplateOutlet]="viewStack|beforeLast"></ng-container>
+  </div>
+
+  <!-- previous button -->
+  <button class="up-down-btn up prev-step-btn" type="button" *ngIf="(viewStack|beforeLast) && canGoBack"
+    (click)="previous()">
+    <svg class="svg svg-hover-2">
+      <use href="assets/icons/sprite/sprite.svg#angle-down-icon"></use>
+    </svg>
+  </button>
+
+  <!-- current step -->
+  <div class="step-box-wrapper">
+    <ng-container [ngTemplateOutlet]="viewStack|last"></ng-container>
+  </div>
+</div>
+
+<!-- All related screens in registration flow -->
+<ng-template #investorType>
+
+  <div class="r-box firs-step">
+    <div class="r-box__header">
+      <h3 class="r-box__title">Select type</h3>
+      <p class="r-box__subtitle">What type of investor are you?</p>
+    </div>
+    <div class="r-card">
+      <div class="investors-block">
+        <button class="button-check" (click)="registerData.investorType='Retail'"
+          [ngClass]="{'button-check--checked':registerData.investorType==='Retail','button-check':registerData.investorType!=='Retail'}">
+          <svg class="svg">
+            <use href="assets/icons/sprite/sprite.svg#handshake-icon"></use>
+          </svg>
+          <span>Retail</span>
+        </button>
+        <button class="button-check" (click)="registerData.investorType='Institutional'"
+          [ngClass]="{'button-check--checked':registerData.investorType==='Institutional','button-check':registerData.investorType!=='Institutional'}">
+          <svg class="svg">
+            <use href="assets/icons/sprite/sprite.svg#university-icon"></use>
+          </svg>
+          <span>Institutional</span>
+        </button>
+      </div>
+      <div class="r-card__footer">
+        <button class="button button--landing" [disabled]="registerData.investorType===''"
+          (click)="investorTypeSelected()">
+          Continue</button>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+
+<ng-template #registration>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title">Select registration method</h3>
+      <p class="r-box__subtitle">Register using your google account or use your own email address</p>
+    </div>
+
+    <div class="r-card">
+      <div>
+        <div class="login__social-butons">
+          <button class="button" type="button" (click)="onGoogleSignUp()" [hidden]="isSafari() || isiOS()">
+            <svg class="svg-hover">
+              <use href="assets/icons/sprite/sprite.svg#google-color-icon"></use>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+          <div class="d-flex-center">
+            <asl-google-signin-button type='icon' size='medium'
+              [hidden]="!isSafari() && !isiOS()"></asl-google-signin-button>
+          </div>
+
+          <!-- <button class="button" type="button">
+            <svg class="svg-hover">
+              <use href="assets/icons/sprite/sprite.svg#apple-logo-icon"></use>
+            </svg>
+            <span>Continue with Apple</span>
+          </button> -->
+        </div>
+
+        <div class="login__divider">
+          <div class="line"></div>
+          <div class="or">Or</div>
+          <div class="line"></div>
+        </div>
+
+        <div class="login__form-field">
+          <label for="user-email" class="secondary-text login__label-text">Enter Email *</label>
+          <input class="form-input" type="email" [ngClass]="{'email-exist': emailExist}"
+            [(ngModel)]="registerData.email" id="user-email" placeholder="Email">
+
+          <p class="login__input-notifucation main-text" *ngIf="emailExist">
+            <span class="text-danger">account already exist.</span>
+            <a class="link-accent" routerLink="/reset-password-request">Forgot password?</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" (click)="emailEntred()"> Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmEmail>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title">Confirm your email</h3>
+      <p class="r-box__subtitle">We sent an email with the confirmation code, it might appear in your spam-inbox</p>
+    </div>
+
+    <div class="r-card">
+      <div style="width: 100%; flex-shrink: 0;">
+        <code-input class="code-input" [isCodeHidden]="false" [codeLength]="6" (codeCompleted)="emailConfirmed($event)">
+        </code-input>
+        <div class="notification main-text-2 d-flex align-items-center" style="gap: 8px;" *ngIf="!startTimer">
+          <span>Didn't receive the code?</span>
+          <button class="clear-btn main-text link-accent" (click)="resendVerifCode()">Resend</button>
+        </div>
+        <div class="notification main-text-2" *ngIf="startTimer">Wait <span class="accent-landing">{{ display }}</span>
+          seconds to
+          send new message</div>
+
+        <p class="notification main-text" *ngIf="codeNotCorrect">
+          <span class="text-danger">The code is not correct</span>
+        </p>
+        <!-- <p class="notification main-text-2" *ngIf="showEmailSent">verification code sent</p>
+        <p class="notification main-text-2" *ngIf="showLoading">loading</p> -->
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #phoneNumber>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title">Input Phone Number</h3>
+      <p class="r-box__subtitle">Add your phone number to verify your identity</p>
+    </div>
+
+    <div class="r-card">
+      <div>
+        <div class="form-field">
+          <label for="mobileCode2" class="form__label">Phone Number</label>
+          <div style="position: relative;">
+            <div class="form-group">
+              <input type="text" id="mobileCode2" class="form-input" placeholder="Phone Number" name="name"
+                [(ngModel)]="registerData.phone">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="notification main-text" *ngIf="errorMsg">
+        <span class="text-danger">{{errorMsg}}</span>
+      </p>
+      <div class="r-card__footer">
+        <button class="button button--landing" (click)="phoneEntred()" [disabled]="!registerData.phone"> Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmPhone>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title">Confirm your Phone number</h3>
+      <p class="r-box__subtitle">We sent an SMS with the confirmation code</p>
+    </div>
+
+    <div class="r-card">
+      <div style="width: 100%; flex-shrink: 0;">
+        <code-input class="code-input" [isCodeHidden]="false" [codeLength]="6" (codeCompleted)="phoneConfirmed($event)">
+        </code-input>
+        <div class="notification main-text-2 d-flex align-items-center" style="gap: 8px;" *ngIf="!startTimer">
+          <span>Didn't receive the code?</span>
+          <button class="clear-btn main-text link-accent" (click)="resendVerifCodePhone()">Resend</button>
+        </div>
+        <div class="notification main-text-2" *ngIf="startTimer">Wait <span class="accent-landing">{{ display??'10:00' }}</span>
+          seconds to
+          send new code</div>
+
+        <p class="notification main-text" *ngIf="codeNotCorrectSMS">
+          <span class="text-danger">{{codeNotCorrectSMS}}</span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #institutionalForm>
+  <div class="r-box">
+
+    <div class="r-box__header">
+      <h3 class="r-box__title">Tell us about your business</h3>
+      <p class="r-box__subtitle">We will get in touch as soon as we are able</p>
+    </div>
+
+    <div class="r-card">
+      <form class="form" autocomplete="off">
+        <div class="name">
+          <h4 class="form__label">Name of company*</h4>
+          <input class="form-input" placeholder="ex: Berkshire Hathaway" name="name"
+            [(ngModel)]="registerData.institution.companyName" type="text" id="companyname">
+        </div>
+        <div class="type">
+          <h4 class="form__title-2">Type of company</h4>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="companyType" id="companyType1"
+              value="Equity Research Firm" [(ngModel)]="registerData.institution.companyType">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Equity Research Firm</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="companyType" id="companyType2"
+              value="Assset management Firm" [(ngModel)]="registerData.institution.companyType">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Assset Management Firm</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="companyType" id="companyType3"
+              value="Brokerage Firm" [(ngModel)]="registerData.institution.companyType">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Brokerage Firm</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" #other name="companyType" id="companyType4"
+              value="4" [(ngModel)]="registerData.institution.companyType">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Other</span>
+          </label>
+
+          <div [ngClass]="{'hidden':!other.checked}">
+            <input class="form-input" placeholder="Enter Type of your company" type="text" id="companyType">
+          </div>
+        </div>
+
+        <div class="contact">
+          <h4 class="form__title-2" style="margin-bottom: 0;">Contact Information *</h4>
+          <p class="main-text-2">Enter Email or/and Phone number</p>
+          <div>
+            <div class="form__field">
+              <label class="form__label" for="companyname">Email</label>
+              <input class="form-input" placeholder="Enter your Email" type="email" name="phone" id="companyname"
+                [(ngModel)]="registerData.institution.email">
+            </div>
+            <div class="form-field">
+              <label for="mobileCode" class="form__label">Phone Number</label>
+              <div style="position: relative;">
+                <div class="form-group">
+                  <input type="text" id="mobileCode" class="form-input" placeholder="Phone Number" name="name"
+                    [(ngModel)]="registerData.institution.phone">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" (click)="companyData()">Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createPassword>
+  <div class="r-box">
+
+    <div class="r-box__header">
+      <h3 class="r-box__title">Create password</h3>
+      <p class="r-box__subtitle">Enter and confirm you password</p>
+    </div>
+
+    <div class="r-card">
+      <form class="form" autocomplete="off">
+
+        <div>
+          <div class="form__field">
+            <label for="yourpassword" class="form__label">Set your password *</label>
+            <div style="position: relative">
+              <input class="form-input" [type]="passwordType" id="yourpassword"
+                (input)="registerData.password=$event.target.value">
+              <label for="yourpassword" style="display: block;">
+                <button id="togglePassword" (click)="showHidePassword()" class="clear-btn login__show-psw-btn"
+                  type="button">
+                  <svg class="svg-hover" *ngIf="!isVisiblePassword">
+                    <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                  </svg>
+                  <svg class="svg-hover" *ngIf="isVisiblePassword">
+                    <use href="assets/icons/sprite/sprite.svg#eye-slash-icon"></use>
+                  </svg>
+                </button>
+              </label>
+            </div>
+          </div>
+
+          <div class="form__field">
+            <label for="yourPasswordConfirm" class="form__label">Confirm your password *</label>
+            <div style="position: relative">
+              <input class="form-input" (input)="registerData.confirmPassword=$event.target.value" [type]="passwordType"
+                id="yourPasswordConfirm">
+              <label for="yourPasswordConfirm" style="display: block;">
+                <button id="togglePassword" (click)="showHidePassword()" class="clear-btn login__show-psw-btn"
+                  type="button">
+                  <svg class="svg-hover" *ngIf="!isVisiblePassword">
+                    <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                  </svg>
+                  <svg class="svg-hover" *ngIf="isVisiblePassword">
+                    <use href="assets/icons/sprite/sprite.svg#eye-slash-icon"></use>
+                  </svg>
+                </button>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="r-card__footer">
+        <button class="button button--landing"
+          [disabled]="(registerData.confirmPassword !== registerData.password) && registerData.password.length>4"
+          (click)="createPasswords()">Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #almostdone>
+  <div class="r-box">
+
+    <div class="r-box__header">
+      <h3 class="r-box__title">Almost done</h3>
+      <p class="r-box__subtitle">Introduce yourself and tell us how you found valpal</p>
+    </div>
+
+    <div class="r-card">
+      <form class="form" autocomplete="off">
+        <div>
+          <h4 class="form__label">Enter your name *</h4>
+          <input class="form-input" [(ngModel)]="registerData.name" name="name" placeholder="Jhon Doe" type="text"
+            id="name">
+        </div>
+        <div>
+          <h4 class="form__title-2">How did you find Valpal?</h4>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="found" id="found1" value="Youtube"
+              [(ngModel)]="registerData.found">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Youtube</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="found" id="found2" value="Twitter"
+              [(ngModel)]="registerData.found">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Twitter</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="found" id="found3" value="Search Engine"
+              [(ngModel)]="registerData.found">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Search Engine</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" type="radio" name="found" id="found4" value="Recommendation"
+              [(ngModel)]="registerData.found">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Recommendation</span>
+          </label>
+
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" (input)="other.checked?registerData.found='':null" #other
+              type="radio" name="found" id="found5" value="5">
+            <span class="check__box">
+              <svg class="circle-svg">
+                <use href="assets/icons/sprite/sprite.svg#circle"></use>
+              </svg>
+              <svg class="circle-checked">
+                <use href="assets/icons/sprite/sprite.svg#circle-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Other</span>
+          </label>
+
+          <div *ngIf="other.checked">
+            <input class="form-input" placeholder="Other..." name="other" [(ngModel)]="registerData.found" type="text"
+              id="foundother">
+          </div>
+        </div>
+      </form>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" [disabled]="registerData.name.length===0 && !registerData.found"
+          (click)="almostDone()">Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #termOfuse>
+  <div class="r-box">
+
+    <div class="r-box__header">
+      <h3 class="r-box__title" style="margin: 0;">Terms of Use</h3>
+    </div>
+
+    <div class="r-card">
+
+      <div class="policy-text">
+        <h4 class="p-subtitle">1. Application</h4>
+        <p class="text">These Terms of Use apply to Services provided by ValPal AB, corporate ID 559382-7255,
+          through the website valpal.io (the
+          “site” or “Valpal”).</p>
+        <p class="text">These terms apply to all who use the site and register an account, hereinafter “Customer” or
+          “User”.</p>
+
+        <h4 class="p-subtitle">2. Conditions for use</h4>
+        <p class="text">All use of the ValPal Services is conditional upon you as...</p>
+      </div>
+
+      <button class="clear-btn link-accent read-more-btn" (click)="readMoreTerms()">Read More</button>
+
+      <div class="divider"></div>
+
+      <label class="check check--landing">
+        <input class="check__input visually-hidden" type="checkbox" value="" id="agreeTerms"
+          [(ngModel)]="registerData.agreeToTerms">
+        <span class="check__box">
+          <svg class="rect">
+            <use href="assets/icons/sprite/sprite.svg#rect"></use>
+          </svg>
+          <svg class="rect-checked">
+            <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+          </svg>
+        </span>
+        <span class="check__text">I agree</span>
+      </label>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" [disabled]="!registerData.agreeToTerms"
+          (click)="termsOfUse()">Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #privacyPolicy>
+
+  <div class="r-box">
+
+    <div class="r-box__header">
+      <h3 class="r-box__title" style="margin: 0;">Privacy Policy</h3>
+    </div>
+
+    <div class="r-card">
+
+      <div class="policy-text">
+        <h4 class="p-subtitle">1. Privacy Policy</h4>
+        <p class="text">ValPal AB built the Valpal platform as a Commercial service. This SERVICE is provided by
+          ValPal AB and is intended for
+          use as is.</p>
+        <p class="text">This page is used to inform visitors regarding our policies with the collection, use, and
+          disclosure of Personal
+          Information if anyone decided to use our Service.</p>
+        <p class="text">If you choose to use our Service, then you agree to the collection and use of information in
+          relation to this policy.
+          The Personal Information that we collect is used for providing and improving the Service. We will not
+          use or share your
+          information with anyone except as...</p>
+      </div>
+
+      <button class="clear-btn link-accent read-more-btn" (click)="readMorePrivacy()">Read More</button>
+
+      <div class="divider"></div>
+
+      <label class="check check--landing">
+        <input class="check__input visually-hidden" [(ngModel)]="registerData.agreeToPrivacy" type="checkbox" value=""
+          id="agreeTerms">
+        <span class="check__box">
+          <svg class="rect">
+            <use href="assets/icons/sprite/sprite.svg#rect"></use>
+          </svg>
+          <svg class="rect-checked">
+            <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+          </svg>
+        </span>
+        <span class="check__text">I agree</span>
+      </label>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" [disabled]="!registerData.agreeToPrivacy" (click)="privacyPolicyAgree()">
+          Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #randomCompany>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title" style="margin: 0;">One free company</h3>
+    </div>
+
+    <div class="r-card">
+      <div class="loader" *ngIf="!(randomCompany$|async)">
+        <svg>
+          <use href="assets/icons/sprite/sprite.svg#big-loader"></use>
+        </svg>
+      </div>
+
+      <ng-container *ngIf="(randomCompany$|async) as company">
+        <div class="random-company">
+          <div class="logo">
+            <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+          </div>
+
+          <p class="name">{{company.name}}</p>
+
+          <p class="secondary-text-2">See the quality of our research first-hand, you will have access to your free
+            company for one quarter</p>
+        </div>
+      </ng-container>
+
+      <button class="clear-btn btn-hover secondary-text" (click)="reroll()" [disabled]="!canReroll">
+        <svg class="svg">
+          <use href="assets/icons/sprite/sprite.svg#redo-icon"></use>
+        </svg>
+        <span>Reroll new Company</span>
+      </button>
+
+      <div class="r-card__footer">
+        <button class="button button--landing" (click)="pickedRandomCompany()"> Continue</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #welcome>
+  <div class="r-box">
+    <div class="r-box__header">
+      <h3 class="r-box__title" style="margin: 0;">Welcome to valpal</h3>
+    </div>
+
+    <div class="r-card">
+      <div class="notify-me">
+        <h5 class="welcome-title">Notify me when platform lauches</h5>
+        <div class="checkboxes-block">
+          <!-- via Email -->
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" [(ngModel)]="registerData.notifByEmail" type="checkbox" value=""
+              id="notifyEmail">
+            <span class="check__box">
+              <svg class="rect">
+                <use href="assets/icons/sprite/sprite.svg#rect"></use>
+              </svg>
+              <svg class="rect-checked">
+                <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">Via Email</span>
+          </label>
+
+          <!-- by SMS -->
+          <label class="check check--landing">
+            <input class="check__input visually-hidden" [(ngModel)]="registerData.notifBySMS" #sms type="checkbox"
+              value="" (change)="notifyBysms($event)" id="notifysms">
+            <span class="check__box">
+              <svg class="rect">
+                <use href="assets/icons/sprite/sprite.svg#rect"></use>
+              </svg>
+              <svg class="rect-checked">
+                <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+              </svg>
+            </span>
+            <span class="check__text">By SMS</span>
+          </label>
+        </div>
+        <div class="form-field" *ngIf="sms.checked" style="margin-top: 8px;">
+          <label for="smsNotif" class="form-label secondary-text">Phone Number</label>
+          <div style="position: relative;">
+            <div class="form-group">
+              <input type="text" id="smsNotif" class="form-input secondary-text" placeholder="Phone Number" name="name">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider-2"></div>
+
+      <p class="main-text-2">
+        Valpal is on a mission to make rigourous financial modelling accessible to all investors, this is the begging of
+        a
+        journey, and in time Valpal will grow to be one of the most powerful financial intelligence platform globally.
+        To
+        achieve this goal we need people that believe in our mission and are willing to support it. That is why we are
+        extending
+        this prelaunch offer, to find the people that actively want to be part of shaping this platform as we
+        relentlessly work
+        towards our vision.
+      </p>
+
+      <div class="claim-offer-card">
+        <h3 class="welcome-title">Claim offer</h3>
+        <p class="main-text-2">Pay 100$ to have access to all the companies on the platform for one year</p>
+        <div class="footer-btns">
+          <button class="button button--landing" (click)="claimOffer()">Claim Offer</button>
+          <button class="button" (click)="skip()">Skip For now</button>
+        </div>
+      </div>
+
+      <a class="clear-btn text-link see-plans-link" style="font-weight: 600;"
+        (click)="seePlansPopup.seePlans('register')">See our standard pricing</a>
+    </div>
+  </div>
+</ng-template>
+
+
+<p-dialog [(visible)]="institutionalModal" [modal]="true" [draggable]="false" [resizable]="false"
+  [dismissableMask]="false" [showHeader]="false" styleClass="success-modal">
+
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="institutionalModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="image">
+      <svg width="120" height="108">
+        <use href="assets/icons/sprite/sprite.svg#big-email"></use>
+      </svg>
+    </div>
+    <div class="text">
+      <h3 class="app-title">We will get back to you soon</h3>
+      <p class="main-text">If you have any direct queries/proposals you can emails us using the Contact page</p>
+    </div>
+    <div class="conf-button">
+      <button class="button button--landing" type="button" routerLink="/overview" (click)="institutionalModal=false">
+        Back to homepage
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+
+<app-claim-offer [start]="start$" *ngIf="(start$|async)"></app-claim-offer>
+<iframe src="https://verify-4072-r2z5an.twil.io/index.html" class="d-none" id="myIframe" frameborder="0"></iframe>

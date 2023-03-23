@@ -1,0 +1,210 @@
+<ng-container *ngIf="!preview; else uiPreview">
+    <div class="companies">
+
+        <!-- <div class="companies__header">
+            <h2>Our Process</h2>
+    
+            <div class="header-bottom">
+                <p class="header-bottom__subtitle secondary-text">Have an interesting company that you want us to take a
+                    look
+                    at? Submit your idea and vote for other ideas</p>
+    
+                <button class="button button--accent2" *ngIf="preview" (click)="contribute()">Community Ideas</button>
+            </div>
+        </div> -->
+
+        <div class="companies-row">
+            <div class="companies-row__item">
+
+                <div class="companies-row__item-header">
+                    <h3>Screening Backlog</h3>
+                    <span class="question-label" (mouseenter)="tooltip1.classList.remove('d-none');"
+                        (mouseleave)="tooltip1.classList.add('d-none');">
+                        <svg class="svg-icon">
+                            <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                        </svg>
+
+                        <ul class="h-tooltip d-none list" #tooltip1>
+                            <li>
+                                <div class="companies-row__subtitle">Companies that we think are interesting, which
+                                    will be screened
+                                </div>
+                            </li>
+                        </ul>
+                    </span>
+
+                </div>
+                <div class="companies-row__item-body">
+                    <ul class="companies-row__list list" *ngIf="backlog.length>0;else noData;">
+                        <li *ngFor="let item of backlog;let index = index" pDraggable="backlog"
+                            [pDraggableDisabled]="preview" pDroppable="backlog"
+                            (onDragStart)="onDragStart(index,'backlog')" (onDrop)="onDragEnd(index,'backlog')"
+                            (click)="visitLink(item.link)">
+
+                            <div class="c-logo-card">
+                                <img src="{{filepath+'companiesLogo/'+item.logo}}" alt="company logo">
+                            </div>
+
+                            <div class="c-info">
+                                <span class="c-name">{{item.name}}</span>
+                                <a class="c-tag" [ngStyle]="{'background-color':item.color}"
+                                    [href]="item.tag_link">{{item.tag_name}}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gradient-divider"></div>
+
+            <div class="companies-row__item" [pDroppable]="['screening','backlog']" (onDrop)="onDragEnd(0,'screening')">
+
+                <div class="companies-row__item-header">
+                    <h3>In Screening Process</h3>
+                    <span class="question-label" (mouseenter)="tooltip2.classList.remove('d-none');"
+                        (mouseleave)="tooltip2.classList.add('d-none');">
+                        <svg class="svg-icon">
+                            <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                        </svg>
+
+                        <ul class="h-tooltip d-none list" #tooltip2>
+                            <li>
+                                <div class="companies-row__subtitle">We are currently screening these companies (8-20
+                                    hours
+                                    of
+                                    research)
+                                </div>
+                            </li>
+                        </ul>
+                    </span>
+
+                </div>
+
+                <div class="companies-row__item-body scrollbar">
+                    <ul class="companies-row__list list" *ngIf="screening.length>0;else noData;">
+                        <li *ngFor="let item of screening;let index = index" pDraggable="screening"
+                            [pDraggableDisabled]="preview" [pDroppable]="['screening','backlog']"
+                            (onDrop)="onDragEnd(index,'screening')" (onDragStart)="onDragStart(index,'screening')">
+
+                            <div class="c-logo-card">
+                                <img src="{{filepath+'companiesLogo/'+item.logo}}" alt="company logo">
+                            </div>
+
+                            <div class="c-info">
+                                <span class="c-name">{{item.name}}</span>
+                                <a class="c-tag" [ngStyle]="{'background-color':item.color}"
+                                    [href]="item.tag_link">{{item.tag_name}}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="gradient-divider"></div>
+
+            <div class="companies-row__item" [pDroppable]="['screening','approval']" (onDrop)="onDragEnd(0,'approval')">
+
+                <div class="companies-row__item-header">
+                    <h3>Passed Screening</h3>
+                    <span class="question-label" (mouseenter)="tooltip3.classList.remove('d-none');"
+                        (mouseleave)="tooltip3.classList.add('d-none');">
+                        <svg class="svg-icon">
+                            <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                        </svg>
+
+                        <ul class="h-tooltip d-none list" #tooltip3>
+                            <li>
+                                <div class="companies-row__subtitle">These companies passed the screening, they will be
+                                    thoroughly
+                                    researched (20-100 hours)</div>
+                            </li>
+                        </ul>
+
+                    </span>
+
+                </div>
+                <div class="companies-row__item-body  scrollbar">
+                    <ul class="companies-row__list list" *ngIf="approval.length>0;else noData;">
+                        <li *ngFor="let item of approval;let index = index" pDraggable="approval"
+                            [pDraggableDisabled]="preview" [pDroppable]="['screening','approval']"
+                            (onDrop)="onDragEnd(index,'approval')" (onDragStart)="onDragStart(index,'approval')">
+
+                            <div class="c-logo-card">
+                                <img src="{{filepath+'companiesLogo/'+item.logo}}" alt="company logo">
+                            </div>
+
+                            <div class="c-info">
+                                <span class="c-name">{{item.name}}</span>
+                                <a class="c-tag" [ngStyle]="{'background-color':item.color}"
+                                    [href]="item.tag_link">{{item.tag_name}}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-3" *ngIf="!preview">
+            <div class="col-4">
+                <label for="name">Company name</label>
+                <input type="text" name="name" id="name" [(ngModel)]="company.name">
+            </div>
+            <div class="col-4">
+                <label for="tagname">Tag name</label>
+                <input type="text" name="tagname" id="tagname" [(ngModel)]="company.tag_name">
+            </div>
+            <div class="col-4">
+                <label for="taglink">Tag link</label>
+                <input type="text" name="taglink" id="taglink" [(ngModel)]="company.tag_link">
+            </div>
+            <div class="col-4">
+                <label for="name">Company link</label>
+                <input type="text" name="link" id="link" [(ngModel)]="company.link">
+            </div>
+            <div class="col-4">
+                <span for="name">Company logo</span>
+                <input type="file" name="logo" id="logo" [ngModel]="company.logo" (change)="onFileSelected($event)">
+            </div>
+            <button (click)="addCompany()">Add Company</button>
+        </div>
+    </div>
+
+</ng-container>
+<ng-template #uiPreview>
+    <div style="padding-top: 20px;">
+        <div class="research-header">
+            <h3 class="companies-title">Upcoming {{inScreening?'Screening':'Deep Dive'}}</h3>
+
+            <div class="research-controls">
+                <label class="toggle switcher">
+                    <span class="txt">Showing:</span>
+                    <input class="toggle__checkbox d-none" type="checkbox" name="" id="" role="switch"
+                        [(ngModel)]="inScreening">
+                    <span class="toggle__switch"></span>
+                    <span class="txt">{{inScreening?'Screening':'Deep Dive'}}</span>
+
+                </label>
+                <div class="vertical-divider"></div>
+                <label class="toggle accordeon">
+                    <a (click)="isExpanded=!isExpanded">{{isExpanded?'COLLAPSE':'SHOW ALL'}}</a>
+                </label>
+            </div>
+
+        </div>
+        <div class="companies-row__item-body scrollbar expanding-list" *ngIf="inScreening"
+            [class.expand-list]="!isExpanded">
+            <app-companies-list [hasShadow]="false" [companies]="screening"
+                *ngIf="screening.length>0;else noData;"></app-companies-list>
+        </div>
+        <div class="companies-row__item-body scrollbar expanding-list" *ngIf="!inScreening"
+            [class.expand-list]="!isExpanded">
+            <app-companies-list [hasShadow]="false" [companies]="approval"
+                *ngIf="approval.length>0;else noData;"></app-companies-list>
+        </div>
+    </div>
+</ng-template>
+<ng-template #noData>
+    <div class="d-flex justify-content-center">
+        There are currently no companies at this stage of the research process
+    </div>
+</ng-template>

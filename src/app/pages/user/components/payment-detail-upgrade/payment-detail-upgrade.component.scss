@@ -1,0 +1,18 @@
+.select-plan__buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+
+    input:checked + label.button {
+      background-color: var(--accent-30);
+      color: var(--main-active-text-color);
+      border: 1px solid transparent;
+      &:hover,
+      &:focus {
+        background-color: var(--accent-10);
+      }
+    }
+  }

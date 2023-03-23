@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">valpal</string>
+    <string name="title_activity_main">valpal</string>
+    <string name="package_name">io.ionic.starter</string>
+    <string name="custom_url_scheme">io.ionic.starter</string>
+  <string name="server_client_id">118815907844-ubmsb9i4121epgnm6ograf29svulkek5.apps.googleusercontent.com</string>
+
+</resources>

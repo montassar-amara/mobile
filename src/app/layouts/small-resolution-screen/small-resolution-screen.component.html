@@ -1,0 +1,20 @@
+<div class="small-resolution" [ngClass]="{
+  'dark-mode': themeService.theme_mode === 'dark',
+  'light-mode': themeService.theme_mode === 'light'
+}">
+    <div class="small-resolution__logo">
+        <svg>
+            <use href="assets/icons/sprite/sprite.svg#app-logo-small"></use>
+        </svg>
+    </div>
+
+    <div class="small-resolution__image">
+        <svg>
+            <use href="assets/icons/sprite/sprite.svg#screens-icon"></use>
+        </svg>
+    </div>
+
+    <h2 class="app-title">To experience valpal, visit the platform on a larger screen</h2>
+    <p class="main-text">The valpal platform is in a beta state and we do not support smaller screensizes at this time
+    </p>
+</div>

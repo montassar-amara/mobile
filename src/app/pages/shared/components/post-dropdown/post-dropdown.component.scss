@@ -1,0 +1,27 @@
+.dropdown {
+  padding: 8px;
+}
+.dropdown-toggle:after {
+  content: none;
+}
+
+.dropdown-menu {
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &.delete {
+      color: var(--danger);
+      svg {
+        color: var(--danger);
+      }
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: var(--main-active-text-color);
+    }
+  }
+}

@@ -1,0 +1,113 @@
+<div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="close.emit(); plansPopup.selectPlanModal = false">
+        <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+    </div>
+
+    <div class="modal__content scrollbar" *ngIf="(plans$|async) as plans">
+        <div class="select-plan__text">
+            <h3 class="select-plan__main-title app-title">Become a member</h3>
+            <p class="main-text main-popup-subtitle">The best companion for your investing journey</p>
+        </div>
+        <div class="select-plan__plans">
+
+            <ng-content></ng-content>
+
+            <div class="select-plan__cards">
+
+
+                <div class="card-popular">
+
+                    <div class="card">
+                        <div class="card__text">
+                            <h4 class="card__plan-name app-title-2">
+                                <svg>
+                                    <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                                </svg>
+
+                                <div style="display: flex; align-items: baseline; gap: 12px;">
+                                    <!-- <span class="p-name">{{plans.name}}</span> -->
+                                    <span class="p-name">Member</span>
+                                    <!-- <span class="most-popular">Best Value</span> -->
+                                </div>
+
+                            </h4>
+                            <p class="card__plan-subtitle">For those that want maximum access.</p>
+                        </div>
+
+                        <div class="card__price">
+                            <div class="card__price-number">
+                                <!-- <span class="currency">$</span> -->
+                                <span
+                                    class="value">{{((plans.prices|selectPrice:(planPeriod$|async))*1.25/((planPeriod$|async)==='Yearly'?12:3))|currency}}</span>
+                                <span class="month-txt">/month</span>
+
+                            </div>
+
+                            <div class="card__price-text">Billed
+                                ${{(plans.prices|selectPrice:(planPeriod$|async))*1.25}}
+                                <span>{{(planPeriod$|async)==='Yearly'?'annually':'quarterly'}}</span> <span
+                                    class="percents" *ngIf="(planPeriod$|async)==='Yearly'">
+                                    (Save {{(((plans?.prices|selectPrice:'Quarterly')*4 -
+                                    (plans?.prices|selectPrice:'Yearly'))/((plans?.prices|selectPrice:'Quarterly')*4))|percent}})
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card__subscribe">
+
+                            <button class="button button--accent" *ngIf="(user$|async)"
+                                (click)="selectPlan(); plansPopup.selectPlanModal = false">
+                                {{((subs$|async)?.plan_id && !(subs$|async)?.is_active
+                                ?'Reactivate':'Subscribe')}}</button>
+                            <button class="button button--accent" *ngIf="!(user$|async)"
+                                (click)="signUp(); plansPopup.selectPlanModal = false">
+                                Sign Up
+                            </button>
+
+                        </div>
+
+                        <div class="card__portfolio">
+                            <div class="left">
+                                <div class="svg-box-wrapper">
+                                    <svg>
+                                        <use href="assets/icons/sprite/sprite.svg#portfolio-icon"></use>
+                                    </svg>
+                                </div>
+                                <p class="txt">Portfolio Access</p>
+                            </div>
+
+                            <svg class="check-svg">
+                                <use href="assets/icons/sprite/sprite.svg#check-icon"></use>
+                            </svg>
+
+                        </div>
+
+                        <div class="card__preferences">
+                            <div class="card__preferences-item">
+                                <div class="d-flex align-items-center" style="gap: 12px;">
+                                    <svg class="d-svg" width="24" height="24">
+                                        <use href="assets/icons/sprite/sprite.svg#overview"></use>
+                                    </svg>
+                                    <span class="card__preferences-name">Access to all Research</span>
+
+                                </div>
+
+                                <svg class="check-svg">
+                                    <use href="assets/icons/sprite/sprite.svg#check-icon"></use>
+                                </svg>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

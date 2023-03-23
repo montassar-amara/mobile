@@ -1,0 +1,391 @@
+<div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="close.emit()">
+        <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+    </div>
+
+    <div class="modal__content scrollbar" *ngIf="(plans$|async) as plans">
+        <div class="select-plan__text">
+            <h3 class="select-plan__main-title app-title">{{!(subs$|async)?.plan_id?'Choose a plan & invest
+                smarter':((subs$|async)?.is_active?((currentPlanIndex$|async)-3<=0?'Get the most out of valpal':'You are
+                    onboard for the journey'):'Reactivate Your plan')}}</h3>
+                    <p class="main-text main-popup-subtitle">The best companion for your investing journey</p>
+        </div>
+        <div class="select-plan__plans" *ngIf="(currentPlanIndex$|async) as currentPlanIndex">
+
+            <ng-content></ng-content>
+
+            <div class="select-plan__cards" *ngIf="plans.length>0">
+                <div class="card">
+                    <div class="card__text">
+                        <h4 class="card__plan-name app-title-2 plan-name">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                            </svg>
+                            <span>{{plans[0].name}}</span>
+                        </h4>
+                        <p class="card__plan-subtitle">Something cheaper to get started.</p>
+                    </div>
+
+                    <div class="card__price">
+                        <div class="card__price-number">
+                            <!-- <span class="currency">$</span> -->
+                            <span
+                                class="value">{{((plans[0].prices|selectPrice:(planPeriod$|async))*1.25/((planPeriod$|async)==='Yearly'?12:3))|currency}}</span>
+                            <span class="month-txt">/month</span>
+
+                        </div>
+                        <div class="card__price-text">
+                            Billed ${{(plans[0].prices|selectPrice:(planPeriod$|async))*1.25}}
+                            <span>{{(planPeriod$|async)==='Yearly'?'annually':'quarterly'}}</span> <span
+                                class="percents" *ngIf="(planPeriod$|async)==='Yearly'">
+                                (Save {{(((plans[0]?.prices|selectPrice:'Quarterly')*4 -
+                                (plans[0]?.prices|selectPrice:'Yearly'))/((plans[0]?.prices|selectPrice:'Quarterly')*4))|percent}})
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card__subscribe">
+                        <button class="button button--accent" [class.button--warn]="(currentPlanIndex-3)>0"
+                            (click)="selectPlan(0,(currentPlanIndex-3))" *ngIf="(user$|async)"
+                            [disabled]="(currentPlanIndex-3)===0 && (subs$|async)?.is_active">
+                            {{(currentPlanIndex-3)>0?((subs$|async)?.is_active?'Downgrade':'Reactivate &
+                            Downgrade'):((currentPlanIndex-3)===0?((subs$|async)?.is_active?'Current':'Reactivate
+                            Current'):'Select')}} Plan
+                        </button>
+                        <button class="button button--accent" *ngIf="!(user$|async)" (click)="signUp()">
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <div class="card__portfolio">
+                        <div class="left">
+                            <div class="svg-box-wrapper">
+                                <svg>
+                                    <use href="assets/icons/sprite/sprite.svg#portfolio-icon"></use>
+                                </svg>
+                            </div>
+                            <p class="txt">Portfolio Access</p>
+                        </div>
+
+                        <svg class="check-svg">
+                            <use href="assets/icons/sprite/sprite.svg#check-icon"></use>
+                        </svg>
+
+                    </div>
+
+                    <div class="card__preferences">
+                        <div class="card__preferences-item">
+                            <div class="d-flex align-items-center">
+                                <svg width="20" height="20">
+                                    <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                                </svg>
+                                <span class="card__preferences-name">Companies Included</span>
+                                <svg class="svg svg-hover-2 cursor" id="companiesDropdown" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" aria-expanded="false">
+
+                                    <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                                </svg>
+
+                                <ul class="dropdown-menu list plan-dropdown-menu" aria-labelledby="companiesDropdown">
+                                    <li class="users-info-item">
+                                        <div class="icon">
+                                            <svg>
+                                                <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="text">
+                                            <h5 class="app-title-2">Companies Included</h5>
+                                            <p class="main-text">The Unlock key allows you to unlock one company of
+                                                choice.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <span class="card__preferences-count">{{plans[0].number_companies}}</span>
+                        </div>
+                        <div class="card__preferences-item">
+                            <div class="d-flex align-items-center">
+                                <svg width="20" height="20">
+                                    <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                                </svg>
+                                <span class="card__preferences-name">Available Trade In's</span>
+                                <svg class="svg svg-hover-2 cursor" id="tradeDropdown" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" aria-expanded="false">
+
+                                    <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                                </svg>
+
+                                <ul class="dropdown-menu list plan-dropdown-menu" aria-labelledby="tradeDropdown">
+                                    <li class="users-info-item">
+                                        <div class="icon">
+                                            <svg>
+                                                <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="text">
+                                            <h5 class="app-title-2">Available Trade In’s</h5>
+                                            <p class="main-text">The Trade In allows you to exchange one company that
+                                                you unlocked for one
+                                                Unlock Key. One Trade In is refreshed every
+                                                90 days.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <span class="card__preferences-count">{{plans[0].number_companies_trade}}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-popular">
+
+                    <div class="card">
+                        <div class="card__text">
+                            <h4 class="card__plan-name app-title-2">
+                                <svg>
+                                    <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                                </svg>
+
+                                <div style="display: flex; align-items: baseline; gap: 12px;">
+                                    <span class="p-name">{{plans[1].name}}</span>
+                                    <span class="most-popular">Best Value</span>
+                                </div>
+
+                            </h4>
+                            <p class="card__plan-subtitle">For those that want maximum access.</p>
+                        </div>
+
+                        <div class="card__price">
+                            <div class="card__price-number">
+                                <!-- <span class="currency">$</span> -->
+                                <span
+                                    class="value">{{((plans[1].prices|selectPrice:(planPeriod$|async))*1.25/((planPeriod$|async)==='Yearly'?12:3))|currency}}</span>
+                                <span class="month-txt">/month</span>
+
+                            </div>
+
+                            <div class="card__price-text">Billed
+                                ${{(plans[1].prices|selectPrice:(planPeriod$|async))*1.25}}
+                                <span>{{(planPeriod$|async)==='Yearly'?'annually':'quarterly'}}</span> <span
+                                    class="percents" *ngIf="(planPeriod$|async)==='Yearly'">
+                                    (Save {{(((plans[1]?.prices|selectPrice:'Quarterly')*4 -
+                                    (plans[1]?.prices|selectPrice:'Yearly'))/((plans[1]?.prices|selectPrice:'Quarterly')*4))|percent}})
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card__subscribe">
+
+                            <button class="button button--accent" [class.button--warn]="(currentPlanIndex-3)>1"
+                                *ngIf="(user$|async)" (click)="selectPlan(1,(currentPlanIndex-3))"
+                                [disabled]="(currentPlanIndex-3)===1 && (subs$|async)?.is_active">
+                                {{(currentPlanIndex-3)>1?((subs$|async)?.is_active?'Downgrade':'Reactivate &
+                                Downgrade'):((currentPlanIndex-3)===1?((subs$|async)?.is_active?'Current':'Reactivate
+                                Current'):((currentPlanIndex-3)===0?((subs$|async)?.is_active?'Upgrade':'Reactivate &
+                                Upgrade'):'Select'))}}
+                                Plan </button>
+                            <button class="button button--accent" *ngIf="!(user$|async)" (click)="signUp()">
+                                Sign Up
+                            </button>
+
+                        </div>
+
+                        <div class="card__portfolio">
+                            <div class="left">
+                                <div class="svg-box-wrapper">
+                                    <svg>
+                                        <use href="assets/icons/sprite/sprite.svg#portfolio-icon"></use>
+                                    </svg>
+                                </div>
+                                <p class="txt">Portfolio Access</p>
+                            </div>
+
+                            <svg class="check-svg">
+                                <use href="assets/icons/sprite/sprite.svg#check-icon"></use>
+                            </svg>
+
+                        </div>
+
+                        <div class="card__preferences">
+                            <div class="card__preferences-item">
+                                <div class="d-flex align-items-center">
+                                    <svg width="20" height="20">
+                                        <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                                    </svg>
+                                    <span class="card__preferences-name">Companies Included</span>
+                                    <svg class="svg svg-hover-2 cursor" id="companiesDropdown" data-bs-toggle="dropdown"
+                                        data-bs-auto-close="outside" aria-expanded="false">
+
+                                        <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                                    </svg>
+
+                                    <ul class="dropdown-menu list plan-dropdown-menu"
+                                        aria-labelledby="companiesDropdown">
+                                        <li class="users-info-item">
+                                            <div class="icon">
+                                                <svg>
+                                                    <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="text">
+                                                <h5 class="app-title-2">Companies Included</h5>
+                                                <p class="main-text">The Unlock key allows you to unlock one company of
+                                                    choice.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <span class="card__preferences-count">{{plans[1].number_companies}}</span>
+                            </div>
+                            <div class="card__preferences-item">
+                                <div class="d-flex align-items-center">
+                                    <svg width="20" height="20">
+                                        <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                                    </svg>
+                                    <span class="card__preferences-name">Available Trade In's</span>
+                                    <svg class="svg svg-hover-2 cursor" id="tradeDropdown" data-bs-toggle="dropdown"
+                                        data-bs-auto-close="outside" aria-expanded="false">
+
+                                        <use href="assets/icons/sprite/sprite.svg#question-circle-icon"></use>
+                                    </svg>
+
+                                    <ul class="dropdown-menu list plan-dropdown-menu" aria-labelledby="tradeDropdown">
+                                        <li class="users-info-item">
+                                            <div class="icon">
+                                                <svg>
+                                                    <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="text">
+                                                <h5 class="app-title-2">Available Trade In’s</h5>
+                                                <p class="main-text">The Trade In allows you to exchange one company
+                                                    that
+                                                    you unlocked for one
+                                                    Unlock Key. One Trade In is refreshed every
+                                                    90 days.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <span class="card__preferences-count">{{plans[1].number_companies_trade}}</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card" [ngClass]="{'not-available': notAvailable03}">
+                    <div class="card-overlay" *ngIf="notAvailable03" [ngClass]="{
+                            'dark-mode': themeService.theme_mode === 'dark',
+                            'light-mode': themeService.theme_mode === 'light'
+                            }">
+                        
+                    </div>
+                    <div class="card__text">
+                        <h4 class="card__plan-name app-title-2">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                            </svg>
+                            <span>{{plans[2].name}}</span>
+                        </h4>
+                        <p class="card__plan-subtitle">Condimentum enim scelerisque vulputate aenean commodo, tortor,
+                            nibh
+                            laor</p>
+                    </div>
+
+                    <div class="card__price">
+                        <div class="card__price-number">
+                            <!-- <span class="currency">$</span> -->
+                            <span
+                                class="value">{{((plans[2].prices|selectPrice:(planPeriod$|async))*1.25/((planPeriod$|async)==='Yearly'?12:3))|currency}}</span>
+                            <span class="month-txt">/month</span>
+
+                        </div>
+
+                        <div class="card__price-text">Billed ${{(plans[2].prices|selectPrice:(planPeriod$|async))*1.25}}
+                            <span>{{(planPeriod$|async)==='Yearly'?'annually':'quarterly'}}</span> <span
+                                class="percents" *ngIf="(planPeriod$|async)==='Yearly'">
+                                (Save {{(((plans[2]?.prices|selectPrice:'Quarterly')*4 -
+                                (plans[2]?.prices|selectPrice:'Yearly'))/((plans[2]?.prices|selectPrice:'Quarterly')*4))|percent}})
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card__subscribe">
+
+                        <button class="button button--accent" (click)="null" *ngIf="(user$|async)"
+                            [disabled]="(currentPlanIndex-3)===2  && (subs$|async)?.is_active">
+                            {{(currentPlanIndex-3)===2?((subs$|async)?.is_active?'Current':'Reactivate
+                            Current'):((currentPlanIndex-3)===-1?'Select':'Upgrade')}} Plan
+                        </button>
+                        <button class="button button--accent" *ngIf="!(user$|async)" (click)="signUp()">
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <div class="card__preferences">
+                        <div class="card__preferences-item">
+                            <div class="d-flex align-items-center">
+                                <svg width="20" height="20">
+                                    <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                                </svg>
+                                <span class="card__preferences-name">Companies Included</span>
+                            </div>
+
+                            <span class="card__preferences-count">{{plans[2].number_companies}}</span>
+                        </div>
+                        <div class="card__preferences-item">
+                            <div class="d-flex align-items-center">
+                                <svg width="20" height="20">
+                                    <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                                </svg>
+                                <span class="card__preferences-name">Available Trade In's</span>
+                            </div>
+
+                            <span class="card__preferences-count">{{plans[2].number_companies_trade}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="users-info">
+                <ul class="users-info-list list">
+                    <li class="users-info-item">
+                        <div class="icon">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                            </svg>
+                        </div>
+                        <div class="text">
+                            <h5 class="app-title-2">Companies Included</h5>
+                            <p class="main-text">The Unlock key allows you to unlock one company of
+                                choice.</p>
+                        </div>
+                    </li>
+                    <li class="users-info-item">
+                        <div class="icon">
+                            <svg>
+                                <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                            </svg>
+                        </div>
+                        <div class="text">
+                            <h5 class="app-title-2">Available Trade In’s</h5>
+                            <p class="main-text">The Trade In allows you to exchange one company that
+                                you unlocked for one
+                                Unlock Key. One Trade In is refreshed every
+                                90 days.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div> -->
+        </div>
+    </div>
+
+</div>

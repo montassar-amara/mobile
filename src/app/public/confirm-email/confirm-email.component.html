@@ -1,0 +1,38 @@
+<div class="login-main-page">
+
+  <div class="auth-box">
+    <div class="auth-box__header">
+      <div class="auth-box__title">Confirm your Email</div>
+      <div class="auth-box__subtitle">We sent confirmation code on your email address</div>
+    </div>
+    <div class="auth-box__content">
+      <form class="login__form" autocomplete="off">
+        <div style="width: 100%; flex-shrink: 0;">
+          <code-input class="code-input" [isCodeHidden]="false" [codeLength]="6"
+            (codeCompleted)="emailConfirmed($event)">
+          </code-input>
+          <div class="notification main-text-2 d-flex align-items-center" style="gap: 8px;" *ngIf="!startTimer">
+            <span>Didn't receive the code?</span>
+            <button class="clear-btn main-text link-accent" (click)="resendVerifCode()">Resend</button>
+          </div>
+          <div class="notification main-text-2" *ngIf="startTimer">Wait <span class="accent-landing">{{ display
+              }}</span>
+            seconds to
+            send new message</div>
+
+          <p class="notification main-text" *ngIf="codeNotCorrect">
+            <span class="text-danger">Code not correct</span>
+          </p>
+          <!-- <p class="notification main-text-2" *ngIf="showEmailSent">verification code sent</p>
+                  <p class="notification main-text-2" *ngIf="showLoading">loading</p> -->
+        </div>
+      </form>
+
+      <!-- <div class="login__redirection">
+        <span class="secondary-text">Back to</span>
+        <a class="text-link text-link--landing" routerLink="/auth/login">Login</a>
+      </div> -->
+    </div>
+  </div>
+
+</div>

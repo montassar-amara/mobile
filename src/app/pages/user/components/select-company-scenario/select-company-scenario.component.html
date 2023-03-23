@@ -1,0 +1,251 @@
+<!-- Confirm Selection Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showConfirmModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showConfirmModal=false;cleanup()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+        <div class="modal-content">
+            <div class="modal-content__wrap">
+                <div class="modal-content__item">
+                    <h3 class="app-title">Confirm your selection</h3>
+                    <p class="main-text">Below you are able to review and configure your unlock selection before you
+                        proceed</p>
+                </div>
+
+                <div class="alert-block modal-content__item" role="alert"
+                    *ngIf="subscription && subscription!.plan && (subscription?.plan?.number_companies -subscription?.subscriptionIn?.length-(selectedCompanies|async).length)<0">
+                    <h4 class="caption">
+                        <svg class="svg-hover">
+                            <use href="assets/icons/sprite/sprite.svg#warning-icon"></use>
+                        </svg>
+                        <span>Only {{subscription?.plan?.number_companies -
+                            subscription?.subscriptionIn?.length}} companies left in your subscription plan</span>
+                    </h4>
+                    <p class="text">You can <a (click)="openUpdatePlan()">update your plan</a> or subscribe
+                        separetly
+                        for each company over the
+                        limit</p>
+                </div>
+
+                <div class="modal-content__item no-subscripe-banner"
+                    *ngIf="!subscription?.plan_id && subscription?.type!=='launch'">
+                    <div class="icon">
+                        <svg>
+                            <use href="assets/icons/sprite/sprite.svg#crown-icon"></use>
+                        </svg>
+                    </div>
+                    <div class="info">
+                        <h5>Subscribe and save money</h5>
+                        <p>Select a subscription plan to unlock multiple companies on a discounted basis</p>
+                        <button class="button button--accent" (click)="openUpdatePlan()">Select Subscription Plan
+                            Now</button>
+                    </div>
+                </div>
+
+                <div class="modal-content__item scrollable-block scrollbar">
+                    <!-- <div *ngIf="subscription && !subscription?.plan_id"></div> -->
+                    <div class="modal-content__item" [pDroppable]="['companiesIn','companiesOut']"
+                        (onDrop)="onDragEnd(0,'companiesIn')"
+                        [class.d-none]="(subscription?.plan?.number_companies - subscription?.subscriptionIn?.length===0) && subscription?.type!=='launch' || !subscription?.is_active">
+                        <div class="unlock-block">
+                            <div class="unlock-block__header">
+                                <span>{{subscription?.type==='launch'?'selected companies':'unlock with subscription
+                                    plan'}}</span>
+                                <span class="count">{{companiesIn.length}}</span>
+                            </div>
+                            <div class="unlock-block__company-list custom-scroll" style="height: 160px;">
+                                <div class="unlock-block__company-list-item"
+                                    *ngFor="let item of companiesIn;let index = index" pDraggable="companiesIn"
+                                    (onDragStart)="onDragStart(index,'companiesIn')" dragHandle=".custom-drag-handle"
+                                    [pDroppable]="['companiesIn','companiesOut']"
+                                    (onDrop)="onDragEnd(index,'companiesIn')">
+                                    <app-company-list-item class="w-100" [company]="item" (remove)="removeItem(index)"
+                                        display="in" (periodChange)="periodChange($event,item,companiesIn)">
+                                        <svg class="svg-hover custom-drag-handle" style="cursor:move;">
+                                            <use href="assets/icons/sprite/sprite.svg#draggabledots-icon"></use>
+                                        </svg>
+                                    </app-company-list-item>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-content__item" [class.d-none]="companiesOut.length===0"
+                    [pDroppable]="['companiesIn','companiesOut']" (onDrop)="onDragEnd(0,'companiesOut')">
+                    <div class="unlock-block">
+                        <div class="unlock-block__header">
+                            <span>unlock outside of subscription plan</span>
+                            <span class="count">{{companiesOut.length}}</span>
+                        </div>
+                        <div class="unlock-block__company-list custom-scroll" style="height: 160px;">
+                            <div class="unlock-block__company-list-item"
+                                *ngFor="let item of companiesOut;let index = index" pDraggable="companiesOut"
+                                (onDragStart)="onDragStart(index,'companiesOut')" dragHandle=".custom-drag-handle"
+                                [pDroppable]="['companiesIn','companiesOut']"
+                                (onDrop)="onDragEnd(index,'companiesOut')">
+                                <app-company-list-item class="w-100" [company]="item" (remove)="removeItem(index)"
+                                    display="out" (periodChange)="periodChange($event,item,companiesOut)">
+                                    <svg class="svg-hover custom-drag-handle" style="cursor:move;">
+                                        <use href="assets/icons/sprite/sprite.svg#draggabledots-icon"></use>
+                                    </svg>
+                                </app-company-list-item>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-content__item unlock-footer">
+                    <button class="button button--accent" (click)="confirmSelection()">
+                        Unlock
+                    </button>
+                    <div class="info" *ngIf="companiesOut.length>0">
+                        <span>+ VAT(25%)</span>
+                        <span>{{(sum() * .25)|currency}}</span>
+                    </div>
+                    <div class="total-price" *ngIf="companiesOut.length>0">
+                        <span>Total amount payed today</span>
+                        <span class="number">{{sum()*1.25|currency}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Payment details companies Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentDetailModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentDetailModal=false;cleanup()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <div class="modal-content">
+            <div class="modal-content__wrap payment-details">
+                <div class="modal-content__item">
+                    <button class="clear-btn back-btn" (click)="showPaymentDetailModal=false;showConfirmModal=true;">
+                        <svg class="svg-hover">
+                            <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+                        </svg>
+                        <span>Back</span>
+                    </button>
+                </div>
+                <div class="modal-content__item">
+                    <h3 class="app-title">Payment details</h3>
+                </div>
+
+
+                <div class="modal-content__item payment-details-body">
+                    <div class="info">
+                        <span> Subscription for a {{companiesOut.length + companiesIn.length}} companies</span>
+                        <span class="bold">{{sum()|currency}}</span>
+                    </div>
+                    <div class="accordion" id="accordionExample">
+
+                        <div class="accordion__item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="clear-btn collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <span>Payment breakdown</span>
+                                    <svg width="9" height="6">
+                                        <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                                    </svg>
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+
+                                    <div *ngFor="let cmp of companiesIn">
+                                        <div class="company-item">
+                                            <div class="company-info">
+                                                <div class="logo">
+                                                    <img [src]="filepath+'companiesLogo/'+cmp.company.logo" alt="">
+                                                </div>
+                                                <span class="name secondary-text">{{cmp.company.name}}</span>
+                                            </div>
+                                            <div class="payment-info">
+                                                <span class="secondary-text">Added to plan</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider" *ngIf="companiesIn.length>0 && companiesOut.length>0"></div>
+                                    <div *ngFor="let cmp of companiesOut">
+                                        <div class="company-item">
+                                            <div class="company-info">
+                                                <div class="logo">
+                                                    <img [src]="filepath+'companiesLogo/'+cmp.company.logo" alt="">
+                                                </div>
+                                                <span class="name secondary-text">{{cmp.company.name}}</span>
+                                            </div>
+
+                                            <div class="payment-info">
+                                                <span class="secondary-text-2">Billed</span>
+                                                <span class="secondary-text period">{{cmp.period.name_period}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p class="secondary-text-2" style="align-self: center;">Cancel subscription anytime
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>+ VAT(25%)</span>
+                        <span class="bold">{{(sum() * .25)|currency}}</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="info">
+                        <span>Total amount payed today</span>
+                        <span class="mega-bold">{{(sum() * 1.25)|currency}}</span>
+                    </div>
+                    <button class="button button--accent" *ngIf="companiesOut.length"
+                        (click)="companiesOut.length>0?selectPaymentMethod():checkoutCompaniesIn()">{{companiesOut.length>0?'Select
+                        payment method':'Subscribe'}}
+                    </button>
+                    <p class="secure-checkout">
+                        <svg width="16" height="16">
+                            <use href="assets/icons/sprite/sprite.svg#shield-check-icon"></use>
+                        </svg>
+                        <span class="secondary-text-2">Secure checkout</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Payment method Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentMethodModal"
+    styleClass="popup-modal">
+    <div class="modal__wrapper">
+        <div class="modal__close cursor" (click)="showPaymentMethodModal=false;cleanup()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+        </div>
+
+        <app-payment-method style="width: 100%;" *ngIf="showPaymentMethodModal"
+            (goBack)="showPaymentMethodModal=false;showPaymentDetailModal=true;" (success)="processPayment($event)"
+            [sum]="sum()"></app-payment-method>
+    </div>
+</p-dialog>
+
+<app-select-plan-scenario [start]="startSelectPlan$" *ngIf="startSelectPlan$|async"></app-select-plan-scenario>
+<app-select-new-plan-scenario [plans]="plans$|async" [start]="startSelectNewPlan$" *ngIf="startSelectNewPlan$|async"></app-select-new-plan-scenario>
+<!-- Payment Success Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="showPaymentSuccessModal"
+    styleClass="popup-modal">
+    <app-payment-success (close)="showPaymentSuccessModal=false;companiesPlaceholder=[]"
+        [companies]="companiesPlaceholder"></app-payment-success>
+</p-dialog>

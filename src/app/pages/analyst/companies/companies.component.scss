@@ -1,0 +1,21 @@
+.header-section {
+  h3 {
+    color: var(--main-active-text-color);
+  }
+}
+
+.companies-list {
+  .list-group {
+    .row-item {
+      transition: .4s;
+      &:hover {
+        background: var(--bg-600);
+      }
+    }
+    .list-group-item {
+      background: transparent;
+      border: none;
+      color: var(--main-text-color);
+    }
+  }
+}

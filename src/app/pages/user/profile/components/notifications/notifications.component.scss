@@ -1,0 +1,66 @@
+.notifications {
+  .general-notifications {
+    margin-bottom: 25px;
+  }
+
+  &__text-block {
+    max-width: 620px;
+  }
+
+  .company-logo {
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+
+    margin-right: 8px;
+  }
+}
+
+// Maybe global styles for table
+table {
+  // width: 1020px;
+  width: 100%;
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1;
+
+  tr {
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid var(--bg-600);
+  }
+  td,
+  th {
+    // width: 200px;
+    flex-basis: 20%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  th.values {
+    // flex-grow: 1;
+    flex-basis: 40%;
+    justify-content: flex-start;
+  }
+  thead tr {
+    height: 32px;
+
+    font-weight: 500;
+    color: var(--main-text-color);
+  }
+  tbody tr {
+    height: 48px;
+
+    color: var(--secondary-text-color);
+  }
+}
+.toggle.switcher {
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+  .txt {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

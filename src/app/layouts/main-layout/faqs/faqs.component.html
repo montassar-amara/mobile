@@ -1,0 +1,31 @@
+<div class="faq">
+    <div class="container">
+        <div class="faq__content">
+            <h3 class="title-section">FAQs</h3>
+            <p class="main-text-public subtitle">Here you have answers to some of the most frequently asked questions
+            </p>
+            <div class="accordeon">
+                <div class="accordeon__item" *ngFor="let faq of faqs; let i=index;">
+                    <div class="accordeon__header" (click)="collapse.toggle()" style="cursor:pointer;">
+                        <span class="fz16" [ngClass]="{'expanded': !colapsed[i]}">{{faq.question}}</span>
+                        <button type="button" class="accordeon-btn clear-btn" [attr.aria-expanded]="!colapsed[i]"
+                            aria-controls="collapseExample">
+                            <svg class="svg plus">
+                                <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                            </svg>
+                            <svg class="svg minus">
+                                <use href="assets/icons/sprite/sprite.svg#minus-icon"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <div #collapse="ngbCollapse" [(ngbCollapse)]="colapsed[i]">
+                        <div class="accordeon__body">
+                            <p class="text-answer main-text-2 lh24" *ngFor="let text of faq.answer;">{{text}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

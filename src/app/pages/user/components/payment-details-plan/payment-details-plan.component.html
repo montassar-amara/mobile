@@ -1,0 +1,57 @@
+<div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="close.emit()">
+        <svg class="svg-hover">
+            <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+    </div>
+
+    <div class="modal-content">
+        <button class="clear-btn back-btn" (click)="back.emit()">
+            <svg class="svg-hover">
+                <use href="assets/icons/sprite/sprite.svg#arrowleft-icon"></use>
+            </svg>
+            <span>Back</span>
+        </button>
+        <div class="modal-content__wrap payment-details">
+            <div class="modal-content__item">
+                <h3 class="app-title">Payment details</h3>
+            </div>
+
+            <div class="modal-content__item payment-details-body">
+                <div class="info">
+                    <span> Subscription plan</span>
+                    <span class="bold">{{price|currency}}</span>
+                </div>
+
+                <div class="accordion" id="accordionExample">
+
+                    <div class="accordion__item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="clear-btn collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <span>Payment breakdown</span>
+                                <svg width="9" height="6">
+                                    <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                                </svg>
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between">
+                                    <span class="main-text">Companies Included</span>
+                                    <span class="secondary-text">{{plan.number_companies}}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="main-text">Available Trade In's</span>
+                                    <span class="secondary-text">{{plan.number_companies_trade}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="button button--accent" (click)="proceed.emit()">Select payment method</button>
+            </div>
+        </div>
+    </div>
+</div>

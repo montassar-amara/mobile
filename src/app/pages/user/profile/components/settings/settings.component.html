@@ -1,0 +1,482 @@
+<h3 class="app-title">Main Information</h3>
+<div class="settings__section section-user-info">
+  <form class="settings__main-info-form" [formGroup]="mainForm" (ngSubmit)="SaveMainInfo()" autocomplete="off">
+    <!--  SaveMainInfo() -->
+
+    <div class="form-field">
+      <label for="fullname" class="form-label secondary-text">Full name</label>
+      <input type="text" class="form-input secondary-text" [ngClass]="{'unsaved': mainForm.controls.fullname.dirty}"
+        id="fullname" placeholder="Full name" formControlName="fullname" (keyup)="userdataChanged()">
+    </div>
+
+    <div class="form-field">
+      <label for="displayname" class="form-label secondary-text">Display name</label>
+      <input type="text" class="form-input secondary-text" [ngClass]="{'unsaved': mainForm.controls.dirty}"
+        id="displayname" placeholder="Display name" formControlName="displayname" (keyup)="userdataChanged()">
+    </div>
+
+    <div class="form-field">
+      <label for="mobileCode" class="form-label secondary-text">Phone Number</label>
+      <div style="position: relative;">
+        <div class="form-group">
+          <input type="text" id="mobileCode" class="form-input secondary-text" readonly placeholder="Phone Number"
+            name="name" (keyup)="userdataChanged()">
+        </div>
+      </div>
+    </div>
+    <div class="form-button">
+      <button type="button" class="button" (click)="startPhoneUpdate()">Change Phone Number</button>
+
+    </div>
+
+    <div class="form-button">
+      <button class="button button--accent" id="btnSubmit" type="submit"
+        [disabled]="!mainForm.valid || !userInfoChanged">Save Changes</button>
+
+    </div>
+  </form>
+
+  <div class="settings__user-image-wrap">
+    <div class="settings__user-image">
+      <img [src]="filepath+'profilePictures/'+user?.avatar" (click)="avatar.click()" class="pointer" alt="user photo"
+        *ngIf="user?.avatar !== null && user?.avatar !== '' && user?.avatar !== undefined">
+
+      <div class="avatar-placeholder"
+        *ngIf="user?.avatar === null || user?.avatar === '' || user?.avatar === undefined">
+        <svg>
+          <use href="assets/icons/sprite/sprite.svg#image-icon"></use>
+        </svg>
+      </div>
+
+      <!--<img (click)="avatar.click()" [src]="request.preview ?? principal.avatar" *ngIf="request.preview || principal.avatar" class="pointer rounded-3" alt="user avatar" style="width:140px ;height:auto;">
+            <i (click)="avatar.click()" *ngIf="!(request.preview || principal.avatar)" class="pointer rounded-3 bi bi-card-image border p-5 border-2" style="font-size:56px;"></i>-->
+      <input #avatar type="file" name="avatar" id="avatar" accept="image/*" class="hidden"
+        (change)="AvatarSelected($event)" />
+    </div>
+    <div class="settings__user-image-desc">
+      <span class="main-text">Available formats: PNG, JPG, JPEG</span>
+      <span class="main-text">Max Size: 1600x1600px</span>
+      <button class="button button--without-border delete-photo-btn" (click)="deleteAvatar()"
+        *ngIf="user?.avatar !== null && user?.avatar !== '' && user?.avatar !== undefined">
+        <svg>
+          <use href="assets/icons/sprite/sprite.svg#trash-icon"></use>
+        </svg>
+        <span>Delete Picture</span>
+      </button>
+
+      <button class="button button--without-border upload-photo-btn" (click)="avatar.click()"
+        *ngIf="user?.avatar === null || user?.avatar === '' || user?.avatar === undefined">
+        <svg>
+          <use href="assets/icons/sprite/sprite.svg#cloud-upload-icon"></use>
+        </svg>
+        <span>Upload Photo</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<h3 class="app-title">Email</h3>
+<p class="secondary-text settings__text-block">Below you can see the email which your account is registered with. You
+  are able to change the email associated with your
+  account by pressing change below.</p>
+<div class="settings__email-block">
+  <label for="email" class="form-label secondary-text">Account Email</label>
+  <form class="d-flex" [formGroup]="mainForm">
+    <input type="text" class="form-input secondary-text change-email-input" id="email" placeholder="example@email.com"
+      formControlName="email" name="email" readonly>
+    <button type="submit" class="button" (click)="updateEmailStep = 0; displayChangeEmailModal=true;">Change</button>
+  </form>
+</div>
+
+<div class="divider"></div>
+
+<h3 class="app-title">Security</h3>
+<p class="secondary-text settings__text-block">
+  <span *ngIf="!isSocialUser()">
+    If you don't remember your password click on a button below <br>
+    We will send recovery link to your Email
+  </span>
+  <span *ngIf="isSocialUser()">
+    There is no password associated with this email address as you've signed up using another service (Google).
+    To sign in with this email and password, set a password using password recovery.
+  </span>
+
+</p>
+<button class="button" (click)="changePassword()">
+  {{ getPasswordTitle() }}
+</button>
+
+<div class="divider"></div>
+
+<h3 class="app-title">Policies</h3>
+<p class="secondary-text settings__text-block">
+  Here you can review our latest policies. If you no longer agree to the stipulated terms of our policies you can
+  terminate your account below
+</p>
+
+<div class="btns-row">
+  <button class="button" (click)="showPrivacyModal()">
+    Privacy Policy
+  </button>
+
+  <button class="button" (click)="showTermsModal()">
+    User Agreement
+  </button>
+</div>
+
+<div class="divider"></div>
+
+<h3 class="app-title">Delete my account</h3>
+
+<div class="profile-info__form fl-start" name="account-email-form" *ngIf="accountRequests.length === 0">
+  <p class="secondary-text settings__text-block">
+    When you delete your account you will have 7 days to change your mind.
+    All information associated with this account will be deleted and all subscriptions will be canceled.
+    The account can not be recovered after it has been deleted.
+  </p>
+
+  <!-- <div class="d-flex col-12 mx-0 justify-content-between"> -->
+  <button class="button button--warn" (click)="deleteAccountRequest()" type="button">Delete your
+    account</button>
+  <!-- </div> -->
+</div>
+<div class="profile-info__form fl-start" name="account-email-form" *ngIf="accountRequests.length !== 0">
+  <p class="secondary-text settings__text-block">
+    Your account will be deleted after: <span class="secondary-text-2 text-danger">{{delayDeleteAccount}}</span>
+    <br>You can cancel the deletion at any moment before the deadline!
+  </p>
+
+  <!-- <div class="d-flex col-12 mx-0 justify-content-between"> -->
+  <button class="button" (click)="CancelDeleteAccountRequest()" type="button">Cancel Deleting</button>
+  <!-- </div> -->
+</div>
+
+
+
+<!-- Change Email Modal -->
+
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="displayChangeEmailModal"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="displayChangeEmailModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+
+      <form class="modal-content__form" [formGroup]="changeEmailForm" autocomplete="off">
+
+        <div *ngIf="updateEmailStep === 0">
+          <div class="modal-content__form-field">
+            <h3 class="app-title">Change Email</h3>
+            <p class="main-text">Enter the new email adress and confirm by entering you account password</p>
+          </div>
+          <div class="modal-content__form-field">
+            <div class="modal-content__label">
+              <label for="emailtochange" class="secondary-text">New Email</label>
+            </div>
+            <input type="text" class="form-input secondary-text"
+              [ngClass]="{'unsaved': changeEmailForm.value.new_email !== '', 'danger-input': updateEmailErros[0] !== undefined}"
+              id="emailtochange" placeholder="example@email.com" formControlName="new_email" name="email">
+            <small *ngIf="emailExist"><span class="text-danger">{{ updateEmailErros[0] }}</span></small>
+          </div>
+
+          <div class="modal-content__form-field">
+            <div class="modal-content__label">
+              <label for="passwordemailtochange" class="secondary-text">Password</label>
+            </div>
+            <div class="input-wrapper">
+              <input type="password" id="passwordemailtochange" class="form-input secondary-text"
+                [ngClass]="{'unsaved': changeEmailForm.value.password !== '', 'danger-input': updateEmailErros[1] !== undefined}"
+                placeholder="Enter your password" formControlName="password">
+              <label for="passwordemailtochange">
+                <button class="clear-btn input-btn" type="button"
+                  (click)="ShowHidePassword('passwordemailtochange', 3)">
+                  <!-- <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                  </svg> -->
+                  <svg class="svg-hover">
+                    <use href="assets/icons/sprite/sprite.svg#eye-slash-icon" *ngIf="!showhidepassinputs[3]"></use>
+                    <use href="assets/icons/sprite/sprite.svg#eye-icon" *ngIf="showhidepassinputs[3]"></use>
+                  </svg>
+                </button>
+              </label>
+            </div>
+
+            <small *ngIf="emailExist"><span class="text-danger">{{ updateEmailErros[1] }}</span></small>
+          </div>
+
+          <div class="modal-content__form-field">
+            <button class="button button--accent" (click)="updateEmailVerification()"
+              [disabled]="!changeEmailForm.valid">Next</button>
+          </div>
+
+        </div>
+
+        <div *ngIf="updateEmailStep === 1">
+          <div class="modal-content__form-field">
+            <h3 class="app-title">Confirm your email</h3>
+            <p class="main-text">We sent confirmation link on your new email address. Open it and follow the instruction
+            </p>
+          </div>
+
+          <div class="modal-content__form-field">
+            <code-input class="code-input" [isCodeHidden]="false" [codeLength]="6"
+              (codeCompleted)="onCodeCompleted($event)">
+            </code-input>
+            <small class="text-danger" *ngIf="codeNotCorrect">Code not correct</small>
+          </div>
+
+        </div>
+
+        <div class="modal-content__wrap" *ngIf="updateEmailStep === 2">
+          <div class="success-popup-image">
+            <svg width="120" height="108">
+              <use href="assets/icons/sprite/sprite.svg#big-email"></use>
+            </svg>
+          </div>
+          <div>
+            <h3 class="app-title">Email Changed</h3>
+            <p class="main-text">Nam a gravida viverra massa vitae, adipiscing et egestas amet. Sed iaculis fringilla
+              diam
+            </p>
+          </div>
+
+          <button class="button button--accent" type="button" (click)="displayChangeEmailModal=false">Close</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</p-dialog>
+
+<!-- change phone number modal -->
+
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="phoneDialog"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="phoneDialog=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <div class="step-box-wrapper" *ngIf="updateEmailStep === 0">
+        <div class="r-box">
+          <div class="r-box__header">
+            <h3 class="r-box__title">Input Phone Number</h3>
+            <p class="r-box__subtitle">Add your phone number to verify your identity</p>
+          </div>
+
+          <div class="r-card">
+            <div>
+              <div class="form-field popup-phone">
+                <label for="mobileCode2" class="form__label my-2">Phone Number</label>
+                <div style="position: relative;">
+                  <div class="form-group">
+                    <input type="text" id="mobileCode2" class="form-input" placeholder="Phone Number" name="name"
+                      [(ngModel)]="newPhonenumber">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="notification main-text" *ngIf="errorMsg">
+        <span class="text-danger">{{errorMsg}}</span>
+      </p>
+
+            <div class="r-card__footer">
+              <button class="button button--landing" (click)="phoneEntred()" [disabled]="!newPhonenumber">
+                Continue</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="step-box-wrapper" *ngIf="updateEmailStep === 1">
+        <div class="r-box">
+          <div class="r-box__header">
+            <h3 class="r-box__title">Confirm your Phone number</h3>
+            <p class="r-box__subtitle">We sent an SMS with the confirmation code</p>
+          </div>
+
+          <div class="r-card">
+            <div style="width: 100%; flex-shrink: 0;">
+              <code-input class="code-input" [isCodeHidden]="false" [codeLength]="6"
+                (codeCompleted)="phoneConfirmed($event)">
+              </code-input>
+              <div class="notification main-text-2 d-flex align-items-center" style="gap: 8px;" *ngIf="!startTimer">
+                <span>Didn't receive the code?</span>
+                <button class="clear-btn main-text link-accent" (click)="resendVerifCodePhone()">Resend</button>
+              </div>
+              <div class="notification main-text-2" *ngIf="startTimer">Wait <span class="accent-landing">{{
+                  display??'00:60' }}</span>
+                seconds to
+                send new code</div>
+
+              <p class="notification main-text" *ngIf="codeNotCorrectSMS">
+                <span class="text-danger">{{codeNotCorrectSMS}}</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</p-dialog>
+
+<!-- Create new password Modal -->
+
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="displayCreateNewPasswordModal"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="displayCreateNewPasswordModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+
+      <form class="modal-content__form" [formGroup]="changePasswordForm" *ngIf="stepPassword == 0">
+        <div class="modal-content__form-field">
+          <h3 class="app-title">{{ getPasswordTitle() }}</h3>
+          <p class="main-text">Enter your new password, and then proceed to confirm it.</p>
+        </div>
+        <div class="modal-content__form-field" *ngIf="!isSocialUser()">
+          <div class="modal-content__label">
+            <label for="currentpassword" class="secondary-text">Enter your current password</label>
+          </div>
+          <div class="input-wrapper">
+            <input type="password" id="currentpassword"
+              [ngClass]="{'danger-input': changePasswordErrorMsg !== '','unsaved': changePasswordForm.controls.password.dirty}"
+              class="form-input" placeholder="Enter your current password" formControlName="password">
+            <label for="currentpassword">
+              <button class="clear-btn input-btn" type="button" (click)="ShowHidePassword('currentpassword', 0)">
+                <!-- <svg class="svg-hover">
+                                <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                              </svg> -->
+                <svg class="svg-hover">
+                  <use href="assets/icons/sprite/sprite.svg#eye-slash-icon" *ngIf="!showhidepassinputs[0]"></use>
+                  <use href="assets/icons/sprite/sprite.svg#eye-icon" *ngIf="showhidepassinputs[0]"></use>
+                </svg>
+              </button>
+            </label>
+          </div>
+
+          <small *ngIf="changePasswordErrorMsg !== ''"><span class="text-danger">{{ changePasswordErrorMsg
+              }}</span></small>
+
+        </div>
+        <div class="modal-content__form-field">
+          <div class="modal-content__label">
+            <label for="newpassword" class="secondary-text">Enter your new password</label>
+          </div>
+          <div class="input-wrapper">
+            <input type="password" id="newpassword"
+              [ngClass]="{'danger-input': PasswordConfirmationErrorMsg !== '', 'unsaved': changePasswordForm.controls.new_password.dirty}"
+              class="form-input" placeholder="Enter your new password" formControlName="new_password">
+            <label for="newpassword">
+              <button class="clear-btn input-btn" type="button" (click)="ShowHidePassword('newpassword', 1)">
+                <!-- <svg class="svg-hover">
+                        <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+                      </svg> -->
+                <svg class="svg-hover">
+                  <use href="assets/icons/sprite/sprite.svg#eye-slash-icon" *ngIf="!showhidepassinputs[1]"></use>
+                  <use href="assets/icons/sprite/sprite.svg#eye-icon" *ngIf="showhidepassinputs[1]"></use>
+                </svg>
+              </button>
+            </label>
+          </div>
+
+        </div>
+        <div class="modal-content__form-field">
+          <div class="modal-content__label">
+            <label for="cnewpassword" class="secondary-text">Confirm your new password</label>
+          </div>
+          <div class="input-wrapper">
+            <input type="password" id="cnewpassword"
+              [ngClass]="{'danger-input': PasswordConfirmationErrorMsg !== '', 'unsaved': changePasswordForm.controls.cnew_password.dirty}"
+              class="form-input" placeholder="Confirm your new password" formControlName="cnew_password">
+            <label for="cnewpassword">
+              <button class="clear-btn input-btn" type="button" (click)="ShowHidePassword('cnewpassword', 2)">
+                <!-- <svg class="svg-hover">
+          <use href="assets/icons/sprite/sprite.svg#eye-icon"></use>
+        </svg> -->
+                <svg class="svg-hover">
+                  <use href="assets/icons/sprite/sprite.svg#eye-slash-icon" *ngIf="!showhidepassinputs[2]"></use>
+                  <use href="assets/icons/sprite/sprite.svg#eye-icon" *ngIf="showhidepassinputs[2]"></use>
+                </svg>
+              </button>
+            </label>
+          </div>
+
+          <small *ngIf="PasswordConfirmationErrorMsg !== ''"><span class="text-danger">{{ PasswordConfirmationErrorMsg
+              }}</span></small>
+        </div>
+        <div class="modal-content__form-field">
+          <button class="button button--accent" (click)="updatePassword()" [disabled]="!changePasswordForm.valid">Update
+            Password</button>
+        </div>
+      </form>
+
+      <div class="modal-content__wrap" *ngIf="stepPassword == 1">
+        <div class="success-popup-image">
+          <svg width="120" height="120">
+            <use href="assets/icons/sprite/sprite.svg#big-lock"></use>
+          </svg>
+        </div>
+        <div>
+          <h3 class="app-title">Password Changed</h3>
+          <p class="main-text">Nam a gravida viverra massa vitae, adipiscing et egestas amet. Sed iaculis fringilla diam
+          </p>
+        </div>
+
+        <button class="button button--accent" type="button" (click)="displayCreateNewPasswordModal=false">Close</button>
+      </div>
+    </div>
+
+
+  </div>
+</p-dialog>
+
+
+<!--Image cropper Modal -->
+<p-dialog [modal]="true" [dismissableMask]="false" [showHeader]="false" [(visible)]="displayUploadPhotoModal"
+  styleClass="popup-modal">
+  <div class="modal__wrapper">
+    <div class="modal__close cursor" (click)="displayUploadPhotoModal=false">
+      <svg class="svg-hover">
+        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+      </svg>
+    </div>
+
+    <div class="modal-content">
+      <h3 class="app-title">Crop Image</h3>
+      <div class="image-cropper-wrapper">
+        <div class="image-cropper">
+          <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+            format="png" [cropperMaxWidth]="1600" [cropperMaxHeight]="1600" [roundCropper]="true"
+            (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"></image-cropper>
+        </div>
+
+        <div class="cropped-image">
+          <img [src]="croppedImage" />
+        </div>
+      </div>
+      <button class="button button--accent" (click)="saveCroppedImage(); displayUploadPhotoModal=false;">Save</button>
+    </div>
+
+  </div>
+</p-dialog>
+
+<iframe src="https://verify-4072-r2z5an.twil.io/index.html" class="d-none" id="myIframe" frameborder="0"></iframe>

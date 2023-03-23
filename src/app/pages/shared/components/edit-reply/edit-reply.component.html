@@ -1,0 +1,59 @@
+<div class="textarea-container edit-comment-textarea-container reply-message">
+  <textarea pInputTextarea placeholder="Reply text" [ngModel]="newComment.message" [ngModelOptions]="{standalone: true}"
+    [autoResize]="true" [maxlength]="2000" [rows]="5" (ngModelChange)="newComment.message=$event"
+    (keyup.escape)="cancelReply();">
+        </textarea>
+  <input #file type="file" accept="video/*,image/*" name="file" id="newRequestFile" class="hidden"
+    (change)="addFilesToComment($event)">
+  <div class="edit-comment-controls d-flex">
+    <div class="d-flex justify-content-between position-relative">
+      <span (click)="IndexCommentDown()" style="position: relative;" *ngIf="commentFileIndex>0">&lt;</span>
+      <div *ngFor="let img of newComment.uploadedFiles|slice:commentFileIndex*3:commentFileIndex*3+3;let index=index">
+        <div class="file-item" style="position: relative;">
+
+          <p class="file-name secondary-text">{{ img.name }}</p>
+          <svg>
+            <use href="assets/icons/sprite/sprite.svg#file-icon"></use>
+          </svg>
+
+          <div class="remove-file cursor" (click)="removeFileFromComment(index)">
+            <svg>
+              <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+      <span style="position: relative;" (click)="IndexCommentUp()"
+        *ngIf="commentFileIndex*3<newComment.uploadedFiles.length-3">&gt;</span>
+    </div>
+
+    <div>
+      <ul class="textarea-controls list">
+        <li #uploadSVG>
+          <button class="button button--without-border" (click)="file.click()"
+            [disabled]="newComment && newComment.uploadedFiles.length>4">
+            <svg class="svg-hover cursor">
+              <use href="assets/icons/sprite/sprite.svg#file-upload-icon"></use>
+            </svg>
+          </button>
+
+        </li>
+        <li>
+          <button #uploadFileSaveReply class="button button--without-border"
+            [disabled]="newComment.message === reply.message && newComment.uploadedFiles.length===0"
+            (click)="commentId?publishReply():publishComment()">
+            <svg class="svg-hover cursor">
+              <use href="assets/icons/sprite/sprite.svg#send-message-icon"></use>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="textarea-length secondary-text-2">
+  <span>({{newComment.message.length}}/2000 characters)</span>
+  <span *ngIf="fileSizeBig" class="text-danger">File Size should be less than 2Mb.</span>
+  <span *ngIf="unsupportedFileType" class="text-danger">Unsupported File Type.</span>
+</div>

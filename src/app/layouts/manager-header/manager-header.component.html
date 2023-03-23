@@ -1,0 +1,355 @@
+<div class="header-box px-2">
+  <img class="icon" [src]="'assets/icons/favicons/favicon-svg.svg'" alt="">
+
+  <div class="d-flex" style="justify-content: space-between; width: 100%;">
+    <div class="analyst-menu">
+      <p>
+        <span (click)="onPortfolio.emit(false);" routerLink="/manager">MANAGER</span>
+      </p>
+      <ul>
+        <li>
+          <a (click)="showSectorModal=true">
+            <i class="bi bi-chat-square me-2"></i> Sectors
+          </a>
+        </li>
+        <li>
+          <a (click)="showRatingModal=true">
+            <i class="bi bi-chat-square me-2"></i> Rating
+          </a>
+        </li>
+        <!-- <li>
+          <a (click)="showPricesModal=true">
+            <i class="bi bi-chat-square me-2"></i> Prices
+          </a>
+        </li> -->
+        <li>
+          <a (click)="showColumnsModal=true">
+            <i class="bi bi-chat-square me-2"></i> Columns
+          </a>
+        </li>
+        <li>
+          <a (click)="onPortfolio.emit(true)" >
+            <i class="bi bi-chat-square me-2"></i> Portfolio
+          </a>
+        </li>
+        <li>
+          <a (click)="onBlogs.emit(true)" routerLink="/manager/blogs">
+            <i class="bi bi-chat-square me-2"></i> Blogs
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="analyst-menu">
+      <ul>
+        <li>
+          <a  routerLink="/analyst" routerLinkActive="active-link">
+            Analyst
+          </a>
+        </li>
+        <li>
+          <a  routerLink="/overview" routerLinkActive="active-link">
+            Platform
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<p-dialog [(visible)]="showSectorModal" [modal]="true" [style]="{width:'600px',height:'400px'}" (visibleChange)="dismiss()">
+  <div class="card w-100 h-100" *ngIf="showSectorModal">
+    <div class="d-flex justify-content-between">
+      <div class="dropdown w-50">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" [disabled]="sectors.length===0" aria-expanded="false">
+            Sectors
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let sector of sectors"><a class="dropdown-item" (click)="selectSector(sector)">{{sector.name}}</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-secondary" (click)="addNewSector()">Add new Sector</button>
+    </div>
+    <div *ngIf="selectedSector">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name"  name="name" [(ngModel)]="selectedSector.name">
+      </div>
+      <div class="row">
+        <div class="col-auto" *ngFor="let rating of ratings">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="updateSector(selectedSector,rating,$event)" [checked]="(rating|includedIn:selectedSector.ratings)" id="rating">
+            <label class="form-check-label" for="rating">
+              <img src="{{filepath+'ratinglogo/'+rating.logo}}" alt="">
+              {{rating.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="w-100">
+        <h3>FY Estimations</h3>
+      </div>
+      <div class="row">
+        <div class="col-auto" *ngFor="let est of estimations">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="updateSectorEst(selectedSector,est,$event)" [checked]="(est|includedIn:selectedSector.estimations)" id="est">
+            <label class="form-check-label" for="est">
+              {{est.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" (click)="update()">Update</button>
+        <button class="btn btn-danger" (click)="delete()">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="newSector">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name"  name="name" [(ngModel)]="newSector.name">
+      </div>
+      <div class="row">
+        <div class="col-auto" *ngFor="let rating of ratings">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="updateSector(newSector,rating,$event)" [checked]="(rating|includedIn:newSector.ratings)" id="rating">
+            <label class="form-check-label" for="rating">
+              <img src="{{filepath+'ratinglogo/'+rating.logo}}" alt="">
+              {{rating.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="w-100">
+        <h3>FY Estimations</h3>
+      </div>
+      <div class="row">
+        <div class="col-auto" *ngFor="let est of estimations">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="updateSectorEst(newSector,est,$event)" [checked]="(est|includedIn:newSector.estimations)" id="est">
+            <label class="form-check-label" for="est">
+              {{est.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary" (click)="save()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [(visible)]="showRatingModal" [modal]="true" [style]="{width:'600px',height:'400px'}" (visibleChange)="dismiss()">
+  <div class="card w-100 h-100" *ngIf="showRatingModal">
+    <div class="d-flex justify-content-between">
+      <div class="dropdown w-50">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" [disabled]="ratings.length===0" aria-expanded="false">
+            Ratings
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let rating of ratings">
+            <a class="dropdown-item" (click)="selectRating(rating)">{{rating.name}}</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-secondary" (click)="addNewRating()">Add new Rating</button>
+    </div>
+    <div *ngIf="selectedRating">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name"  name="name" [(ngModel)]="selectedRating.name">
+      </div>
+      <div class="mb-3"><img src="{{filepath+'ratinglogo/'+selectedRating.logo}}" alt=""></div>
+      <div class="mb-3">
+        <label for="name" class="form-label">Image</label>
+        <input type="file" class="form-control" id="name"  name="name" (change)="pickImage($event)">
+      </div>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" (click)="updateRating()">Update</button>
+        <button class="btn btn-danger" (click)="deleteRating()">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="newRating">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name"  name="name" [(ngModel)]="newRating.name">
+      </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">Image</label>
+        <input type="file" class="form-control" id="name"  name="name" (change)="pickImage($event)">
+      </div>
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary" (click)="saveRating()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [(visible)]="showPricesModal" [modal]="true" [style]="{width:'600px',height:'400px'}" (visibleChange)="dismiss()">
+  <div class="card w-100 h-100" *ngIf="showPricesModal">
+    <form (submit)="savePrices()" [formGroup]="pricesForm">
+      <div class="mb-3">
+        <label for="quarterly" class="form-label">Quarterly</label>
+        <input type="number" class="form-control" id="quarterly" formControlName="quarterly" placeholder="12.3$">
+      </div>
+      <div class="mb-3">
+        <label for="yearly" class="form-label">Annually</label>
+        <input type="number" class="form-control" id="yearly" formControlName="yearly" placeholder="12.3$">
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="showColumnsModal"
+  [modal]="true"
+  [style]="{width:'600px',height:'400px'}"
+  (visibleChange)="dismiss()">
+  <div class="card w-100 custom-scroll" style="min-height: 100%;" *ngIf="showColumnsModal">
+    <div class="d-flex justify-content-between mb-3">
+      <div class="dropdown w-50">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" [disabled]="sectors.length===0" aria-expanded="false">
+          Sectors
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let sector of sectors"><a class="dropdown-item" (click)="selectSector(sector)">{{sector.name}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="selectedSector">
+      <div class="mb-3">
+        <span type="text" class="form-control" id="sector"  name="name">{{selectedSector.name}}</span>
+      </div>
+      <div class="row">
+        <div class="col-auto" *ngFor="let rating of ratings">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="updateSector(selectedSector,rating,$event)" [checked]="(rating|includedIn:selectedSector.ratings)" id="rating">
+            <label class="form-check-label" for="rating">
+              <img src="{{filepath+'ratinglogo/'+rating.logo}}" alt="">
+              {{rating.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3" *ngIf="selectedSector">
+      <div class="dropdown w-50">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" [disabled]="sectors.length===0" aria-expanded="false">
+          Tabs
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let sector_tab of sector_tabs"><a class="dropdown-item" (click)="selectSectorTab(sector_tab)">{{sector_tab.name}}</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-secondary" (click)="addNewSectorTab()">Add new Tab</button>
+    </div>
+    <div *ngIf="selected_sector_tab">
+      <div class="mb-3">
+        <label for="selected_tab_name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="selected_tab_name"  name="name" [(ngModel)]="selected_sector_tab.name">
+      </div>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" (click)="updateSectorTab()">Update</button>
+        <button class="btn btn-danger" (click)="deleteSectorTab()">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="new_sector_tab">
+      <div class="mb-3">
+        <label for="new_sector_name" class="form-label">New Tab Name</label>
+        <input type="text" class="form-control" id="new_sector_name"  name="new_sector_name" [(ngModel)]="new_sector_tab.name">
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary" (click)="saveSectorTab()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-3 mb-3" *ngIf="selected_sector_tab">
+      <div class="dropdown w-50">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" [disabled]="sector_columns.length===0" aria-expanded="false">
+          Columns
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let sector_column of sector_columns"><a class="dropdown-item" (click)="selectSectorColumn(sector_column)">{{sector_column.name}}</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-secondary" (click)="addNewSectorColumn()">Add new Column</button>
+    </div>
+    <div *ngIf="selected_sector_column">
+      <div class="mb-3">
+        <label for="selected_column_name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="selected_Column_name"  name="name" [(ngModel)]="selected_sector_column.name">
+      </div>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" (click)="updateSectorColumn()">Update</button>
+        <button class="btn btn-danger" (click)="deleteSectorColumn()">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="new_sector_column">
+      <div class="mb-3">
+        <label for="new_column_name" class="form-label">New Column Name</label>
+        <input type="text" class="form-control" id="new_column_name"  name="new_sector_name" [(ngModel)]="new_sector_column.name">
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary" (click)="saveSectorColumn()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <mat-grid-list
+      class="grid-list custom-scroll mt-3 mb-3"
+      cols="{{sector_columns.length + 1}}"
+      rowHeight="32px" [gutterSize]="0"
+      *ngIf="selected_sector_tab && sector_columns.length > 0">
+      <div>
+        <mat-grid-tile
+          style="color:#BEBEBE;font-size: 11px; border: solid 0.4px black">
+          <span class="form-input"
+                style="text-align: center; background: none; border: none">
+          </span>
+        </mat-grid-tile>
+        <mat-grid-tile
+          style="color:#BEBEBE;font-size: 11px; border: solid 0.4px black"
+          *ngFor="let column of sector_columns; let jg = index;">
+          <span
+            class="form-input"
+            style="text-align: center; background: none; border: none">
+            {{column.name}}
+          </span>
+        </mat-grid-tile>
+      </div>
+      <div
+        *ngFor="let sector_company of sector_companies; let ig = index;">
+        <mat-grid-tile
+          style="color:#BEBEBE;font-size: 11px; border: solid 0.4px black">
+          <span class="form-input"
+                 style="text-align: center; background: none; border: none">
+            {{sector_company.name}}
+          </span>
+        </mat-grid-tile>
+        <mat-grid-tile
+          style="color:#BEBEBE;font-size: 11px; border: solid 0.4px black"
+          *ngFor="let col_item of sector_columns; let jg = index;">
+          <input
+            class="form-input"
+            style="text-align: center; background: none; border: none"
+            [(ngModel)]="grid_values[ig][jg]"/>
+        </mat-grid-tile>
+      </div>
+    </mat-grid-list>
+    <div
+      class="d-flex justify-content-between mt-2 mb-3"
+      *ngIf="selected_sector_tab && sector_columns.length > 0">
+      <button class="btn btn-primary" (click)="updateColumnValues()">Update</button>
+    </div>
+
+  </div>
+</p-dialog>

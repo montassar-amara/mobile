@@ -1,0 +1,53 @@
+<form class="modal-content__form" [formGroup]="card" (ngSubmit)="saveCard()">
+    <div class="modal-content__form-field">
+        <h3 class="app-title">Add a new payment card</h3>
+        <div class="modal-content__label">
+            <label for="card_no" class="secondary-text">Card Number</label>
+        </div>
+        <input formControlName="card_no" type="text" class="form-input" id="card_no" (input)="inputCardNumber($event)">
+    </div>
+
+    <div class="modal-content__form-field modal-content__form-field--double">
+        <div class="col">
+            <div class="modal-content__label">
+                <label for="expiryDate" class="secondary-text">Expiry date</label>
+            </div>
+            <input formControlName="dateExpire" type="text" class="form-input" id="expiryDate" placeholder="MM / YY"
+                (input)="inputCardExpirationDate($event)">
+        </div>
+        <div class="col">
+            <div class="modal-content__label">
+                <label for="cvcNumber" class="secondary-text">CVC/CVV</label>
+            </div>
+            <input formControlName="cvcNumber" type="text" class="form-input" id="cvcNumber"
+                (input)="inputCardExpirationCvv($event)">
+        </div>
+    </div>
+
+    <div class="modal-content__form-field">
+        <div class="modal-content__label">
+            <label for="holder_name" class="secondary-text">Cardholder name</label>
+        </div>
+        <input formControlName="holder_name" type="text" class="form-input" id="holder_name">
+    </div>
+    <div class="modal-content__form-field">
+        <label class="check">
+            <input class="check__input visually-hidden" type="checkbox" id="default" formControlName="default">
+            <span class="check__box">
+                <svg class="rect">
+                    <use href="assets/icons/sprite/sprite.svg#rect"></use>
+                </svg>
+                <svg class="rect-checked">
+                    <use href="assets/icons/sprite/sprite.svg#rect-checked"></use>
+                </svg>
+            </span>
+            <span class="check__text">Set as a default card</span>
+        </label>
+    </div>
+
+    <div class="modal-content__form-field">
+        <button type="submit" class="button button--accent">Save Card</button>
+        <span *ngIf="errorMsg$|async" class="text-danger ms-5">{{errorMsg$|async}}</span>
+    </div>
+
+</form>

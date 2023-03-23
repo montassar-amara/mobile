@@ -1,0 +1,267 @@
+<div class="subscription">
+    <!-- No Subscriptions -->
+    <ng-container *ngIf="(!(subscription$|async) || !(subscription$|async)?.plan_id)">
+        <h3 class="app-title">Subscription Plan</h3>
+        <div class="subscription__plan subscription__plan--no-subscription">
+            <div class="subscription__face-icon">
+                <svg>
+                    <use href="assets/icons/sprite/sprite.svg#sad-face"></use>
+                </svg>
+            </div>
+            <h4 class="app-title-2">You don't have any subscription yet</h4>
+            <p class="main-text">Select one of our plans to unlock multiple companies on a discounted basis. With our
+                plans
+                you will also have access to
+                our trade-in mechanism.</p>
+            <div class="subscription__btn-wrap">
+                <button class="button button--accent" *ngIf="false" type="button" (click)="startSelectPlan$.next(true)">Subscribe</button>
+                <button class="button button--accent" type="button" (click)="startSelectNewPlan$.next(true)">Subscribe</button>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- has Subscription -->
+    <ng-container *ngIf="(subscription$|async) && (subscription$|async).plan_id ">
+        <div class="subscription__card position-relative" *ngIf="subscription$|async as subs">
+            <div class="header">
+                <div class="header__icon">
+                    <svg *ngIf="subs?.plan?.name === 'journeyman'">
+                        <use href="assets/icons/sprite/sprite.svg#journey-plan"></use>
+                    </svg>
+
+                    <svg *ngIf="subs?.plan?.name === 'Premium'">
+                        <use href="assets/icons/sprite/sprite.svg#premium-plan"></use>
+                    </svg>
+                </div>
+                <div class="header__info">
+                    <h4 class="app-title-2 plan-name">{{subs?.plan?.name}}</h4>
+                    <p class="secondary-text-2" [class.text-danger]="!subs.auto_payment" *ngIf="subs?.is_active">
+                        {{subs.auto_payment?'Autopayment':'Expires'}} on
+                        {{subs.auto_payment?'':(subs.plan_next_payment|date:'d MMM y')}}</p>
+                    <p class="secondary-text-2 text-danger" *ngIf="!subs?.is_active">
+                        Expired</p>
+                    <div class="preferences" *ngIf="false">
+                        <div class="preferences__item">
+                            <svg class="key-icon">
+                                <use href="assets/icons/sprite/sprite.svg#key-icon"></use>
+                            </svg>
+                            <span>Unlocks:</span>
+                            <span>{{subs.plan?.number_companies-subs.subscriptionIn?.length}}/{{subs.plan?.number_companies}}</span>
+                        </div>
+
+                        <div class="v-line"></div>
+
+                        <div class="preferences__item">
+                            <svg class="refresh-icon">
+                                <use href="assets/icons/sprite/sprite.svg#refresh-icon"></use>
+                            </svg>
+                            <span>Trade In</span>
+                            <span>{{subs.plan?.number_companies_trade-subs.trade_in}}/{{subs.plan?.number_companies_trade}}</span>
+                        </div>
+
+                        <div class="preferences__item">
+                            <p class="secondary-text-2">
+                                ({{subs.last_Date_trade_in|dateSince:(subscription$|async).plan?.number_day_to_update}}
+                                for
+                                a
+                                new
+                                update)</p>
+                        </div>
+
+                    </div>
+                </div>
+                <button class="button button--accent upgrade-btn" *ngIf="(subscription$|async)?.is_active && false" type="button"
+                    (click)="startSelectPlan$.next(true)">Change Plan</button>
+            </div>
+            <div class="body" *ngIf="false">
+                <ul class="companies-list list">
+                    <li class="companies-list-item" *ngFor="let company of subs.subscriptionIn;trackBy:trackBy">
+                        <div class="logo">
+                            <img src="{{filepath+'companiesLogo/'+company.logo}}" alt="company logo">
+                        </div>
+                        <span class="secondary-text">{{company.name}}</span>
+                    </li>
+                    <li class="companies-list-item cursor add-company-btn" (click)="unlockNewCompany()">
+                        <svg>
+                            <use href="assets/icons/sprite/sprite.svg#plus-icon"></use>
+                        </svg>
+                        <span class="secondary-text">Unlock a new company</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer">
+                <div class="autopayment">
+                    <div class="autopayment__item">
+                        <label class="toggle">
+                            <input class="toggle__checkbox visually-hidden" type="checkbox" role="switch"
+                                id="autopayment" #autopayment [ngModel]="subs.auto_payment"
+                                (change)="handleAutoPayment()">
+                            <span class="toggle__switch"></span>
+                            <span class="toggle__label secondary-text"
+                                *ngIf="defaultCard$|async as card">Autopayment</span>
+                            <span class="toggle__label secondary-text"
+                                *ngIf="!(defaultCard$|async) && (cards$|async).length===0">(No Payment
+                                Method Setup)</span>
+                        </label>
+                        <span class="secondary-text-2" *ngIf="defaultCard$|async as card">(**** {{card.last4}})</span>
+                    </div>
+
+                    <div class="v-line"></div>
+
+                    <div class="autopayment__item">
+                        <span class="secondary-text">Next payment:</span>
+                        <span class="secondary-text-2">{{subs.plan_next_payment|date:'d MMM y'}}</span>
+                    </div>
+
+                    <div class="autopayment__item">
+                        <span
+                            class="secondary-text-2">({{(subs.plan?.prices|selectPrice:subs.plan_period_selected)*1.25|currency}})</span>
+
+
+                        <div *ngIf="subs.auto_payment">
+                            <button class="clear-btn secondary-text" type="button" id="dropdownSubPeriod"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {{subs.plan_period_selected_next_payment}}
+                                <span>
+                                    <svg width="7" height="4.5">
+                                        <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                                    </svg>
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu subscription__period-dropdown" aria-labelledby="dropdownSubPeriod">
+                                <li *ngFor="let p of subs?.plan?.prices"
+                                    (click)="updatePeriodSubscription(p.name_period)">
+                                    <div class="top">
+                                        <span class="period">{{p.name_period}}</span>
+                                        <span class="period-price">{{p.price*1.25|currency}}</span>
+                                    </div>
+                                    <div class="bottom">
+                                        <span class="price-save">
+                                            {{
+                                            p.name_period==='Yearly'?
+                                            "(-"+(((subs?.plan?.prices|selectPrice:'Quarterly')/(subs?.plan?.prices|selectPrice:'Yearly'))|percent)+')'
+                                            :''
+                                            }}
+                                        </span>
+                                        <span class="price-per-month">({{(p|monthly)*1.25|currency}} per month)
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button class="clear-btn cancel-btn" type="button" *ngIf="subs.auto_payment"
+                        (click)="autopayment.click()">Cancel
+                        Subscription</button>
+                </div>
+
+
+            </div>
+            <div class="blurring d-flex justify-content-center flex-column" style="top: 104px;"
+                *ngIf="!(subscription$|async)?.is_active">
+                <span class="mx-auto py-1 fs-5 fw-bold text-white">Your subscription has been expired</span>
+                <span class="mx-auto py-1 ">Please, update your subscription to continue using ValPal</span>
+                <div class="mx-auto py-1 ">
+                    <button class="button button--accent upgrade-btn mx-1" type="button" *ngIf="false"
+                        (click)="startSelectPlan$.next(true)">Reactivate your plan</button>
+                        <button class="button button--accent upgrade-btn mx-1" type="button"
+                        (click)="startSelectNewPlan$.next(true)">Reactivate your plan</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <!-- Individual Company Subscription -->
+    <div class="subscription__company">
+        <h3 class="app-title">Unlocks outside of a plan</h3>
+        <p class="secondary-text">Here you can find and manage all of the companies which you have unlocked outside of
+            any
+            of our payment plans. To cancel
+            a subscription to an individual company, simply turn off autopayment.</p>
+
+        <div class="subscription__table-wrapper scrollbar scrollbar--visible">
+            <table class="subscription__table">
+                <thead>
+                    <tr class="thead-row">
+                        <th scope="col" class="company-name cn">Company name</th>
+                        <th scope="col">Days Left</th>
+                        <th scope="col" class="np">Next Payment</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col" class="ap">Autopayment</th>
+                        <th scope="col" class="sp">Subscription period</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="(subscription$|async) as subs">
+                    <tr *ngFor="let cmp of subs.subscriptionOut;trackBy:trackBy"
+                        [class.bg-danger]="(cmp.next_payment|dateSince:0:true)<=3">
+                        <td class="companies cn">
+                            <div class="companies__wrap">
+                                <div class="companies__img">
+                                    <svg class="svg-hover" *ngIf="(cmp.next_payment|dateSince:0:true)<=0">
+                                        <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                                    </svg>
+                                    <img src="{{filepath+'companiesLogo/'+cmp.logo}}" alt="" class="float-start">
+                                </div>
+                                <span>{{cmp.name}}</span>
+                            </div>
+                        </td>
+                        <td>{{(cmp.next_payment|dateSince:0:true)|expired:'Expired'}}</td>
+                        <td class="np">{{((cmp.next_payment|dateSince:0:true)<=0 ||
+                                !cmp.auto_payment)?'-':cmp.next_payment|date:'d MMM y'}}</td>
+                        <td>{{(!cmp.auto_payment)?'-':cmp.amount*1.25|currency}}</td>
+                        <td class="ap">
+                            <label class="toggle">
+                                <input class="toggle__checkbox d-none" type="checkbox" name="" id="" role="switch"
+                                    [ngModel]="cmp.auto_payment" (change)="updateAutopayment(cmp,!cmp.auto_payment)">
+                                <span class="toggle__switch"></span>
+                            </label>
+                        </td>
+                        <td class="sp">
+                            <div>
+                                <button class="clear-btn secondary-text" type="button" id="dropdownSubPeriod"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{cmp.subscriptions_period}}
+                                    <span>
+                                        <svg width="7" height="4.5">
+                                            <use href="assets/icons/sprite/sprite.svg#arrow-down-profile-icon"></use>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu subscription__period-dropdown"
+                                    aria-labelledby="dropdownSubPeriod">
+                                    <li *ngFor="let p of cmp|prices|async;trackBy:trackBy"
+                                        (click)="updatePeriod(cmp,p.name_period)">
+                                        <div class="top">
+                                            <span class="period">{{p.name_period}}</span>
+                                            <span class="period-price">{{p.price * 1.25|currency}}</span>
+                                        </div>
+                                        <div class="bottom">
+                                            <span class="price-save">
+                                                {{p.name_period==='Yearly'?'Save
+                                                '+(((cmp|prices|async|selectPrice:'Quarterly')*4-(cmp|prices|async|selectPrice:'Yearly'))|currency):''}}
+                                            </span>
+                                            <span
+                                                class="price-per-month">({{(p.price/(p.name_period==='Yearly'?12:3))|currency}}
+                                                per month)</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<app-select-plan-scenario [plans]="plans$|async" [subscription]="subscription$|async" [start]="startSelectPlan$"
+    *ngIf="startSelectPlan$|async"></app-select-plan-scenario>
+
+    <app-select-new-plan-scenario [plans]="plans$|async" [subscription]="subscription$|async" [start]="startSelectNewPlan$"
+    *ngIf="startSelectNewPlan$|async"></app-select-new-plan-scenario>

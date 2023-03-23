@@ -1,0 +1,13 @@
+{
+  "defaultProject":"valpal",
+  "projects":{
+    "valpal":{
+      "name": "valpal",
+      "integrations": {
+        "capacitor": {}
+      },
+      "type": "angular"
+    }
+    
+  }
+}

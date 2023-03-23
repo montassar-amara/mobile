@@ -1,0 +1,57 @@
+.payment-card {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 249px;
+  max-height: 140px;
+  overflow: hidden;
+  background: var(--bg-600);
+  border-radius: var(--border-radius);
+  &__number {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &--right {
+      align-items: flex-end;
+    }
+  }
+  &__divider {
+    height: 1px;
+    background-color: var(--accent-10);
+  }
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  &__delete-btn {
+    svg {
+      color: var(--danger);
+      width: 16px;
+      height: 16px;
+    }
+  }
+  &__brand {
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .toggle__checkbox:checked + .toggle__switch::after {
+    background-color: var(--bg-600);
+  }
+}

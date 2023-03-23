@@ -1,0 +1,158 @@
+<h3 class="theme__title app-title">Appearence</h3>
+<p class="theme__text secondary-text">Here you are able to adjust the design of the valpal platform to your preference
+</p>
+<div class="theme__switcher-wrap">
+  <div class="theme__box" [ngClass]="{'active': themeService.theme_mode === 'dark'}"
+    (click)="themeService.chooseThemeMode('dark')">
+    <div class="theme__box-header">
+      <div class="theme__box-icon-wrap">
+        <svg class="theme__box-icon">
+          <use href="assets/icons/sprite/sprite.svg#moon-icon"></use>
+        </svg>
+      </div>
+      <h4 class="theme__box-title app-title-2">Dark Mode</h4>
+      <div class="theme__box-label text-label" *ngIf="themeService.theme_mode === 'dark'">Active</div>
+    </div>
+    <div class="theme__box-body">
+      <p class="theme__box-text secondary-text">Select your preferred dark mode theme</p>
+      <!-- Dark Mode Preview -->
+      <div class="theme__preview"
+        [ngClass]="{'dark-default': themeService.choozenDarkTheme === 'dark-default', 
+                    'dark-test': themeService.choozenDarkTheme === 'dark-test', 'solarized-dark': themeService.choozenDarkTheme === 'solarized-dark' }">
+        <div class="theme__preview-sidebar">
+          <div class="theme__preview-sidebar-content"></div>
+        </div>
+        <div class="theme__preview-body">
+          <div class="theme__preview-header">
+            <div class="theme__preview-header-title"></div>
+            <div class="theme__preview-header-title"></div>
+            <div class="theme__preview-header-title"></div>
+          </div>
+          <div class="theme__preview-content">
+            <div class="theme__preview-content-header">
+              <div class="theme__preview-content-title"></div>
+              <div class="theme__preview-content-button"></div>
+            </div>
+            <div class="theme__preview-content-body"></div>
+          </div>
+        </div>
+      </div>
+      <!-- end preview -->
+
+      <h5 class="theme__name">{{themeService.themesList[themeService.hoveredDarkTheme]}}</h5>
+      <ul class="theme__themes-list list">
+        <li class="theme__themes-item dark-default" (click)="themeService.chooseDarkTheme('dark-default')"
+          (mouseenter)="themeService.previewDarkShow('dark-default')"
+          (mouseleave)="themeService.previewDarkHide('dark-default')"
+          [ngClass]="{'active': themeService.choozenDarkTheme === 'dark-default'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+        <li class="theme__themes-item dark-test" (click)="themeService.chooseDarkTheme('dark-test')"
+          (mouseenter)="themeService.previewDarkShow('dark-test')"
+          (mouseleave)="themeService.previewDarkHide('dark-test')"
+          [ngClass]="{'active': themeService.choozenDarkTheme === 'dark-test'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+        <li class="theme__themes-item solarized-dark" (click)="themeService.chooseDarkTheme('solarized-dark')"
+          (mouseenter)="themeService.previewDarkShow('solarized-dark')"
+          (mouseleave)="themeService.previewDarkHide('solarized-dark')"
+          [ngClass]="{'active': themeService.choozenDarkTheme === 'solarized-dark'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <!-- =========================================== -->
+  <!-- =========================================== -->
+  <!-- =========================================== -->
+  <div class="theme__box" [ngClass]="{'active': themeService.theme_mode === 'light'}"
+    (click)="themeService.chooseThemeMode('light')">
+    <div class="theme__box-header">
+      <div class="theme__box-icon-wrap">
+        <svg class="theme__box-icon">
+          <use href="assets/icons/sprite/sprite.svg#sun-icon"></use>
+        </svg>
+      </div>
+      <h4 class="theme__box-title app-title-2">Light Mode</h4>
+      <div class="theme__box-label text-label" *ngIf="themeService.theme_mode === 'light'">Active</div>
+    </div>
+    <div class="theme__box-body">
+      <p class="theme__box-text secondary-text">Select your preferred light mode theme</p>
+      <!-- Light Theme preview -->
+      <div class="theme__preview"
+        [ngClass]="{'light-default': themeService.choozenLightTheme === 'light-default', 
+                    'light-2': themeService.choozenLightTheme === 'light-2', 'light-3': themeService.choozenLightTheme === 'light-3', 'light-4': themeService.choozenLightTheme === 'light-4', 'light-5': themeService.choozenLightTheme === 'light-5' }">
+        <div class="theme__preview-sidebar">
+          <div class="theme__preview-sidebar-content"></div>
+        </div>
+        <div class="theme__preview-body">
+          <div class="theme__preview-header">
+            <div class="theme__preview-header-title"></div>
+            <div class="theme__preview-header-title"></div>
+            <div class="theme__preview-header-title"></div>
+          </div>
+          <div class="theme__preview-content">
+            <div class="theme__preview-content-header">
+              <div class="theme__preview-content-title"></div>
+              <div class="theme__preview-content-button"></div>
+            </div>
+            <div class="theme__preview-content-body"></div>
+          </div>
+        </div>
+      </div>
+      <!-- end preview -->
+      <h5 class="theme__name">{{themeService.themesList[themeService.hoveredLightTheme]}}
+      </h5>
+      <ul class="theme__themes-list list">
+        <li class="theme__themes-item light-default" (click)="themeService.chooseLightTheme('light-default')"
+          (mouseenter)="themeService.previewLightShow('light-default')"
+          (mouseleave)="themeService.previewLightHide('light-default')"
+          [ngClass]="{'active': themeService.choozenLightTheme === 'light-default'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+        <li class="theme__themes-item solarized-light" (click)="themeService.chooseLightTheme('solarized-light')"
+          (mouseenter)="themeService.previewLightShow('solarized-light')"
+          (mouseleave)="themeService.previewLightHide('solarized-light')"
+          [ngClass]="{'active': themeService.choozenLightTheme === 'solarized-light'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+        <li class="theme__themes-item light-test" (click)="themeService.chooseLightTheme('light-test')"
+          (mouseenter)="themeService.previewLightShow('light-test')"
+          (mouseleave)="themeService.previewLightHide('light-test')"
+          [ngClass]="{'active': themeService.choozenLightTheme === 'light-test'}">
+          <div class="left"></div>
+          <div class="right">
+            <div class="one"></div>
+            <div class="two"></div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>

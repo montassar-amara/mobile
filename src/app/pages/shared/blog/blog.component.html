@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-end">
+    <button class="btn btn-info" routerLink="/manager/blogs/create">
+        Create a Blog
+    </button>
+</div>
+<div class="d-flex flex-column">
+    <div class="d-flex justify-content-between" *ngFor="let blog of blogs">
+        <span>{{blog?.news_data?.title}}</span>
+        <div>
+            <button class="btn btn-danger"  (click)="deleteModal=true;selectedBlog=blog">Delete</button>
+            <button class="btn btn-warning" *ngIf="!blog.is_published" (click)="publish(blog)">Publish</button>
+            <button class="btn btn-warning" (click)="edit(blog)">edit</button>
+        </div>
+    </div>
+</div>
+<p-dialog [(visible)]="deleteModal" [modal]="true" [closable]="true" header="Please confirm deleting this blog post.">
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-danger" (click)="delete(selectedBlog)">Confirm</button>
+        <button class="btn btn-light" (click)="deleteModal=false;selectedBlog=undefined;">Cancel</button>
+    </div>
+</p-dialog>

@@ -1,0 +1,153 @@
+<div class="container">
+    <h3>Portfolio</h3>
+        <div class="d-flex justify-content-between my-5">
+            <label for="funds" class="mx-3">
+                Available Funds
+            </label>
+            <input type="text" class="text-end" name="funds" id="funds" readonly [ngModel]="(portfolio$|async)?.amount|currency">
+            <button class="btn btn-success" (click)="StartAddFunds()">+</button>
+        </div>
+        <div class="d-flex justify-content-between my-5">
+            <label for="availableFunds" class="mx-3">
+                Stock Value
+            </label>
+            <input type="text" class="text-end" name="availableFunds" id="availableFunds" [ngModel]="stockValue$|async|currency" readonly>
+        </div>
+        <div class="d-flex justify-content-between my-5">
+            <label for="totalFunds" class="mx-3">
+                Portfolio Value
+            </label>
+            <input type="text" class="text-end" name="totalFunds" id="totalFunds" [ngModel]="totalFunds$|async|currency" readonly>
+        </div>
+
+        <div class="d-flex justify-content-between my-5">
+            <span class="mx-3">
+                Available Stocks
+            </span>
+            <button (click)="StartAddNew()" class="btn btn-success"> Add New</button>
+        </div>
+        <div class="d-flex justify-content-between my-5" *ngIf="(portfolio$|async)?.companyPortfolio.length>0">
+           <table class="w-100">
+            <thead>
+                <th>Company</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Shares</th>
+                <th>percentage</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let position of (portfolio$|async)?.companyPortfolio;">
+                    <td>{{position?.name}}</td>
+                    <td>{{position?.symbol}}</td>
+                    <td>{{position?.now_price|currency}}</td>
+                    <td>{{position?.shares}}</td>
+                    <td>{{(position?.shares*position?.now_price/(totalFunds$|async))|percent:'1.0-2'}}</td>
+                    <td>
+                        <button class="btn btn-danger" (click)="startSelling(position)">Sell</button>
+                        <button class="btn btn-success" (click)="startBuying(position)">Buy</button>
+                    </td>
+                </tr>
+            </tbody>
+           </table>
+        </div>
+</div>
+
+<p-dialog [(visible)]="addNew" [modal]="true" [style]="{width:'600px'}" [draggable]="false" [resizable]="false" [showHeader]="false">
+    <div class="d-flex justify-content-end my-2" (click)="addNew=false">
+        <svg class="svg-hover">
+          <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+        </svg>
+      </div>
+      <div class="w-100 my-2">
+        <span>Select a company</span>
+        <p-dropdown [options]="companies|async" [ngModel]="selectedCompany" (ngModelChange)="updateSelectedCompany($event)" optionLabel="name" class="ms-5"></p-dropdown>
+      </div>
+      <div class="w-100 my-2">
+        <span>Share Price</span>
+        <input type="text" readonly [ngModel]="selectedCompanyPrice|currency">
+        </div>
+        <div class="w-100 my-2">
+            <span>Number of Shares</span>
+            <input type="number" [ngModel]="selectedCompanyShares" (ngModelChange)="updateShares($event)" [class.danger]="!validShares">
+            <span *ngIf="!validShares" class="text-danger"> You don't have sufficient funds</span>
+        </div>
+        <div class="w-100 my-2">
+            <span>Total</span>
+            <input type="text" [ngModel]="total|currency" readonly>
+        </div> 
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-success" (click)="addToStocks()" [disabled]="selectedCompanyShares===0 || !validShares">Add</button>
+        </div>
+    </p-dialog>
+
+    <p-dialog [(visible)]="addFunds" [modal]="true" [style]="{width:'600px'}" [draggable]="false" [resizable]="false" [showHeader]="false">
+        <div class="d-flex justify-content-end my-2" (click)="addFunds=false">
+            <svg class="svg-hover">
+              <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+          </div>
+          <div class="w-100 my-2">
+            <span>Add Funds</span>
+            <input type="number" [(ngModel)]="addedFunds">
+          </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success" (click)="updateFunds()" [disabled]="!addedFunds || addedFunds<=0">Confirm</button>
+            </div>
+        </p-dialog>
+        <p-dialog [(visible)]="buyModal" [modal]="true" [style]="{width:'600px'}" [draggable]="false" [resizable]="false" [showHeader]="false">
+            <div class="d-flex justify-content-end m-2" (click)="buyModal=false">
+                <svg class="svg-hover">
+                  <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+                </svg>
+              </div>
+              <ng-container *ngIf="selectedPosition">
+                <div class="d-flex justify-content-between m-2">
+                    <span>{{selectedPosition?.name}}</span>
+                    <input type="text" [ngModel]="selectedPosition?.now_price|currency"  readonly>
+                  </div>
+                  <div class="d-flex justify-content-between my-2">
+                    <span>Buy Stocks</span>
+                    <div class="d-flex flex-column">
+                        <input type="number" [ngModel]="stocksToBuy" (ngModelChange)="updateStocksToBuy($event)" [class.danger]="!validShares">
+                    <span *ngIf="!validShares" class="text-danger"> You don't have sufficient funds</span>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between m-2">
+                    <span>total</span>
+                    <input type="text" [ngModel]="total|currency"  readonly>
+                  </div>
+              </ng-container>
+              
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success" (click)="buy()" [disabled]="!validShares || stocksToBuy<=0">Confirm</button>
+                </div>
+    </p-dialog>
+    <p-dialog [(visible)]="sellModal" [modal]="true" [style]="{width:'600px'}" [draggable]="false" [resizable]="false" [showHeader]="false">
+        <div class="d-flex justify-content-end m-2" (click)="sellModal=false">
+            <svg class="svg-hover">
+              <use href="assets/icons/sprite/sprite.svg#cross-icon"></use>
+            </svg>
+          </div>
+          <ng-container *ngIf="selectedPosition">
+            <div class="d-flex justify-content-between m-2">
+                <span>{{selectedPosition?.name}}</span>
+                <input type="text" [ngModel]="selectedPosition?.now_price|currency"  readonly>
+              </div>
+              <div class="d-flex justify-content-between my-2">
+                <span>Sell Stocks</span>
+                <div class="d-flex flex-column">
+                    <input type="number" [max]="selectedPosition.shares" [min]="0" [ngModel]="stocksToBuy" (ngModelChange)="updateStocksToSell($event)" [class.danger]="!validShares">
+                <span *ngIf="!validShares" class="text-danger"> You don't have sufficient funds</span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between m-2">
+                <span>total</span>
+                <input type="text" [ngModel]="total|currency"  readonly>
+              </div>
+          </ng-container>
+          
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success" (click)="sell()" [disabled]="!validShares || stocksToBuy<=0">Confirm</button>
+            </div>
+</p-dialog>

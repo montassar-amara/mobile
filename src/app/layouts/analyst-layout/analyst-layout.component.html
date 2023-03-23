@@ -1,0 +1,12 @@
+<div class="main-container"
+  [ngClass]="{
+  'dark-default': themeService.activeTheme === 'dark-default', 'dark-test': themeService.activeTheme === 'dark-test', 'dark-2': themeService.activeTheme === 'dark-2', 'light-default': themeService.activeTheme === 'light-default'}">
+  <div class="header-container">
+    <app-analyst-header></app-analyst-header>
+  </div>
+  <div class="body-container">
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
