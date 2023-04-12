@@ -7,7 +7,8 @@
     "build": "ng build --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "appflow:build": "if [ \"$CI_PLATFORM\" != \"web\" ]; then npx trapeze run appflow.yml -y --$CI_PLATFORM; fi && npm run build"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +37,7 @@
     "@codetrix-studio/capacitor-google-auth": "^3.0.2",
     "@ionic/angular": "^5.9.4",
     "@ng-bootstrap/ng-bootstrap": "^13.0.0",
+    "@trapezedev/configure": "^7.0.8",
     "angular-code-input": "^1.6.0",
     "angular-password-strength-meter": "^5.0.1",
     "angular-split": "^14.1.0",

@@ -1,0 +1,9 @@
+vars:
+  CI_BUILD_NUMBER:
+    default: 10
+
+platforms:
+  ios:
+    buildNumber: $CI_BUILD_NUMBER
+  android:
+    versionCode: $CI_BUILD_NUMBER
